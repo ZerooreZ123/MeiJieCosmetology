@@ -1,0 +1,20 @@
+.mod-config,
+.mod-user {
+  .btns {
+    text-align: right;
+    padding-bottom: 10px;
+    .el-form-item {
+      margin-bottom: 0;
+    }
+    .btns-right {
+      display: inline;
+    }
+    .input-left {
+      float: left;
+    }
+  }
+
+  .clear {
+    clear: both;
+  }
+}

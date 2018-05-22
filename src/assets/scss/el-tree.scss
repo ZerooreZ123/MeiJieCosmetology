@@ -1,0 +1,16 @@
+// 重新定义el-tree样式
+
+.el-tree {
+  width: 100%;
+  & > .el-tree-node {
+    .el-tree-node__content {
+      border-bottom: 1px solid #eee;
+      position: relative;
+      .tree-opt {
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+    }
+  }
+}
