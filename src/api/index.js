@@ -20,6 +20,11 @@ import * as servicepackagedetail from "./modules/servicepackagedetail";
 import * as servicepackage from "./modules/servicepackage";
 import * as serviceproduct from "./modules/serviceproduct";
 import * as member from "./modules/member";
+import * as miorder from "./modules/miorder";
+import * as miorderdetail from "./modules/miorderdetail";
+import * as miorderpay from "./modules/miorderpay";
+import * as appointdeatail from "./modules/appointdeatail";
+import * as appointment from "./modules/appointment";
 
 export default {
   common, // 公共
@@ -43,5 +48,10 @@ export default {
   servicepackagedetail,
   servicepackage,
   serviceproduct,
-  member
+  member,
+  miorder,
+  miorderdetail,
+  miorderpay,
+  appointdeatail,
+  appointment
 };

@@ -10,9 +10,9 @@
       <template slot="产品">
         <serviceproduct/>
       </template>
-      <template slot="卡">
+      <!-- <template slot="卡">
 
-      </template>
+      </template> -->
     </tab-nav>
   </div>
 </template>
@@ -25,9 +25,7 @@ import serviceproduct from "../serviceproduct/index";
 export default {
   data() {
     return {
-      itemList: ["项目", "套餐", "产品", "卡"],
-      str: "",
-      childrenIndex: 0
+      itemList: ["项目", "套餐", "产品"]
     };
   },
   components: {
@@ -36,11 +34,7 @@ export default {
     servicepackage,
     serviceproduct
   },
-  methods: {
-    btnClick: function() {
-      this.str = this.str;
-    }
-  }
+  methods: {}
 };
 </script>
 

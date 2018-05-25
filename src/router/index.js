@@ -34,7 +34,6 @@ export default new Router({
         { path: "/log", component: _import("log/index"), name: "log", desc: "系统日志", meta: { isTab: false } },
         { path: "/more_settings", component: _import("more_settings/index"), name: "more_settings", desc: "更多设置", meta: { isTab: false } },
         { path: "/more_settings/shop_list", component: _import("more_settings/shop_list"), name: "shop_list", desc: "门店列表", meta: { isTab: false } },
-        { path: "/member", component: _import("member/index"), name: "member", desc: "会员", meta: { isTab: false } },
         {
           path: "/more_settings/individuation",
           component: _import("more_settings/individuation/index"),
@@ -54,6 +53,41 @@ export default new Router({
           component: _import("more_settings/user_list"),
           name: "user_list",
           desc: "用户列表",
+          meta: { isTab: false }
+        },
+        {
+          path: "/sysdict",
+          component: _import("sysdict/index"),
+          name: "sysdict",
+          desc: "字典管理",
+          meta: { isTab: false }
+        },
+        {
+          path: "/member",
+          component: _import("member/index"),
+          name: "member",
+          desc: "会员",
+          meta: { isTab: false }
+        },
+        {
+          path: "/appointment",
+          component: _import("appointment/index"),
+          name: "appointment",
+          desc: "预约",
+          meta: { isTab: false }
+        },
+        {
+          path: "/createorder",
+          component: _import("createorder/index"),
+          name: "createorder",
+          desc: "开单",
+          meta: { isTab: false }
+        },
+        {
+          path: "/miorder",
+          component: _import("miorder/index"),
+          name: "miorder",
+          desc: "订单",
           meta: { isTab: false }
         }
       ],

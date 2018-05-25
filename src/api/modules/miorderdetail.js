@@ -3,63 +3,54 @@ import requestUrl from "../requestUrl";
 import requestParam from "../requestParam";
 import isInteger from "lodash/isInteger";
 
-// 获取用户列表
+// 获取列表
 export function list(params) {
   return request({
-    url: requestUrl("/sys/user/list"),
+    url: requestUrl("/order/miorderdetail/list"),
     method: "get",
     params: requestParam(params, "get")
   });
 }
 
-export function getList() {
-  return request({
-    url: requestUrl("/sys/user/getList"),
-    method: "get",
-    params: requestParam({}, "get")
-  });
-}
-
-// 获取用户信息
+// 获取信息
 export function info(id) {
   return request({
-    url: requestUrl("/sys/user/info" + (isInteger(id) ? `/${id}` : "")),
+    url: requestUrl("/order/miorderdetail/info" + (isInteger(id) ? `/${id}` : "")),
     method: "get",
     params: requestParam({}, "get")
   });
 }
 
-// 修改密码
-export function updatePassword(params) {
+export function history(id) {
   return request({
-    url: requestUrl("/sys/user/password"),
-    method: "post",
-    data: requestParam(params)
+    url: requestUrl("/order/miorderdetail/queryConsumption?id=" + id),
+    method: "get",
+    params: requestParam({}, "get")
   });
 }
 
-// 添加用户
+// 添加
 export function add(params) {
   return request({
-    url: requestUrl("/sys/user/save"),
+    url: requestUrl("/order/miorderdetail/save"),
     method: "post",
     data: requestParam(params)
   });
 }
 
-// 修改用户
+// 修改
 export function update(params) {
   return request({
-    url: requestUrl("/sys/user/update"),
+    url: requestUrl("/order/miorderdetail/update"),
     method: "post",
     data: requestParam(params)
   });
 }
 
-// 删除用户
+// 删除
 export function del(params) {
   return request({
-    url: requestUrl("/sys/user/delete"),
+    url: requestUrl("/order/miorderdetail/delete"),
     method: "post",
     data: requestParam(params, "post", false)
   });

@@ -1,37 +1,67 @@
 <template>
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-      <!-- <el-form-item>
+      <el-form-item>
         <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
-      </el-form-item>-->
-      <div class="btns">
-        <!-- <el-button @click="getDataList()">查询</el-button> -->
-        <div class="btns-right">
-          <el-button v-if="isAuth('sys:syspaymode:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-          <el-button v-if="isAuth('sys:syspaymode:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
-        </div>
-      </div>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="getDataList()">查询</el-button>
+        <el-button v-if="isAuth('appoint:appointment:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('appoint:appointment:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+      </el-form-item>
     </el-form>
     <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;">
       <el-table-column type="selection" header-align="center" align="center" width="50">
       </el-table-column>
       <el-table-column prop="id" header-align="center" align="center" label="ID" width="50">
       </el-table-column>
-      <el-table-column prop="name" header-align="center" align="center" label="名称">
+      <!-- <el-table-column prop="appointNo" header-align="center" align="center" label="预约单号">
+      </el-table-column> -->
+      <!-- <el-table-column prop="officeId" header-align="center" align="center" label="所属机构">
+      </el-table-column> -->
+      <el-table-column prop="name" header-align="center" align="center" label="预约人姓名">
       </el-table-column>
-      <!-- 状态：0、禁用 1、启用 -->
-      <el-table-column header-align="center" align="center" label="状态">
+      <el-table-column prop="mobile" header-align="center" align="center" label="预约人电话">
+      </el-table-column>
+      <el-table-column prop="nums" header-align="center" align="center" label="预约人数">
+      </el-table-column>
+      <el-table-column prop="appointDate" header-align="center" align="center" label="预约日期">
+      </el-table-column>
+      <!-- <el-table-column prop="reachTime" header-align="center" align="center" label="到店时间">
+      </el-table-column>
+      <el-table-column prop="endTime" header-align="center" align="center" label="预约结束时间">
+      </el-table-column> -->
+      <el-table-column prop="technician" header-align="center" align="center" label="技师">
+      </el-table-column>
+      <el-table-column header-align="center" align="center" label="是否指定">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.status == 0" size="small" type="danger">禁用</el-tag>
-          <el-tag v-else size="small">启用</el-tag>
+          <el-tag v-if="scope.row.isSpecify == 0" size="small" type="danger">否</el-tag>
+          <el-tag v-else size="small">是</el-tag>
         </template>
       </el-table-column>
-      <!-- <el-table-column prop="sort" header-align="center" align="center" label="排序">
+      <el-table-column prop="roomId" header-align="center" align="center" label="选择房间">
+      </el-table-column>
+      <!-- <el-table-column prop="serialno" header-align="center" align="center" label="流水单号">
+      </el-table-column> -->
+      <!-- <el-table-column prop="createBy" header-align="center" align="center" label="创建者">
+      </el-table-column> -->
+      <!-- <el-table-column prop="createDate" header-align="center" align="center" label="创建时间">
+      </el-table-column> -->
+      <!-- <el-table-column prop="updateBy" header-align="center" align="center" label="更新者">
+      </el-table-column>
+      <el-table-column prop="updateDate" header-align="center" align="center" label="更新时间">
+      </el-table-column> -->
+      <el-table-column prop="remarks" header-align="center" align="center" label="备注信息">
+      </el-table-column>
+      <!-- <el-table-column
+        prop="delFlag"
+        header-align="center"
+        align="center"
+        label="删除标记">
       </el-table-column> -->
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="changeState(scope.row.id, 1)" v-if="scope.row.status==0">设为启用</el-button>
-          <el-button type="text" size="small" @click="changeState(scope.row.id, 0)" v-if="scope.row.status==1">设为禁用</el-button>
+          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
           <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
@@ -44,7 +74,6 @@
 </template>
 
 <script>
-import "@/assets/scss/btns-right.scss";
 import API from "@/api";
 import AddOrUpdate from "./add-or-update";
 export default {
@@ -65,7 +94,7 @@ export default {
   components: {
     AddOrUpdate
   },
-  mounted() {
+  activated() {
     this.getDataList();
   },
   methods: {
@@ -77,7 +106,7 @@ export default {
         limit: this.pageSize,
         key: this.dataForm.key
       };
-      API.syspaymode.list(params).then(({ data }) => {
+      API.appointment.list(params).then(({ data }) => {
         if (data && data.code === 0) {
           this.dataList = data.page.list;
           this.totalPage = data.page.totalCount;
@@ -110,20 +139,6 @@ export default {
         this.$refs.addOrUpdate.init(id);
       });
     },
-    changeState(id, state) {
-      const params = {
-        id: id,
-        status: state
-      };
-      const tick = API.syspaymode.update(params);
-      tick.then(({ data }) => {
-        if (data && data.code === 0) {
-          this.getDataList();
-        } else {
-          this.$message.error(data.msg);
-        }
-      });
-    },
     // 删除
     deleteHandle(id) {
       var ids = id
@@ -136,7 +151,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
-        API.syspaymode.del(ids).then(({ data }) => {
+        API.appointment.del(ids).then(({ data }) => {
           if (data && data.code === 0) {
             this.$message({
               message: "操作成功",

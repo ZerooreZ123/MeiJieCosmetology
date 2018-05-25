@@ -35,7 +35,7 @@
         <el-input v-model="dataForm.workNumber" placeholder="员工工号"></el-input>
       </el-form-item>
       <el-form-item label="入职时间" prop="entryTime">
-        <el-date-picker v-model="dataForm.entryTime" type="datetime" placeholder="选择入职时间">
+        <el-date-picker value-format="yyyy-MM-dd HH:mm:ss" v-model="dataForm.entryTime" type="datetime" placeholder="选择入职时间">
         </el-date-picker>
         <!-- <el-input v-model="dataForm.entryTime" placeholder="入职时间"></el-input> -->
       </el-form-item>

@@ -126,6 +126,7 @@ export default {
         this.packageList2 = item.categoryList;
         this.filter_package = item.id;
       } else {
+        this.packageList2 = [];
         this.filter_package = undefined;
       }
       this.filter_package2 = undefined;

@@ -12,6 +12,14 @@ export function list(params) {
   });
 }
 
+export function queryRoomList() {
+  return request({
+    url: requestUrl("/room/room/queryRoomList"),
+    method: "get",
+    params: requestParam({}, "get")
+  });
+}
+
 // 获取信息
 export function info(id) {
   return request({

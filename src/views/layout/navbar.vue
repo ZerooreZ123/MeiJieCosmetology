@@ -115,12 +115,11 @@ export default {
 }
 .site-navbar__body {
   margin-left: 190px;
+  background-color: #c99f63;
+  padding-left: 20px;
 }
 .site-content__wrapper {
   margin-left: 200px;
-}
-.site-navbar__body {
-  background-color: #c99f63;
 }
 .el-menu-item,
 .site-navbar__switch {

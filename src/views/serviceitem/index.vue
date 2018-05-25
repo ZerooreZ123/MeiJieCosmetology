@@ -156,6 +156,7 @@ export default {
         this.items2 = item.categoryList;
         this.filter_project = item.id;
       } else {
+        this.items2 = [];
         this.filter_project = undefined;
       }
       this.filter_project2 = undefined;

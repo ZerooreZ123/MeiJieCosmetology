@@ -1,5 +1,13 @@
 <template>
   <div class="mod-config">
+
+    <div class="list-nav">
+      <category listname="产品大类" :list="productList" @onItemClick="onProductClick"></category>
+      <category v-if="productList2.length > 0" listname="产品小类" :list="productList2" @onItemClick="onProduct2Click"></category>
+      <category listname="所属门店" :list="shopList" @onItemClick="onShopClick"></category>
+      <category listname="状&emsp;&emsp;态" :list="state" @onItemClick="onStateClick"></category>
+    </div>
+
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <!-- <el-form-item>
         <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
@@ -92,6 +100,7 @@
 <script>
 import API from "@/api";
 import AddOrUpdate from "./add-or-update";
+import category from "@/components/category";
 export default {
   data() {
     return {
@@ -99,29 +108,103 @@ export default {
         key: ""
       },
       dataList: [],
+      shopList: [],
+      productList: [],
+      productList2: [],
       pageIndex: 1,
       pageSize: 10,
       totalPage: 0,
       dataListLoading: false,
       dataListSelections: [],
-      addOrUpdateVisible: false
+      addOrUpdateVisible: false,
+      state: [{ name: "在售" }, { name: "停业" }]
     };
   },
   components: {
-    AddOrUpdate
+    AddOrUpdate,
+    category
   },
   mounted() {
     this.getDataList();
+    this.getCategory();
+  },
+  filters: {
+    shopName(officeId, shopList) {
+      for (let i = 0; i < shopList.length; i++) {
+        if (shopList[i].id === +officeId) {
+          return shopList[i].name;
+        }
+      }
+    }
   },
   methods: {
+    getCategory() {
+      API.common.getCategoryList().then(({ data }) => {
+        this.productList = data.list["products"];
+        console.log(data.list["products"]);
+      });
+      API.common.getOfficeList().then(({ data }) => {
+        this.shopList = data.list;
+      });
+    },
+    onProductClick(item) {
+      if (item) {
+        this.productList2 = item.categoryList;
+        this.filter_product = item.id;
+      } else {
+        this.productList2 = [];
+        this.filter_product = undefined;
+      }
+      this.filter_product2 = undefined;
+      this.getDataList();
+    },
+    onProduct2Click(item) {
+      if (item) {
+        this.filter_product2 = item.id;
+      } else {
+        this.filter_product2 = undefined;
+      }
+      this.getDataList();
+    },
+    onShopClick(item) {
+      if (item) {
+        this.filter_shop = item.id;
+      } else {
+        this.filter_shop = undefined;
+      }
+      this.getDataList();
+    },
+    onStateClick(item) {
+      if (item) {
+        if (item.name === "在售") {
+          this.filter_state = 1;
+        } else {
+          this.filter_state = 0;
+        }
+      } else {
+        this.filter_state = undefined;
+      }
+      this.getDataList();
+    },
     // 获取数据列表
     getDataList() {
       this.dataListLoading = true;
       var params = {
         page: this.pageIndex,
-        limit: this.pageSize,
-        key: this.dataForm.key
+        limit: this.pageSize
       };
+      if (this.filter_product !== undefined) {
+        params.catFirst = this.filter_product;
+      }
+      if (this.filter_product2 !== undefined) {
+        params.catSecond = this.filter_product2;
+      }
+      if (this.filter_shop !== undefined) {
+        params.officeId = this.filter_shop;
+      }
+      if (this.filter_state !== undefined) {
+        params.status = this.filter_state;
+      }
       API.serviceproduct.list(params).then(({ data }) => {
         if (data && data.code === 0) {
           this.dataList = data.page.list;

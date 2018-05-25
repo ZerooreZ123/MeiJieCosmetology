@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('member:member:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('member:member:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button v-if="isAuth('order:miorderdetail:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('order:miorderdetail:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -29,172 +29,64 @@
         label="">
       </el-table-column>
       <el-table-column
-        prop="memberno"
+        prop="orderId"
         header-align="center"
         align="center"
-        label="会员编号">
+        label="订单ID">
       </el-table-column>
       <el-table-column
-        prop="name"
+        prop="serviceType"
         header-align="center"
         align="center"
-        label="姓名">
+        label="服务类型：1、项目 2、产品 3、套餐 4、附加费 5、开卡购卡 6、充值">
       </el-table-column>
       <el-table-column
-        prop="sex"
+        prop="serviceId"
         header-align="center"
         align="center"
-        label="性别">
+        label="服务ID：当为附加费赋值0">
       </el-table-column>
       <el-table-column
-        prop="mobile"
+        prop="serviceName"
         header-align="center"
         align="center"
-        label="手机号">
+        label="服务名称">
       </el-table-column>
       <el-table-column
-        prop="umtSource"
+        prop="servicePrice"
         header-align="center"
         align="center"
-        label="渠道来源">
+        label="单价">
       </el-table-column>
       <el-table-column
-        prop="officeId"
+        prop="nums"
         header-align="center"
         align="center"
-        label="所属门店">
+        label="数量">
       </el-table-column>
       <el-table-column
-        prop="birthday"
+        prop="serviceNeedPay"
         header-align="center"
         align="center"
-        label="生日">
+        label="剩余需支付费用">
       </el-table-column>
       <el-table-column
-        prop="ageRange"
+        prop="subtotal"
         header-align="center"
         align="center"
-        label="年龄段">
+        label="小计">
       </el-table-column>
       <el-table-column
-        prop="joinTime"
+        prop="discount"
         header-align="center"
         align="center"
-        label="入会时间">
+        label="折扣点数：7、7折 8、8折">
       </el-table-column>
       <el-table-column
-        prop="headimage"
+        prop="serviceTechnician"
         header-align="center"
         align="center"
-        label="头像">
-      </el-table-column>
-      <el-table-column
-        prop="recommendPeople"
-        header-align="center"
-        align="center"
-        label="推荐人">
-      </el-table-column>
-      <el-table-column
-        prop="identityno"
-        header-align="center"
-        align="center"
-        label="身份证号">
-      </el-table-column>
-      <el-table-column
-        prop="email"
-        header-align="center"
-        align="center"
-        label="">
-      </el-table-column>
-      <el-table-column
-        prop="qq"
-        header-align="center"
-        align="center"
-        label="">
-      </el-table-column>
-      <el-table-column
-        prop="wechatno"
-        header-align="center"
-        align="center"
-        label="微信号">
-      </el-table-column>
-      <el-table-column
-        prop="profession"
-        header-align="center"
-        align="center"
-        label="客户职业">
-      </el-table-column>
-      <el-table-column
-        prop="address"
-        header-align="center"
-        align="center"
-        label="客户地址">
-      </el-table-column>
-      <el-table-column
-        prop="height"
-        header-align="center"
-        align="center"
-        label="身高（cm）">
-      </el-table-column>
-      <el-table-column
-        prop="weight"
-        header-align="center"
-        align="center"
-        label="体重（kg）">
-      </el-table-column>
-      <el-table-column
-        prop="bloodType"
-        header-align="center"
-        align="center"
-        label="血型">
-      </el-table-column>
-      <el-table-column
-        prop="totalConsume"
-        header-align="center"
-        align="center"
-        label="累计消费">
-      </el-table-column>
-      <el-table-column
-        prop="openId"
-        header-align="center"
-        align="center"
-        label="微信授权openId">
-      </el-table-column>
-      <el-table-column
-        prop="createBy"
-        header-align="center"
-        align="center"
-        label="创建者">
-      </el-table-column>
-      <el-table-column
-        prop="createDate"
-        header-align="center"
-        align="center"
-        label="创建时间">
-      </el-table-column>
-      <el-table-column
-        prop="updateBy"
-        header-align="center"
-        align="center"
-        label="更新者">
-      </el-table-column>
-      <el-table-column
-        prop="updateDate"
-        header-align="center"
-        align="center"
-        label="更新时间">
-      </el-table-column>
-      <el-table-column
-        prop="remarks"
-        header-align="center"
-        align="center"
-        label="备注信息">
-      </el-table-column>
-      <el-table-column
-        prop="delFlag"
-        header-align="center"
-        align="center"
-        label="删除标记">
+        label="服务技师">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -255,7 +147,7 @@
           limit: this.pageSize,
           key: this.dataForm.key
         }
-        API.member.list(params).then(({data}) => {
+        API.miorderdetail.list(params).then(({data}) => {
           if (data && data.code === 0) {
             this.dataList = data.page.list
             this.totalPage = data.page.totalCount
@@ -298,7 +190,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          API.member.del(ids).then(({data}) => {
+          API.miorderdetail.del(ids).then(({data}) => {
             if (data && data.code === 0) {
               this.$message({
                 message: '操作成功',
