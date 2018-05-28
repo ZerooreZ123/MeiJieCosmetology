@@ -26,6 +26,8 @@ export default {
     path() {
       if (this.path) {
         this.absPath = window.SITE_CONFIG["resourceServer"] + this.path;
+      } else {
+        this.absPath = "";
       }
     }
   },

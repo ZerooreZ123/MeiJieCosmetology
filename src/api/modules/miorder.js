@@ -12,6 +12,14 @@ export function list(params) {
   });
 }
 
+export function save(params) {
+  return request({
+    url: requestUrl("/order/miorder/save"),
+    method: "post",
+    data: requestParam(params)
+  });
+}
+
 // 获取信息
 export function info(id) {
   return request({

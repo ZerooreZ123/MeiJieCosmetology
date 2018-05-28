@@ -12,6 +12,14 @@ export function list (params) {
   })
 }
 
+export function treeEx () {
+  return request({
+    url: requestUrl('/serviceCategory/servicecategory/selectTree'),
+    method: 'get',
+    params: requestParam({}, 'get')
+  })
+}
+
 // 获取信息
 export function info (id) {
   return request({

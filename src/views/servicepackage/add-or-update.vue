@@ -13,6 +13,12 @@
           </el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="套餐内容" prop="packDetailList">
+        <span v-for="(obj, index) in dataForm.paDetailList" :key="obj.id" style="margin-right: 10px;">
+          <el-tag @close="handleRemove(index)" closable>{{obj.name}}x{{obj.nums}}</el-tag>
+        </span>
+        <el-button @click="showPackSelector = true">增加</el-button>
+      </el-form-item>
       <el-form-item label="套餐价格" prop="packPrice">
         <el-input v-model="dataForm.packPrice" placeholder="套餐价格"></el-input>
       </el-form-item>
@@ -67,17 +73,21 @@
       <el-button @click="visible = false">取消</el-button>
       <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
     </span>
+    <pack-selector v-if="showPackSelector" @cancel="showPackSelector = false" @selected="handlePackSelect"></pack-selector>
   </el-dialog>
 </template>
 
 <script>
 import API from "@/api";
 import imgUpload from "@/components/imgUpload";
+import packSelector from "@/components/packSelector";
+
 export default {
-  components: { imgUpload },
+  components: { imgUpload, packSelector },
   data() {
     return {
       visible: false,
+      showPackSelector: false,
       packageList: [],
       packageList2: [],
       shopList: [],
@@ -98,7 +108,8 @@ export default {
         updateBy: "",
         updateDate: "",
         remarks: "",
-        delFlag: ""
+        delFlag: "",
+        paDetailList: []
       },
       dataRule: {
         name: [{ required: true, message: "套餐名称不能为空", trigger: "blur" }],
@@ -121,6 +132,14 @@ export default {
     };
   },
   methods: {
+    handlePackSelect(packList) {
+      // console.log(packList);
+      this.dataForm.paDetailList = this.dataForm.paDetailList.concat(packList);
+      this.showPackSelector = false;
+    },
+    handleRemove(index) {
+      this.dataForm.paDetailList.splice(index, 1);
+    },
     getCategory() {
       API.common.getCategoryList().then(({ data }) => {
         this.packageList = data.list["packages"];
@@ -146,6 +165,7 @@ export default {
       this.visible = true;
       this.$nextTick(() => {
         this.$refs["dataForm"].resetFields();
+        this.dataForm.paDetailList = [];
         if (this.dataForm.id) {
           API.servicepackage.info(this.dataForm.id).then(({ data }) => {
             if (data && data.code === 0) {
@@ -165,6 +185,7 @@ export default {
               this.dataForm.updateDate = data.servicePackage.updateDate;
               this.dataForm.remarks = data.servicePackage.remarks;
               this.dataForm.delFlag = data.servicePackage.delFlag;
+              this.dataForm.paDetailList = data.servicePackage.paDetailList || [];
               this.onCatFirstChange(this.dataForm.catFirst);
             }
           });
@@ -192,7 +213,8 @@ export default {
             updateBy: this.dataForm.updateBy,
             updateDate: this.dataForm.updateDate,
             remarks: this.dataForm.remarks,
-            delFlag: this.dataForm.delFlag
+            delFlag: this.dataForm.delFlag,
+            paDetailList: this.dataForm.paDetailList
           };
           var tick = !this.dataForm.id ? API.servicepackage.add(params) : API.servicepackage.update(params);
           tick.then(({ data }) => {

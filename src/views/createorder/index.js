@@ -170,6 +170,18 @@ export default {
       data.detailList = this.dataList;
       data.roomName = this.getRoomNameById(data.roomId);
       console.log(JSON.stringify(data));
+      API.miorder.save(data).then(({ data }) => {
+        if (data && data.code === 0) {
+          this.$message({
+            message: "操作成功",
+            type: "success",
+            duration: 1500,
+            onClose: () => {
+              this.dataList = [];
+            }
+          });
+        }
+      });
     }
   }
 };
