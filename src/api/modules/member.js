@@ -12,11 +12,11 @@ export function list(params) {
   });
 }
 
-export function queryMemberList() {
+export function queryMemberList(params) {
   return request({
-    url: requestUrl("/member/member/queryMemberList"),
+    url: requestUrl("/member/member/queryCustomerlist"),
     method: "get",
-    params: requestParam({}, "get")
+    params: requestParam(params, "get")
   });
 }
 

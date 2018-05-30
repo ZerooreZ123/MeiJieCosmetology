@@ -6,11 +6,60 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('order:miorder:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('order:miorder:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <!-- <el-button v-if="isAuth('order:miorder:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('order:miorder:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button> -->
       </el-form-item>
     </el-form>
-    <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;">
+    <el-card class="box-card" v-for="item in dataList" :key="item.id">
+      <div class="title-bar">
+        <span>所述门店：{{item.officeName || "无"}}</span>
+        <!-- 1、待付款 2、已付款 3、尾款单 4、已取消 5、已退单 -->
+        <span class="status" v-if="item.status==1">待付款</span>
+        <span class="status" v-else-if="item.status==2">已付款</span>
+        <span class="status" v-else-if="item.status==3">尾款单</span>
+        <span class="status" v-else-if="item.status==4">已取消</span>
+        <span class="status" v-else-if="item.status==5">已退单</span>
+        <span class="status" v-else>未知</span>
+      </div>
+      <el-row>
+        <el-col :span="6">
+          <div>会员信息：</div>
+          <div class="user-info">
+            <div class="user-info-ctn">
+              <div class="username">{{item.member.name}}</div>
+              <div class="userphone">{{item.member.mobile}}</div>
+              <div class="userno">会员号：{{item.member.memberno}}</div>
+            </div>
+            <img class="user-img" :src="item.member.headimage" alt="">
+          </div>
+        </el-col>
+        <el-col :span="6">
+          <div class="info-title">订单号/下单时间</div>
+          <div>{{item.orderNo}}</div>
+          <div>{{item.createDate}}</div>
+        </el-col>
+        <el-col :span="6">
+          <div class="info-title">订单内容</div>
+          <div v-for="detail in item.detailList" :key="detail.id">{{detail.serviceName}}x{{detail.nums}}</div>
+        </el-col>
+        <el-col :span="6">
+          <div class="info-title">服务人员</div>
+          <div v-for="detail in item.detailList" :key="detail.id">{{detail.serviceTechnician}}</div>
+        </el-col>
+      </el-row>
+      <div class="bot-bar">
+        &nbsp;
+        <span class="right-btns">
+          <el-button type="info">收银</el-button>
+          <el-button type="primary">打印小票</el-button>
+          <el-button type="success" @click="showDetail(item.id)">详情</el-button>
+          <!-- <el-button type="warning">修改</el-button> -->
+          <el-button type="danger" @click="changeOrderStatus(item.id, 4)">取消订单</el-button>
+        </span>
+      </div>
+    </el-card>
+
+    <!-- <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;">
       <el-table-column type="selection" header-align="center" align="center" width="50">
       </el-table-column>
       <el-table-column prop="id" header-align="center" align="center" label="">
@@ -57,17 +106,17 @@
           <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
-    </el-table>
+    </el-table> -->
     <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <detail v-if="detailVisible" ref="detail" @refreshDataList="getDataList"></detail>
   </div>
 </template>
 
 <script>
 import API from "@/api";
-import AddOrUpdate from "./add-or-update";
+import detail from "./detail";
 export default {
   data() {
     return {
@@ -80,13 +129,14 @@ export default {
       totalPage: 0,
       dataListLoading: false,
       dataListSelections: [],
-      addOrUpdateVisible: false
+      detailVisible: false
     };
   },
+  props: ["status", "history"],
   components: {
-    AddOrUpdate
+    detail
   },
-  activated() {
+  mounted() {
     this.getDataList();
   },
   methods: {
@@ -98,6 +148,12 @@ export default {
         limit: this.pageSize,
         key: this.dataForm.key
       };
+      if (this.status) {
+        params.status = this.status;
+      }
+      if (this.history) {
+        params.history = true;
+      }
       API.miorder.list(params).then(({ data }) => {
         if (data && data.code === 0) {
           this.dataList = data.page.list;
@@ -125,25 +181,23 @@ export default {
       this.dataListSelections = val;
     },
     // 新增 / 修改
-    addOrUpdateHandle(id) {
-      this.addOrUpdateVisible = true;
+    showDetail(id) {
+      this.detailVisible = true;
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id);
+        this.$refs.detail.init(id);
       });
     },
-    // 删除
-    deleteHandle(id) {
-      var ids = id
-        ? [id]
-        : this.dataListSelections.map(item => {
-            return item.id;
-          });
-      this.$confirm(`确定对[id=${ids.join(",")}]进行[${id ? "删除" : "批量删除"}]操作?`, "提示", {
+    changeOrderStatus(id, status) {
+      this.$confirm(`确定取消订单?`, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
-        API.miorder.del(ids).then(({ data }) => {
+        var params = {
+          id: id,
+          status: status
+        };
+        API.miorder.update(params).then(({ data }) => {
           if (data && data.code === 0) {
             this.$message({
               message: "操作成功",
@@ -162,3 +216,42 @@ export default {
   }
 };
 </script>
+
+<style scoped lang="scss">
+.title-bar {
+  margin-bottom: 10px;
+}
+.status {
+  float: right;
+  color: red;
+}
+.info-title {
+  margin-bottom: 10px;
+}
+.user-info {
+  position: relative;
+  &-ctn {
+    margin-left: 60px;
+    margin-top: 10px;
+  }
+  .user-img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: #eee;
+    display: inline-block;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+  }
+}
+.bot-bar {
+  line-height: 40px;
+  .right-btns {
+    float: right;
+  }
+}
+.box-card {
+  margin-bottom: 10px;
+}
+</style>

@@ -1,322 +1,261 @@
 <template>
-  <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
-    :close-on-click-modal="false"
-    :visible.sync="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-      <el-form-item label="会员编号" prop="memberno">
-        <el-input v-model="dataForm.memberno" placeholder="会员编号"></el-input>
-      </el-form-item>
+  <el-dialog :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" :visible.sync="visible">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="120px">
+      <div class="necessaryWrite">必填信息</div>
       <el-form-item label="姓名" prop="name">
-        <el-input v-model="dataForm.name" placeholder="姓名"></el-input>
+        <el-input v-model="dataForm.name" placeholder="请填写客户姓名"></el-input>
       </el-form-item>
       <el-form-item label="性别" prop="sex">
-        <el-input v-model="dataForm.sex" placeholder="性别"></el-input>
+        <el-radio-group v-model="dataForm.sex">
+          <el-radio label="0">男</el-radio>
+          <el-radio label="1">女</el-radio>
+        </el-radio-group>
       </el-form-item>
       <el-form-item label="手机号" prop="mobile">
-        <el-input v-model="dataForm.mobile" placeholder="手机号"></el-input>
+        <el-input v-model="dataForm.mobile" placeholder="请输入手机号"></el-input>
       </el-form-item>
       <el-form-item label="渠道来源" prop="umtSource">
-        <el-input v-model="dataForm.umtSource" placeholder="渠道来源"></el-input>
+        <el-select v-model="dataForm.umtSource" placeholder="请选择">
+          <el-option v-for="item in sourceList" :key="item.id" :label="item.umtSource" :value="item.umtSource">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="所属门店" prop="officeId">
-        <el-input v-model="dataForm.officeId" placeholder="所属门店"></el-input>
+        <!-- <el-input v-model="dataForm.officeId" placeholder="所属门店"></el-input> -->
+        <el-select v-model="dataForm.officeId" placeholder="请选择">
+          <el-option v-for="item in shopList" :key="item.id" :label="item.name" :value="item.id">
+          </el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="生日" prop="birthday">
-        <el-input v-model="dataForm.birthday" placeholder="生日"></el-input>
+      <div class="selectWrite">选填信息</div>
+      <el-form-item label="客户生日" prop="birthday">
+        <!-- <el-input v-model="dataForm.appointDate" placeholder="预约日期"></el-input> -->
+        <el-date-picker value-format="yyyy-MM-dd" v-model="dataForm.birthday" type="date" placeholder="客户生日">
+        </el-date-picker>
       </el-form-item>
-      <el-form-item label="年龄段" prop="ageRange">
-        <el-input v-model="dataForm.ageRange" placeholder="年龄段"></el-input>
+      <el-form-item label="会员号" prop="memberno">
+        <el-input v-model="dataForm.memberno" placeholder="请输入会员号"></el-input>
+      </el-form-item>
+      <el-form-item label="跟踪员工" prop="recommendPeople">
+        <!-- <el-input v-model="dataForm.technician" placeholder="技师"></el-input> -->
+        <el-select v-model="dataForm.recommendPeople" placeholder="请选择跟踪员工">
+          <el-option v-for="item in userList" :key="item.userId" :label="item.name" :value="item.name">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="入会时间" prop="joinTime">
-        <el-input v-model="dataForm.joinTime" placeholder="入会时间"></el-input>
+        <!-- <el-input v-model="dataForm.appointDate" placeholder="预约日期"></el-input> -->
+        <el-date-picker value-format="yyyy-MM-dd" v-model="dataForm.joinTime" type="date" placeholder="请选择入会时间">
+        </el-date-picker>
       </el-form-item>
-      <el-form-item label="头像" prop="headimage">
-        <el-input v-model="dataForm.headimage" placeholder="头像"></el-input>
-      </el-form-item>
-      <el-form-item label="推荐人" prop="recommendPeople">
-        <el-input v-model="dataForm.recommendPeople" placeholder="推荐人"></el-input>
-      </el-form-item>
-      <el-form-item label="身份证号" prop="identityno">
-        <el-input v-model="dataForm.identityno" placeholder="身份证号"></el-input>
-      </el-form-item>
-      <el-form-item label="" prop="email">
-        <el-input v-model="dataForm.email" placeholder=""></el-input>
-      </el-form-item>
-      <el-form-item label="" prop="qq">
-        <el-input v-model="dataForm.qq" placeholder=""></el-input>
-      </el-form-item>
-      <el-form-item label="微信号" prop="wechatno">
-        <el-input v-model="dataForm.wechatno" placeholder="微信号"></el-input>
-      </el-form-item>
-      <el-form-item label="客户职业" prop="profession">
-        <el-input v-model="dataForm.profession" placeholder="客户职业"></el-input>
-      </el-form-item>
-      <el-form-item label="客户地址" prop="address">
-        <el-input v-model="dataForm.address" placeholder="客户地址"></el-input>
-      </el-form-item>
-      <el-form-item label="身高（cm）" prop="height">
-        <el-input v-model="dataForm.height" placeholder="身高（cm）"></el-input>
-      </el-form-item>
-      <el-form-item label="体重（kg）" prop="weight">
-        <el-input v-model="dataForm.weight" placeholder="体重（kg）"></el-input>
-      </el-form-item>
-      <el-form-item label="血型" prop="bloodType">
-        <el-input v-model="dataForm.bloodType" placeholder="血型"></el-input>
-      </el-form-item>
-      <el-form-item label="累计消费" prop="totalConsume">
-        <el-input v-model="dataForm.totalConsume" placeholder="累计消费"></el-input>
-      </el-form-item>
-      <el-form-item label="微信授权openId" prop="openId">
-        <el-input v-model="dataForm.openId" placeholder="微信授权openId"></el-input>
-      </el-form-item>
-      <el-form-item label="创建者" prop="createBy">
-        <el-input v-model="dataForm.createBy" placeholder="创建者"></el-input>
-      </el-form-item>
-      <el-form-item label="创建时间" prop="createDate">
-        <el-input v-model="dataForm.createDate" placeholder="创建时间"></el-input>
-      </el-form-item>
-      <el-form-item label="更新者" prop="updateBy">
-        <el-input v-model="dataForm.updateBy" placeholder="更新者"></el-input>
-      </el-form-item>
-      <el-form-item label="更新时间" prop="updateDate">
-        <el-input v-model="dataForm.updateDate" placeholder="更新时间"></el-input>
-      </el-form-item>
-      <el-form-item label="备注信息" prop="remarks">
-        <el-input v-model="dataForm.remarks" placeholder="备注信息"></el-input>
-      </el-form-item>
-      <el-form-item label="删除标记" prop="delFlag">
-        <el-input v-model="dataForm.delFlag" placeholder="删除标记"></el-input>
+      <el-form-item label="上传头像" prop="signPhoto">
+        <img-upload :path="dataForm.signPhoto" @success="onSignPhotoUploadSuccess"></img-upload>
       </el-form-item>
     </el-form>
+
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
       <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
     </span>
+    <product-selector :member-id="dataForm.memberId" v-if="showPanel" @selected="list => handleProductSelected(list)"></product-selector>
   </el-dialog>
 </template>
 
 <script>
-  import API from '@/api'
-  export default {
-    data () {
-      return {
-        visible: false,
-        dataForm: {
-          id: 0,
-          memberno: '',
-          name: '',
-          sex: '',
-          mobile: '',
-          umtSource: '',
-          officeId: '',
-          birthday: '',
-          ageRange: '',
-          joinTime: '',
-          headimage: '',
-          recommendPeople: '',
-          identityno: '',
-          email: '',
-          qq: '',
-          wechatno: '',
-          profession: '',
-          address: '',
-          height: '',
-          weight: '',
-          bloodType: '',
-          totalConsume: '',
-          openId: '',
-          createBy: '',
-          createDate: '',
-          updateBy: '',
-          updateDate: '',
-          remarks: '',
-          delFlag: ''
-        },
-        dataRule: {
-          memberno: [
-            { required: true, message: '会员编号不能为空', trigger: 'blur' }
-          ],
-          name: [
-            { required: true, message: '姓名不能为空', trigger: 'blur' }
-          ],
-          sex: [
-            { required: true, message: '性别不能为空', trigger: 'blur' }
-          ],
-          mobile: [
-            { required: true, message: '手机号不能为空', trigger: 'blur' }
-          ],
-          umtSource: [
-            { required: true, message: '渠道来源不能为空', trigger: 'blur' }
-          ],
-          officeId: [
-            { required: true, message: '所属门店不能为空', trigger: 'blur' }
-          ],
-          birthday: [
-            { required: true, message: '生日不能为空', trigger: 'blur' }
-          ],
-          ageRange: [
-            { required: true, message: '年龄段不能为空', trigger: 'blur' }
-          ],
-          joinTime: [
-            { required: true, message: '入会时间不能为空', trigger: 'blur' }
-          ],
-          headimage: [
-            { required: true, message: '头像不能为空', trigger: 'blur' }
-          ],
-          recommendPeople: [
-            { required: true, message: '推荐人不能为空', trigger: 'blur' }
-          ],
-          identityno: [
-            { required: true, message: '身份证号不能为空', trigger: 'blur' }
-          ],
-          email: [
-            { required: true, message: '不能为空', trigger: 'blur' }
-          ],
-          qq: [
-            { required: true, message: '不能为空', trigger: 'blur' }
-          ],
-          wechatno: [
-            { required: true, message: '微信号不能为空', trigger: 'blur' }
-          ],
-          profession: [
-            { required: true, message: '客户职业不能为空', trigger: 'blur' }
-          ],
-          address: [
-            { required: true, message: '客户地址不能为空', trigger: 'blur' }
-          ],
-          height: [
-            { required: true, message: '身高（cm）不能为空', trigger: 'blur' }
-          ],
-          weight: [
-            { required: true, message: '体重（kg）不能为空', trigger: 'blur' }
-          ],
-          bloodType: [
-            { required: true, message: '血型不能为空', trigger: 'blur' }
-          ],
-          totalConsume: [
-            { required: true, message: '累计消费不能为空', trigger: 'blur' }
-          ],
-          openId: [
-            { required: true, message: '微信授权openId不能为空', trigger: 'blur' }
-          ],
-          createBy: [
-            { required: true, message: '创建者不能为空', trigger: 'blur' }
-          ],
-          createDate: [
-            { required: true, message: '创建时间不能为空', trigger: 'blur' }
-          ],
-          updateBy: [
-            { required: true, message: '更新者不能为空', trigger: 'blur' }
-          ],
-          updateDate: [
-            { required: true, message: '更新时间不能为空', trigger: 'blur' }
-          ],
-          remarks: [
-            { required: true, message: '备注信息不能为空', trigger: 'blur' }
-          ],
-          delFlag: [
-            { required: true, message: '删除标记不能为空', trigger: 'blur' }
-          ]
-        }
+import API from "@/api";
+import { isMobile } from "@/utils/validate";
+import { getTimeList } from "@/utils/index";
+import productSelector from "@/components/productSelector";
+import imgUpload from "@/components/imgUpload";
+
+export default {
+  components: { productSelector, imgUpload },
+  data() {
+    var validateMobile = (rule, value, callback) => {
+      if (!isMobile(value)) {
+        callback(new Error("手机号格式错误"));
+      } else {
+        callback();
       }
-    },
-    methods: {
-      init (id) {
-        this.dataForm.id = id || 0
-        this.visible = true
-        this.$nextTick(() => {
-          this.$refs['dataForm'].resetFields()
-          if (this.dataForm.id) {
-            API.member.info(this.dataForm.id).then(({data}) => {
-              if (data && data.code === 0) {
-                this.dataForm.memberno = data.member.memberno
-                this.dataForm.name = data.member.name
-                this.dataForm.sex = data.member.sex
-                this.dataForm.mobile = data.member.mobile
-                this.dataForm.umtSource = data.member.umtSource
-                this.dataForm.officeId = data.member.officeId
-                this.dataForm.birthday = data.member.birthday
-                this.dataForm.ageRange = data.member.ageRange
-                this.dataForm.joinTime = data.member.joinTime
-                this.dataForm.headimage = data.member.headimage
-                this.dataForm.recommendPeople = data.member.recommendPeople
-                this.dataForm.identityno = data.member.identityno
-                this.dataForm.email = data.member.email
-                this.dataForm.qq = data.member.qq
-                this.dataForm.wechatno = data.member.wechatno
-                this.dataForm.profession = data.member.profession
-                this.dataForm.address = data.member.address
-                this.dataForm.height = data.member.height
-                this.dataForm.weight = data.member.weight
-                this.dataForm.bloodType = data.member.bloodType
-                this.dataForm.totalConsume = data.member.totalConsume
-                this.dataForm.openId = data.member.openId
-                this.dataForm.createBy = data.member.createBy
-                this.dataForm.createDate = data.member.createDate
-                this.dataForm.updateBy = data.member.updateBy
-                this.dataForm.updateDate = data.member.updateDate
-                this.dataForm.remarks = data.member.remarks
-                this.dataForm.delFlag = data.member.delFlag
-              }
-            })
-          }
-        })
+    };
+    return {
+      visible: false,
+      showPanel: false,
+      shopList: [],
+      sourceList: [],
+      userList: [],
+      memberList: [],
+      dataForm: {
+        id: 0,
+        name: "",
+        sex: "",
+        mobile: "",
+        umtSource: "",
+        officeId: "",
+        birthday: "",
+        memberno: "",
+        joinTime: "",
+        echnician: "",
+        signPhoto: ""
       },
-      // 表单提交
-      dataFormSubmit () {
-        this.$refs['dataForm'].validate((valid) => {
-          if (valid) {
-            var params = {
-              'id': this.dataForm.id || undefined,
-              'memberno': this.dataForm.memberno,
-              'name': this.dataForm.name,
-              'sex': this.dataForm.sex,
-              'mobile': this.dataForm.mobile,
-              'umtSource': this.dataForm.umtSource,
-              'officeId': this.dataForm.officeId,
-              'birthday': this.dataForm.birthday,
-              'ageRange': this.dataForm.ageRange,
-              'joinTime': this.dataForm.joinTime,
-              'headimage': this.dataForm.headimage,
-              'recommendPeople': this.dataForm.recommendPeople,
-              'identityno': this.dataForm.identityno,
-              'email': this.dataForm.email,
-              'qq': this.dataForm.qq,
-              'wechatno': this.dataForm.wechatno,
-              'profession': this.dataForm.profession,
-              'address': this.dataForm.address,
-              'height': this.dataForm.height,
-              'weight': this.dataForm.weight,
-              'bloodType': this.dataForm.bloodType,
-              'totalConsume': this.dataForm.totalConsume,
-              'openId': this.dataForm.openId,
-              'createBy': this.dataForm.createBy,
-              'createDate': this.dataForm.createDate,
-              'updateBy': this.dataForm.updateBy,
-              'updateDate': this.dataForm.updateDate,
-              'remarks': this.dataForm.remarks,
-              'delFlag': this.dataForm.delFlag
-            }
-            var tick = !this.dataForm.id ? API.member.add(params) : API.member.update(params)
-            tick.then(({data}) => {
-              if (data && data.code === 0) {
-                this.$message({
-                  message: '操作成功',
-                  type: 'success',
-                  duration: 1500,
-                  onClose: () => {
-                    this.visible = false
-                    this.$emit('refreshDataList')
-                  }
-                })
-              } else {
-                this.$message.error(data.msg)
-              }
-            })
-          }
-        })
+      dataRule: {
+        officeId: [{ required: true, message: "所属门店不能为空", trigger: "blur" }],
+        name: [{ required: true, message: "预约人姓名不能为空", trigger: "blur" }],
+        // sex: [{ required: true, message: "是否指定：0、否 1、是不能为空", trigger: "blur" }],
+        mobile: [{ required: true, message: "预约人电话不能为空", trigger: "blur" }, { validator: validateMobile, trigger: "blur" }],
+        umtSource: [{ required: true, message: "渠道来源不能为空", trigger: "blur" }]
       }
+    };
+  },
+  methods: {
+    getTimeList: getTimeList,
+    getCategory() {
+      API.common.getOfficeList().then(({ data }) => {
+        if (data && data.code === 0) {
+          this.shopList = data.list;
+        } else {
+          this.shopList = [];
+        }
+      });
+      API.member.queryMemberList().then(({ data }) => {
+        if (data && data.code === 0) {
+          this.sourceList = data.list;
+        } else {
+          this.sourceList = [];
+        }
+      });
+      API.user.getList().then(({ data }) => {
+        if (data && data.code === 0) {
+          this.userList = data.list;
+        } else {
+          this.userList = [];
+        }
+      });
+      API.member.queryMemberList().then(({ data }) => {
+        if (data && data.code === 0) {
+          this.memberList = data.list;
+        } else {
+          this.memberList = [];
+        }
+      });
+    },
+    onSignPhotoUploadSuccess(path) {
+      this.dataForm.signPhoto = path;
+    },
+    openPanel() {
+      this.showPanel = true;
+    },
+    handleProductSelected(list) {
+      this.showPanel = false;
+      const newList = list.map(obj => ({
+        serviceType: obj.serviceType,
+        serviceId: obj.id,
+        serviceName: obj.name
+      }));
+      this.dataForm.appointDeatailLsit = this.dataForm.appointDeatailLsit.concat(newList);
+    },
+    handleRemove(index) {
+      this.dataForm.appointDeatailLsit.splice(index, 1);
+    },
+    init(id) {
+      this.getCategory();
+      this.dataForm.id = id || 0;
+      this.visible = true;
+      this.$nextTick(() => {
+        this.$refs["dataForm"].resetFields();
+        if (this.dataForm.id) {
+          API.member.info(this.dataForm.id).then(({ data }) => {
+            console.log(data);
+            if (data && data.code === 0) {
+              this.dataForm.name = data.member.name;
+              this.dataForm.sex = data.member.sex;
+              this.dataForm.mobile = data.member.mobile;
+              this.dataForm.umtSource = data.member.umtSource;
+              this.dataForm.officeId = data.member.officeId;
+              this.dataForm.birthday = data.member.birthday;
+              this.dataForm.memberno = data.member.memberno;
+              this.dataForm.joinTime = data.member.joinTime;
+              this.dataForm.recommendPeople = data.member.recommendPeople;
+            }
+          });
+        }
+      });
+    },
+    // 表单提交
+    dataFormSubmit() {
+      this.$refs["dataForm"].validate(valid => {
+        if (valid) {
+          var params = {
+            id: this.dataForm.id || undefined,
+            name: this.dataForm.name,
+            sex: this.dataForm.sex,
+            mobile: this.dataForm.mobile,
+            umtSource: this.dataForm.umtSource,
+            officeId: this.dataForm.officeId,
+            birthday: this.dataForm.birthday,
+            memberno: this.dataForm.memberno,
+            joinTime: this.dataForm.joinTime,
+            recommendPeople: this.dataForm.recommendPeople,
+            signPhoto: this.dataForm.signPhoto
+            //  memberId: this.dataForm.memberId,
+            // nums: this.dataForm.nums,
+            // appointDate: this.dataForm.appointDate,
+            // reachTime: this.dataForm.reachTime,
+            // endTime: this.dataForm.endTime,
+            // technician: this.dataForm.technician,
+            // isSpecify: this.dataForm.isSpecify,
+            // roomId: this.dataForm.roomId,
+            // serialno: this.dataForm.serialno,
+            // createBy: this.dataForm.createBy,
+            // createDate: this.dataForm.createDate,
+            // updateBy: this.dataForm.updateBy,
+            // updateDate: this.dataForm.updateDate,
+            // remarks: this.dataForm.remarks,
+            // delFlag: this.dataForm.delFlag
+          };
+
+          for (let i = 0; i < this.memberList.length; i++) {
+            if (+this.memberList[i].id === +this.dataForm.memberId) {
+              params.name = this.memberList[i].name;
+              break;
+            }
+          }
+
+          console.log(JSON.stringify(params));
+          var tick = !this.dataForm.id ? API.member.add(params) : API.member.update(params);
+          tick.then(({ data }) => {
+            if (data && data.code === 0) {
+              this.$message({
+                message: "操作成功",
+                type: "success",
+                duration: 1500,
+                onClose: () => {
+                  this.visible = false;
+                  this.$emit("refreshDataList");
+                }
+              });
+            } else {
+              this.$message.error(data.msg);
+            }
+          });
+        }
+      });
     }
   }
+};
 </script>
+
+<style scoped lang="scss">
+.necessaryWrite {
+  margin-bottom: 20px;
+  text-indent: 80px;
+  color: red;
+  font-size: 16px;
+}
+.selectWrite {
+  margin-bottom: 20px;
+  text-indent: 80px;
+  font-size: 14px;
+}
+</style>
+

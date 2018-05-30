@@ -12,6 +12,38 @@ export function list(params) {
   });
 }
 
+export function getQuantity(params) {
+  return request({
+    url: requestUrl("/order/miorder/getQuantity"),
+    method: "post",
+    data: requestParam(params, "post")
+  });
+}
+
+export function getGuest(params) {
+  return request({
+    url: requestUrl("/order/miorder/getGuest"),
+    method: "post",
+    data: requestParam(params, "post")
+  });
+}
+
+export function getSource(params) {
+  return request({
+    url: requestUrl("/order/miorder/getSource"),
+    method: "post",
+    data: requestParam(params, "post")
+  });
+}
+
+export function getAmount(params) {
+  return request({
+    url: requestUrl("/order/miorder/getAmount"),
+    method: "post",
+    data: requestParam(params, "post")
+  });
+}
+
 export function save(params) {
   return request({
     url: requestUrl("/order/miorder/save"),

@@ -17,6 +17,7 @@
     "axios": "0.17.1",
     "babel-plugin-component": "0.10.1",
     "babel-polyfill": "6.26.0",
+    "echarts": "^4.1.0",
     "element-ui": "2.3.2",
     "gulp": "3.9.1",
     "gulp-concat": "2.6.1",
@@ -93,9 +94,5 @@
     "node": ">= 4.0.0",
     "npm": ">= 3.0.0"
   },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ]
+  "browserslist": ["> 1%", "last 2 versions", "not ie <= 8"]
 }

@@ -84,8 +84,15 @@ export default new Router({
           meta: { isTab: false }
         },
         {
+          path: "/createorder/:orderId",
+          component: _import("createorder/index"),
+          name: "createorder",
+          desc: "开单",
+          meta: { isTab: false }
+        },
+        {
           path: "/miorder",
-          component: _import("miorder/index"),
+          component: _import("miorder/main"),
           name: "miorder",
           desc: "订单",
           meta: { isTab: false }

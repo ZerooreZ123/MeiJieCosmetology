@@ -34,6 +34,9 @@ export default {
     this.getUserList();
   },
   methods: {
+    getData() {
+      console.log("orderId", this.$route.params.orderId);
+    },
     getRoomNameById(id) {
       const roomList = this.filter.roomList;
       for (let i = 0; i < roomList.length; i++) {
