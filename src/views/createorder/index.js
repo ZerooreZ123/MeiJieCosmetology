@@ -33,9 +33,38 @@ export default {
     this.getMemberList();
     this.getUserList();
   },
+  activated() {
+    this.getData();
+  },
   methods: {
     getData() {
       console.log("orderId", this.$route.params.orderId);
+      if (this.$route.params.orderId) {
+        API.miorder.info(+this.$route.params.orderId).then(({ data }) => {
+          if (data && data.code === 0) {
+            console.log(data);
+            this.dataForm.serialNo = data.miOrder.serialNo;
+            this.dataForm.memberId = data.miOrder.memberId;
+            this.dataForm.officeId = data.miOrder.officeId;
+            this.dataForm.roomName = data.miOrder.roomName;
+            this.dataForm.roomId = data.miOrder.roomId.toString();
+            this.dataForm.memberNums = data.miOrder.memberNums;
+            this.dataList = data.miOrder.detailList;
+          } else {
+            this.dataList = [];
+          }
+        });
+      } else {
+        this.dataList = [];
+        this.dataForm = {
+          serialNo: "",
+          memberNums: 1,
+          officeId: "",
+          roomId: "",
+          roomName: "",
+          memberId: ""
+        };
+      }
     },
     getRoomNameById(id) {
       const roomList = this.filter.roomList;
@@ -172,19 +201,53 @@ export default {
 
       data.detailList = this.dataList;
       data.roomName = this.getRoomNameById(data.roomId);
-      console.log(JSON.stringify(data));
-      API.miorder.save(data).then(({ data }) => {
-        if (data && data.code === 0) {
-          this.$message({
-            message: "操作成功",
-            type: "success",
-            duration: 1500,
-            onClose: () => {
-              this.dataList = [];
-            }
-          });
-        }
-      });
+      if (this.$route.params.orderId) {
+        // 再次修改
+        data.id = +this.$route.params.orderId;
+        console.log(JSON.stringify(data));
+        API.miorder.receivables(data).then(({ data }) => {
+          if (data && data.code === 0) {
+            this.$message({
+              message: "操作成功",
+              type: "success",
+              duration: 1500,
+              onClose: () => {
+                this.dataList = [];
+                this.dataForm = {
+                  serialNo: "",
+                  memberNums: 1,
+                  officeId: "",
+                  roomId: "",
+                  roomName: "",
+                  memberId: ""
+                };
+              }
+            });
+          }
+        });
+      } else {
+        console.log(JSON.stringify(data));
+        API.miorder.save(data).then(({ data }) => {
+          if (data && data.code === 0) {
+            this.$message({
+              message: "操作成功",
+              type: "success",
+              duration: 1500,
+              onClose: () => {
+                this.dataList = [];
+                this.dataForm = {
+                  serialNo: "",
+                  memberNums: 1,
+                  officeId: "",
+                  roomId: "",
+                  roomName: "",
+                  memberId: ""
+                };
+              }
+            });
+          }
+        });
+      }
     }
   }
 };

@@ -12,6 +12,14 @@ export function list(params) {
   });
 }
 
+export function receivables(params) {
+  return request({
+    url: requestUrl("/order/miorder/receivables"),
+    method: "post",
+    data: requestParam(params, "post")
+  });
+}
+
 export function getQuantity(params) {
   return request({
     url: requestUrl("/order/miorder/getQuantity"),

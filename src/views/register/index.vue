@@ -7,32 +7,22 @@
           <p class="brand-info__intro"></p>
         </div>
         <div class="login-main">
-          <h3 class="login-title">管理员登录</h3>
+          <h3 class="login-title">商户入驻</h3>
           <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" status-icon>
-            <el-form-item prop="userName">
-              <el-input v-model="dataForm.userName" placeholder="帐号"></el-input>
+            <el-form-item prop="mobile">
+              <el-input v-model="dataForm.mobile" placeholder="账号（手机号）"></el-input>
             </el-form-item>
-            <el-form-item prop="password">
-              <el-input v-model="dataForm.password" type="password" placeholder="密码"></el-input>
+            <el-form-item prop="merchantFullname">
+              <el-input v-model="dataForm.merchantFullname" placeholder="商户全称"></el-input>
             </el-form-item>
-            <el-form-item prop="captcha">
-              <el-row :gutter="20">
-                <el-col :span="14">
-                  <el-input v-model="dataForm.captcha" placeholder="验证码">
-                  </el-input>
-                </el-col>
-                <el-col :span="10" class="login-captcha">
-                  <img :src="captchaPath" @click="getCaptcha()" alt="">
-                </el-col>
-              </el-row>
+            <el-form-item prop="name">
+              <el-input v-model="dataForm.name" placeholder="账户姓名"></el-input>
+            </el-form-item>
+            <el-form-item prop="address">
+              <el-input v-model="dataForm.address" placeholder="商户所在地"></el-input>
             </el-form-item>
             <el-form-item>
-              <div>
-                <el-button class="login-btn-submit" type="primary" @click="dataFormSubmit()">登录</el-button>
-              </div>
-              <div>
-                <el-button class="login-btn-submit" @click="goReg">商户入驻</el-button>
-              </div>
+              <el-button class="login-btn-submit" type="primary" @click="dataFormSubmit()">登录</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -43,79 +33,56 @@
 
 <script>
 import API from "@/api";
-import { getUUID } from "@/utils";
+import { isMobile } from "@/utils/validate";
 export default {
   data() {
+    var validateMobile = (rule, value, callback) => {
+      if (!isMobile(value)) {
+        callback(new Error("手机号格式错误"));
+      } else {
+        callback();
+      }
+    };
     return {
       dataForm: {
-        userName: "",
-        password: "",
-        uuid: "",
-        captcha: ""
+        mobile: "",
+        merchantFullname: "",
+        name: "",
+        address: ""
       },
       dataRule: {
-        userName: [
-          {
-            required: true,
-            message: "帐号不能为空",
-            trigger: "blur"
-          }
-        ],
-        password: [
-          {
-            required: true,
-            message: "密码不能为空",
-            trigger: "blur"
-          }
-        ],
-        captcha: [
-          {
-            required: true,
-            message: "验证码不能为空",
-            trigger: "blur"
-          }
-        ]
-      },
-      captchaPath: ""
+        mobile: [{ required: true, message: "账号（手机号）不能为空", trigger: "blur" }, { validator: validateMobile, trigger: "blur" }],
+        merchantFullname: [{ required: true, message: "商户全称不能为空", trigger: "blur" }],
+        name: [{ required: true, message: "账户姓名不能为空", trigger: "blur" }],
+        address: [{ required: true, message: "商户所在地不能为空", trigger: "blur" }]
+      }
     };
   },
   created() {
     this.getCaptcha();
   },
   methods: {
-    goReg() {
-      location.hash = "/register";
-    },
     // 提交表单
     dataFormSubmit() {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
-          var params = {
-            username: this.dataForm.userName,
-            password: this.dataForm.password,
-            uuid: this.dataForm.uuid,
-            captcha: this.dataForm.captcha
-          };
-          API.common.login(params).then(({ data }) => {
+          var params = this.dataForm;
+          API.sysmerchant.add(params).then(({ data }) => {
             if (data && data.code === 0) {
-              this.$cookie.set("token", data.token, {
-                expires: `${data.expire || 0}s`
-              });
-              this.$router.replace({
-                name: "home"
+              this.$message({
+                message: "操作成功",
+                type: "success",
+                duration: 1500,
+                onClose: () => {
+                  this.$refs["dataForm"].resetFields();
+                }
               });
             } else {
-              this.getCaptcha();
               this.$message.error(data.msg);
             }
           });
         }
       });
-    },
-    // 获取验证码
-    getCaptcha() {
-      this.dataForm.uuid = getUUID();
-      this.captchaPath = API.common.captcha(this.dataForm.uuid);
     }
   }
 };
@@ -178,11 +145,11 @@ body {
   }
   .login-main {
     position: absolute;
-    top: 0;
-    right: 0;
-    padding: 150px 60px 180px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 60px;
     width: 470px;
-    min-height: 100%;
     background-color: #fff;
   }
   .login-title {

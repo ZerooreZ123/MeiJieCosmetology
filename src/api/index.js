@@ -1,4 +1,5 @@
 import * as common from "./modules/common";
+import * as home from "./modules/home";
 import * as user from "./modules/user";
 import * as role from "./modules/role";
 import * as menu from "./modules/menu";
@@ -25,9 +26,13 @@ import * as miorderdetail from "./modules/miorderdetail";
 import * as miorderpay from "./modules/miorderpay";
 import * as appointdeatail from "./modules/appointdeatail";
 import * as appointment from "./modules/appointment";
+import * as sysmerchant from "./modules/sysmerchant";
+import * as ordervisit from "./modules/ordervisit";
+import * as knowledge from "./modules/knowledge";
 
 export default {
   common, // 公共
+  home,
   user, // 管理员管理
   role, // 角色管理
   menu, // 菜单管理
@@ -53,5 +58,8 @@ export default {
   miorderdetail,
   miorderpay,
   appointdeatail,
-  appointment
+  appointment,
+  sysmerchant,
+  ordervisit,
+  knowledge
 };

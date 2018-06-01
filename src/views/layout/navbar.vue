@@ -2,14 +2,14 @@
   <nav class="site-navbar" :class="navbarClasses">
     <div class="site-navbar__header">
       <h1 class="site-navbar__brand" @click="$router.push({ name: 'home' })">
-        <a class="site-navbar__brand-lg" href="javascript:;">LOGO</a>
+        <a class="site-navbar__brand-lg" href="javascript:;"><img src="~@/assets/img/logo2.png" /></a>
         <a class="site-navbar__brand-mini" href="javascript:;">logo</a>
       </h1>
     </div>
     <div class="site-navbar__body clearfix">
       <el-menu class="site-navbar__menu" mode="horizontal">
         <el-menu-item class="site-navbar__switch" index="0">
-          医疗美容后台
+          <!-- 医疗美容后台 -->
         </el-menu-item>
       </el-menu>
       <el-menu class="site-navbar__menu site-navbar__menu--right" mode="horizontal">
@@ -37,6 +37,25 @@
             <a href="//git.oschina.net/renrenio/renren-generator" target="_blank">代码生成器</a>
           </el-menu-item>
         </el-submenu> -->
+        <el-submenu index="1">
+          <template slot="title">
+            <span style="color:#fff;">信息提醒</span>
+          </template>
+          <el-menu-item index="1-1">
+            <a href="#/appointmentTip" style="color:#fff;">预约提醒</a>
+          </el-menu-item>
+          <!-- <el-menu-item index="1-2">
+            <a href="//git.oschina.net/renrenio/renren-fast" style="color:#fff;">信息提示</a>
+          </el-menu-item>
+          <el-menu-item index="1-3">
+            <a href="//git.oschina.net/renrenio/renren-generator" style="color:#fff;">信息提示</a>
+          </el-menu-item> -->
+        </el-submenu>
+        <el-menu-item index="2" style="width: 100px;">
+          <el-badge value="hot">
+            <a href="#/knowledgegrid" style="vertical-align:top;">知识库</a>
+          </el-badge>
+        </el-menu-item>
         <el-menu-item class="site-navbar__avatar" index="3">
           <el-dropdown :show-timeout="0" placement="bottom">
             <span class="el-dropdown-link">
@@ -44,6 +63,7 @@
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item @click.native="updatePasswordHandle()">修改密码</el-dropdown-item>
+              <el-dropdown-item>商户信息</el-dropdown-item>
               <el-dropdown-item @click.native="logoutHandle()">退出</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>

@@ -1,59 +1,67 @@
 <template>
   <div class="mod-config">
+    <h2>查询当天预约记录，请及时处理</h2>
+    <br/>
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
+        <el-input v-model="dataForm.mobile" placeholder="输入手机号查询" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('knowledge:knowledge:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('knowledge:knowledge:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;">
       <el-table-column type="selection" header-align="center" align="center" width="50">
       </el-table-column>
-      <el-table-column prop="id" header-align="center" align="center" label="">
+      <el-table-column prop="id" header-align="center" align="center" label="ID" width="50">
       </el-table-column>
-      <el-table-column prop="resourceType" header-align="center" align="center" label="资源类型">
-        <template slot-scope="scope">
-          <el-tag v-if="scope.row.resourceType === '1'" size="small" type="danger">文章</el-tag>
-          <el-tag v-else-if="scope.row.resourceType === '2'" size="small">图片</el-tag>
-          <el-tag v-else-if="scope.row.resourceType === '3'" size="small">视频</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column prop="name" header-align="center" align="center" label="名称">
-      </el-table-column>
-      <el-table-column prop="clickCounts" header-align="center" align="center" label="点击次数">
-      </el-table-column>
-      <el-table-column prop="imagePath" header-align="center" align="center" label="图片地址">
-        <template slot-scope="scope">
-          <img v-if="scope.row.imagePath !='' && scope.row.imagePath !=null" :src="resourceServer+scope.row.imagePath" width="100" />
-        </template>
-      </el-table-column>
-      <el-table-column prop="videoPath" header-align="center" align="center" label="视频地址">
-        <template slot-scope="scope">
-          <video v-if="scope.row.videoPath !='' && scope.row.videoPath !=null" :src="resourceServer+scope.row.videoPath" controls width="100"></video>
-        </template>
-      </el-table-column>
-      <!-- <el-table-column prop="content" header-align="center" align="center" label="内容">
-      </el-table-column>
-      <el-table-column prop="createBy" header-align="center" align="center" label="创建者">
+      <!-- <el-table-column prop="appointNo" header-align="center" align="center" label="预约单号">
       </el-table-column> -->
-      <el-table-column prop="createDate" header-align="center" align="center" label="创建时间">
+      <!-- <el-table-column prop="officeId" header-align="center" align="center" label="所属机构">
+      </el-table-column> -->
+      <el-table-column prop="name" header-align="center" align="center" label="预约人姓名">
       </el-table-column>
+      <el-table-column prop="mobile" header-align="center" align="center" label="预约人电话">
+      </el-table-column>
+      <el-table-column prop="nums" header-align="center" align="center" label="预约人数">
+      </el-table-column>
+      <el-table-column prop="appointDate" header-align="center" align="center" label="预约日期">
+      </el-table-column>
+      <!-- <el-table-column prop="reachTime" header-align="center" align="center" label="到店时间">
+      </el-table-column>
+      <el-table-column prop="endTime" header-align="center" align="center" label="预约结束时间">
+      </el-table-column> -->
+      <el-table-column prop="technician" header-align="center" align="center" label="技师">
+      </el-table-column>
+      <el-table-column header-align="center" align="center" label="是否指定">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.isSpecify == 0" size="small" type="danger">否</el-tag>
+          <el-tag v-else size="small">是</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="roomId" header-align="center" align="center" label="选择房间">
+      </el-table-column>
+      <!-- <el-table-column prop="serialno" header-align="center" align="center" label="流水单号">
+      </el-table-column> -->
+      <!-- <el-table-column prop="createBy" header-align="center" align="center" label="创建者">
+      </el-table-column> -->
+      <!-- <el-table-column prop="createDate" header-align="center" align="center" label="创建时间">
+      </el-table-column> -->
       <!-- <el-table-column prop="updateBy" header-align="center" align="center" label="更新者">
       </el-table-column>
       <el-table-column prop="updateDate" header-align="center" align="center" label="更新时间">
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column prop="remarks" header-align="center" align="center" label="备注信息">
       </el-table-column>
-      <el-table-column prop="delFlag" header-align="center" align="center" label="删除标记">
+      <!-- <el-table-column
+        prop="delFlag"
+        header-align="center"
+        align="center"
+        label="删除标记">
       </el-table-column> -->
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -71,9 +79,8 @@ export default {
   data() {
     return {
       dataForm: {
-        key: ""
+        mobile: ""
       },
-      resourceServer: window.SITE_CONFIG["resourceServer"],
       dataList: [],
       pageIndex: 1,
       pageSize: 10,
@@ -96,9 +103,10 @@ export default {
       var params = {
         page: this.pageIndex,
         limit: this.pageSize,
-        key: this.dataForm.key
+        mobile: this.dataForm.mobile,
+        appointDate: new Date()
       };
-      API.knowledge.list(params).then(({ data }) => {
+      API.appointment.list(params).then(({ data }) => {
         if (data && data.code === 0) {
           this.dataList = data.page.list;
           this.totalPage = data.page.totalCount;
@@ -143,7 +151,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning"
       }).then(() => {
-        API.knowledge.del(ids).then(({ data }) => {
+        API.appointment.del(ids).then(({ data }) => {
           if (data && data.code === 0) {
             this.$message({
               message: "操作成功",

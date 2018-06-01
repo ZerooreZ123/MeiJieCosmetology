@@ -7,13 +7,14 @@
     <sub-menu-nav v-for="item in menuNav.list" :key="item.menuId" :menu-nav="item" class="hoverStyle1">
     </sub-menu-nav>
   </el-submenu>
-  <el-menu-item v-else :index="menuNav.menuId + ''" :data-idx="menuNav.menuId + ''" @click="gotoRouteHandle(menuNav.url)" class="hoverStyle2">
+  <el-menu-item v-else :index="menuNav.menuId + ''" :data-idx="menuNav.menuId + ''" @click="gotoRouteHandle(menuNav.url, menuNav.menuId)" class="hoverStyle2">
     <icon-svg :name="menuNav.icon" class="site-sidebar__menu-icon"></icon-svg>
     <span>{{ menuNav.name }}</span>
   </el-menu-item>
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import SubMenuNav from "../sub-menu-nav";
 import { getRouteNameByUrl } from "@/utils";
 export default {
@@ -26,13 +27,15 @@ export default {
     SubMenuNav
   },
   methods: {
+    ...mapMutations(["UPDATE_MENU_NAV_ACTIVE_NAME"]),
     // 跳转到菜单导航对应路由
-    gotoRouteHandle(url) {
+    gotoRouteHandle(url, menuId) {
       var routeName = getRouteNameByUrl(url);
       if (/\S/.test(routeName)) {
         this.$router.push({
           name: routeName
         });
+        this.UPDATE_MENU_NAV_ACTIVE_NAME({ name: menuId + '' });
       }
     },
     enter() {}

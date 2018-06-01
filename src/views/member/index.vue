@@ -3,18 +3,20 @@
     <div class="member-title">
       <div>会员列表</div>
       <div class="addButton">
-        <!-- <el-select placeholder="请选择">
-          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+        <el-select placeholder="请选择" v-if='isShow' v-model="shopId">
+          <el-option v-for="item in shopList" :key="item.id" :label="item.name" :value="item.id">
           </el-option>
-        </el-select> -->
+        </el-select>
         <el-button type="primary" @click="addOrUpdateHandle()">添加客户</el-button>
       </div>
     </div>
-    <tab-nav :itemList='itemList' space="10">
+    <tab-nav :itemList='itemList' space="8" @addParmas="tabClck($event)">
       <div slot="会员信息">
         <div class="list-nav">
           <category listname="顾客分类" :list="clientList" @onItemClick="onLlientClick"></category>
-          <category listname="时间分类" :list="timeList" @onItemClick="onTimeClick"></category>
+          <category listname="时间分类" :list="timeList" @onItemClick="onTimeClick">
+            <!-- <input v-model="timeDay" class="userDefined" type="text" placeholder="自定义天数" @change="onTimeClick(timeDay,1)"> -->
+          </category>
           <category listname="近期分类" :list="recentList" @onItemClick="onRecentClick"></category>
           <category listname="到店频次" :list="frequencyList" @onItemClick="onFrequencyClick"></category>
           <category listname="客户来源" :list="sourceList" @onItemClick="onSourceClick"></category>
@@ -23,21 +25,32 @@
         <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;">
           <el-table-column type="selection" header-align="center" align="center" width="50">
           </el-table-column>
-          <el-table-column prop="id" header-align="center" align="center" label="">
+          <el-table-column prop="id" header-align="center" align="center" label="ID" width="80">
           </el-table-column>
-          <el-table-column prop="name" header-align="center" align="center" label="会员信息">
+          <el-table-column header-align="center" prop="totalConsume" label="会员信息">
+            <template slot-scope="scope">
+              <div class="tabModule">
+                <img src="#" alt="" class="photo">
+                <div class="textModule">
+                  <div>{{scope.row.name}}</div>
+                  <div>{{scope.row.mobile}}</div>
+                  <div>{{`会员号: ${scope.row.memberno}`}}</div>
+                </div>
+              </div>
+            </template>
           </el-table-column>
           <!-- <el-table-column prop="name" header-align="center" align="center" label="会员级别">
           </el-table-column> -->
           <el-table-column prop="totalConsume" header-align="center" align="center" label="累计消费">
-          </el-table-column>
-          <!-- <el-table-column header-align="center" align="center" width="150" label="会员信息">
             <template slot-scope="scope">
-              <div>{{dataList.name}}</div>
-              <div></div>
-              <div></div>
+              <div>
+                <div>{{`累计: ￥${scope.row.totalConsume}`}}</div>
+                <div>{{`总计到店: ${scope.row.totalC || 0} 次`}}</div>
+                <div>{{`本月${scope.row.monthCount || 0}次`}}</div>
+              </div>
             </template>
-          </el-table-column> -->
+          </el-table-column>
+
           <!-- <el-table-column prop="mobile" header-align="center" align="center" label="上次消费">
           </el-table-column> -->
           <!-- <el-table-column prop="umtSource" header-align="center" align="center" label="实收金额">
@@ -69,7 +82,7 @@
               </el-select>
             </el-col>
             <el-col :span="5">
-              <el-input-number controls-position="right" v-model="selectionCondition.frequency"></el-input-number>
+              <el-input-number controls-position="right" v-model="selectionCondition.frequency" :min="1"></el-input-number>
             </el-col>
             <el-col class="line" :span="2" align="center">区间</el-col>
             <el-col :span="5">
@@ -88,11 +101,11 @@
             </el-col>
             <el-col class="line" :span="2" align="center">金额</el-col>
             <el-col :span="5">
-              <el-input-number controls-position="right" v-model="selectionCondition.minMoney"></el-input-number>
+              <el-input-number controls-position="right" v-model="selectionCondition.minMoney" :min="0"></el-input-number>
             </el-col>
             <el-col class="line" :span="1" align="center">~</el-col>
             <el-col :span="5">
-              <el-input-number controls-position="right" v-model="selectionCondition.maxMoney"></el-input-number>
+              <el-input-number controls-position="right" v-model="selectionCondition.maxMoney" :min="0"></el-input-number>
             </el-col>
           </el-form-item>
           <el-form-item label="多久未消费">
@@ -135,16 +148,19 @@
         <div class="chartBox">
           <el-row>
             <el-col :span="12" class="block">
-              <my-echarts ref="收入来源统计" :option="optionHuan"></my-echarts>
+              <my-echarts ref="会员详情" :option="optionHuan"></my-echarts>
             </el-col>
             <el-col :span="12" class="block">
-              <my-echarts ref="收入来源统计" :option="optionPie"></my-echarts>
+              <my-echarts ref="会员渠道分析" :option="optionPie"></my-echarts>
             </el-col>
           </el-row>
         </div>
       </div>
     </tab-nav>
-
+    <div class="seachInput" v-if="isSeach">
+      <el-input placeholder="请输入会员名" suffix-icon="el-icon-search" v-model="inputTest">
+      </el-input>
+    </div>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
   </div>
@@ -165,7 +181,8 @@ export default {
       dataForm: {
         key: ""
       },
-      clientList: [{ name: "持卡" }, { name: "未此卡" }],
+      storeNews: "全部门店",
+      clientList: [{ name: "持卡" }, { name: "未持卡" }],
       timeList: [
         { name: "超过一月未到店", num: 30 },
         { name: "超过两月未到店", num: 60 },
@@ -191,13 +208,19 @@ export default {
       dataListLoading: false,
       dataListSelections: [],
       addOrUpdateVisible: false,
+      isShow: false,
+      isSeach: false,
       options: [],
       itemList: ["会员信息", "客户筛选", "会员概括总览"],
-      tags: [{ name: "性别女", type: "" }, { name: "消费频率2018-5-2到2018-5-8到店消费2次", type: "" }],
+      tags: [],
+      tagTemp: "",
+      shopId: "",
+      inputTest: "",
+      timeDay: "",
       selectionCondition: {
         sex: "",
         type: "",
-        frequency: "",
+        frequency: 1,
         timeNumber: "",
         addUpConsume: "",
         notSpending: "",
@@ -218,9 +241,88 @@ export default {
     this.getDataList();
     this.getCategoryList();
   },
+  mounted() {
+    this.getMember();
+  },
+  watch: {
+    shopId() {
+      this.getMember(this.shopId);
+    }
+  },
   methods: {
+    tabClck(i) {
+      if (i === 2) {
+        this.isShow = true;
+      } else if (i === 0) {
+        this.isSeach = false;
+        this.isShow = false;
+      } else {
+        this.isShow = false;
+        this.isSeach = false;
+      }
+    },
     handleClose(tag) {
       this.tags.splice(this.tags.indexOf(tag), 1);
+      switch (tag.id) {
+        case 0:
+          this.$nextTick(() => {
+            this.selectionCondition.sex = "";
+          });
+          break;
+        case 1:
+          this.$nextTick(() => {
+            this.selectionCondition.type = "";
+            this.selectionCondition.frequency = 1;
+            this.selectionCondition.startDay = "";
+            this.selectionCondition.endDay = "";
+          });
+
+          break;
+        case 2:
+          this.$nextTick(() => {
+            this.selectionCondition.minMoney = "";
+            this.selectionCondition.maxMoney = "";
+            this.selectionCondition.addUpConsume = "";
+          });
+
+          break;
+        case 3:
+          this.$nextTick(() => {
+            this.selectionCondition.notSpending = "";
+          });
+          break;
+        default:
+          this.selectionCondition.sex = "";
+      }
+    },
+    getMember(officeId) {
+      API.common.getOfficeList().then(({ data }) => {
+        this.shopList = data.list;
+      });
+      API.member.getGuestSource({ officeId }).then(({ data }) => {
+        if (data && data.code === 0) {
+          const xData = data.list.map(obj => obj.label);
+          const yData = data.list.map(obj => ({
+            name: obj.label,
+            value: obj.val
+          }));
+          optionPie.legend.data = xData;
+          optionPie.series[0].data = yData;
+          this.optionPie = optionPie;
+          this.$refs["会员渠道分析"].reload();
+        }
+      });
+      API.member.getMemberDetail({ officeId }).then(({ data }) => {
+        if (data && data.code === 0) {
+          const Data = data.list.map(obj => ({
+            name: obj.people,
+            value: obj.total
+          }));
+          optionHuan.series[0].data = Data;
+          this.optionHuan = optionHuan;
+          this.$refs["会员详情"].reload();
+        }
+      });
     },
     getCategoryList() {
       const params = {
@@ -243,8 +345,27 @@ export default {
     onLlientClick() {
       // 顾客分类
     },
-    onTimeClick(item) {
+    onTimeClick1(item, num) {
       // 时间分类
+
+      this.getDataList();
+    },
+    onTimeClick(item, num) {
+      // 时间分类
+      // if (num === 0) {
+      //   if (item) {
+      //     this.filter_times = item.num;
+      //     this.timeDay = "";
+      //   } else {
+      //     this.filter_times = undefined;
+      //   }
+      // } else {
+      //   if (parseInt(item, 10) > 0) {
+      //     this.filter_times = item;
+      //   } else {
+      //     this.filter_times = undefined;
+      //   }
+      // }
       if (item) {
         this.filter_times = item.num;
       } else {
@@ -334,6 +455,7 @@ export default {
       this.filterCondition();
     },
     filterCondition() {
+      this.tags = [];
       this.dataListLoading = true;
       var params = {
         page: this.pageIndex,
@@ -342,6 +464,10 @@ export default {
       };
       if (this.selectionCondition.sex !== "") {
         params.sex = this.selectionCondition.sex;
+        this.tags.push({
+          id: 0,
+          name: parseInt(this.selectionCondition.sex, 10) === 0 ? "性别: 女" : "性别: 男"
+        });
       }
       if (this.selectionCondition.type !== "") {
         params.type = this.selectionCondition.type;
@@ -355,9 +481,6 @@ export default {
       if (this.selectionCondition.endDay !== "") {
         params.endTime = this.selectionCondition.endDay;
       }
-      if (this.selectionCondition.notSpending !== "") {
-        params.times = this.selectionCondition.notSpending;
-      }
       if (this.selectionCondition.minMoney !== 0) {
         params.minConsume = this.selectionCondition.minMoney;
       }
@@ -366,6 +489,52 @@ export default {
       }
       if (this.selectionCondition.addUpConsume !== "") {
         params.totalTime = this.selectionCondition.addUpConsume;
+      }
+      if (this.selectionCondition.type !== "" && this.selectionCondition.frequency > 0 && this.selectionCondition.startDay && this.selectionCondition.endDay) {
+        switch (this.selectionCondition.type) {
+          case "eq":
+            this.tagTemp = "等于";
+            break;
+          case "gt":
+            this.tagTemp = "大于";
+            break;
+          case "lt":
+            this.tagTemp = "小于";
+            break;
+          default:
+            this.tagTemp = "";
+        }
+        this.tags.push({
+          id: 1,
+          name:
+            "消费频率" +
+            this.selectionCondition.startDay +
+            "至" +
+            this.selectionCondition.endDay +
+            "到店" +
+            this.tagTemp +
+            this.selectionCondition.frequency +
+            "次"
+        });
+      }
+      if (this.selectionCondition.addUpConsume !== "" && this.selectionCondition.minMoney >= 0 && this.selectionCondition.maxMoney >= 0) {
+        this.tags.push({
+          id: 2,
+          name:
+            Math.floor(this.selectionCondition.addUpConsume / 7) +
+            "周累计消费" +
+            this.selectionCondition.minMoney +
+            "~" +
+            this.selectionCondition.maxMoney +
+            "元"
+        });
+      }
+      if (this.selectionCondition.notSpending !== "") {
+        params.times = this.selectionCondition.notSpending;
+        this.tags.push({
+          id: 3,
+          name: Math.floor(this.selectionCondition.notSpending / 7) + "周未消费"
+        });
       }
       API.member.queryMemberList(params).then(({ data }) => {
         if (data && data.code === 0) {
@@ -434,6 +603,15 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.userDefined {
+  display: inline-block;
+  width: 80px;
+  height: 20px;
+  font-size: 14px;
+  line-height: 14px;
+  border: 2px solid #f6f6f6;
+  outline: none;
+}
 .member-title {
   display: flex;
   justify-content: space-between;
@@ -463,6 +641,29 @@ export default {
   .block {
     height: 400px;
   }
+}
+.tabModule {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  .photo {
+    background-color: #eee;
+    display: inline-block;
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    margin: 0 10px;
+  }
+  .textModule {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+}
+.seachInput {
+  position: absolute;
+  top: 102px;
+  right: 68px;
 }
 </style>
 

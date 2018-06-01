@@ -24,6 +24,14 @@
         <!-- <el-input v-model="dataForm.nums" placeholder="预约人数"></el-input> -->
         <el-input-number v-model="dataForm.nums" :min="1" label="预约人数"></el-input-number>
       </el-form-item>
+      <el-form-item label="添加项目" prop="remarks">
+        <div class="w-list">
+          <el-tag @close="handleRemove(index)" closable v-for="(item, index) in dataForm.appointDeatailLsit" :key="item.serviceId">
+            {{item.serviceName}}
+          </el-tag>
+          <el-button @click="openPanel()">添加</el-button>
+        </div>
+      </el-form-item>
       <el-form-item label="预约日期" prop="appointDate">
         <!-- <el-input v-model="dataForm.appointDate" placeholder="预约日期"></el-input> -->
         <el-date-picker value-format="yyyy-MM-dd" v-model="dataForm.appointDate" type="date" placeholder="预约日期">
@@ -83,14 +91,6 @@
       <!-- <el-form-item label="删除标记" prop="delFlag">
         <el-input v-model="dataForm.delFlag" placeholder="删除标记"></el-input>
       </el-form-item> -->
-      <el-form-item label="添加项目" prop="remarks">
-        <div class="w-list">
-          <el-tag @close="handleRemove(index)" closable v-for="(item, index) in dataForm.appointDeatailLsit" :key="item.serviceId">
-            {{item.serviceName}}
-          </el-tag>
-          <el-button @click="openPanel()">添加</el-button>
-        </div>
-      </el-form-item>
     </el-form>
 
     <span slot="footer" class="dialog-footer">
@@ -150,7 +150,7 @@ export default {
       dataRule: {
         appointNo: [{ required: true, message: "预约单号不能为空", trigger: "blur" }],
         officeId: [{ required: true, message: "所属机构不能为空", trigger: "blur" }],
-        name: [{ required: true, message: "预约人姓名不能为空", trigger: "blur" }],
+        memberId: [{ required: true, message: "预约人姓名不能为空", trigger: "blur" }],
         mobile: [{ required: true, message: "预约人电话不能为空", trigger: "blur" }, { validator: validateMobile, trigger: "blur" }],
         nums: [{ required: true, message: "预约人数不能为空", trigger: "blur" }],
         appointDate: [{ required: true, message: "预约日期不能为空", trigger: "blur" }],

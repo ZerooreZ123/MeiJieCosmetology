@@ -16,7 +16,7 @@
       </el-form-item>
       <el-form-item label="渠道来源" prop="umtSource">
         <el-select v-model="dataForm.umtSource" placeholder="请选择">
-          <el-option v-for="item in sourceList" :key="item.id" :label="item.umtSource" :value="item.umtSource">
+          <el-option v-for="item in sourceList" :key="item.id" :label="item.label" :value="item.value">
           </el-option>
         </el-select>
       </el-form-item>
@@ -110,6 +110,9 @@ export default {
   methods: {
     getTimeList: getTimeList,
     getCategory() {
+      const params = {
+        type: "guestSource"
+      };
       API.common.getOfficeList().then(({ data }) => {
         if (data && data.code === 0) {
           this.shopList = data.list;
@@ -117,7 +120,8 @@ export default {
           this.shopList = [];
         }
       });
-      API.member.queryMemberList().then(({ data }) => {
+      API.sysdict.getlist(params).then(({ data }) => {
+
         if (data && data.code === 0) {
           this.sourceList = data.list;
         } else {
@@ -133,7 +137,7 @@ export default {
       });
       API.member.queryMemberList().then(({ data }) => {
         if (data && data.code === 0) {
-          this.memberList = data.list;
+          this.memberList = data.page.list;
         } else {
           this.memberList = [];
         }
@@ -165,7 +169,6 @@ export default {
         this.$refs["dataForm"].resetFields();
         if (this.dataForm.id) {
           API.member.info(this.dataForm.id).then(({ data }) => {
-            console.log(data);
             if (data && data.code === 0) {
               this.dataForm.name = data.member.name;
               this.dataForm.sex = data.member.sex;

@@ -11,60 +11,63 @@
       <m-col :span="7.5">
         <el-card>
           <div class="i-title">
-            <img src="../../assets/img/main/yj.png" /> 业绩收入
-            <el-dropdown class="i-right-menu">
+            <img src="../../assets/img/main/yj.png" /> {{turnover.name}}
+            <el-dropdown class="i-right-menu" @command="handleCommandTurnover">
               <span class="el-dropdown-link">
-                时间段
+                {{limitTurnover | limit}}
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>当天</el-dropdown-item>
-                <el-dropdown-item>上周</el-dropdown-item>
-                <el-dropdown-item>本月</el-dropdown-item>
+                <el-dropdown-item command="">全部</el-dropdown-item>
+                <el-dropdown-item command="day">天</el-dropdown-item>
+                <el-dropdown-item command="week">周</el-dropdown-item>
+                <el-dropdown-item command="month">月</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
-          <div class="i-num" style="color:#f3e008">￥510233</div>
+          <div class="i-num" style="color:#f3e008">￥{{turnover.val}}</div>
         </el-card>
       </m-col>
       <m-col :span="0.75">&nbsp;</m-col>
       <m-col :span="7.5">
         <el-card>
           <div class="i-title">
-            <img src="../../assets/img/main/zkh.png" /> 总卡耗
-            <el-dropdown class="i-right-menu">
+            <img src="../../assets/img/main/zkh.png" /> {{orderNum.name}}
+            <el-dropdown class="i-right-menu" @command="handleCommandOrderNum">
               <span class="el-dropdown-link">
-                时间段
+                {{limitOrderNum | limit}}
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>当天</el-dropdown-item>
-                <el-dropdown-item>上周</el-dropdown-item>
-                <el-dropdown-item>本月</el-dropdown-item>
+                <el-dropdown-item command="">全部</el-dropdown-item>
+                <el-dropdown-item command="day">天</el-dropdown-item>
+                <el-dropdown-item command="week">周</el-dropdown-item>
+                <el-dropdown-item command="month">月</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
-          <div class="i-num" style="color:#fa787a">￥510233</div>
+          <div class="i-num" style="color:#fa787a">￥{{orderNum.val}}</div>
         </el-card>
       </m-col>
       <m-col :span="0.75">&nbsp;</m-col>
       <m-col :span="7.5">
         <el-card>
           <div class="i-title">
-            <img src="../../assets/img/main/yysr.png" /> 营业收入
-            <el-dropdown class="i-right-menu">
+            <img src="../../assets/img/main/yysr.png" /> {{appoint.name}}
+            <el-dropdown class="i-right-menu" @command="handleCommandAppoint">
               <span class="el-dropdown-link">
-                时间段
+                {{limitAppoint | limit}}
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>当天</el-dropdown-item>
-                <el-dropdown-item>上周</el-dropdown-item>
-                <el-dropdown-item>本月</el-dropdown-item>
+                <el-dropdown-item command="">全部</el-dropdown-item>
+                <el-dropdown-item command="day">天</el-dropdown-item>
+                <el-dropdown-item command="week">周</el-dropdown-item>
+                <el-dropdown-item command="month">月</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
-          <div class="i-num" style="color:#b32dfc">￥510233</div>
+          <div class="i-num" style="color:#b32dfc">￥{{appoint.val}}</div>
         </el-card>
       </m-col>
     </m-row>
@@ -72,30 +75,31 @@
     <el-card style="margin-top:10px;">
       <div class="i-title">
         <img src="../../assets/img/main/tj.png" /> 客人统计
-        <el-dropdown class="i-right-menu">
+        <el-dropdown class="i-right-menu" @command="handleCommandGuest">
           <span class="el-dropdown-link">
-            时间段
+            {{limitGuest | limit}}
             <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>当天</el-dropdown-item>
-            <el-dropdown-item>上周</el-dropdown-item>
-            <el-dropdown-item>本月</el-dropdown-item>
+            <el-dropdown-item command="">全部</el-dropdown-item>
+            <el-dropdown-item command="day">天</el-dropdown-item>
+            <el-dropdown-item command="week">周</el-dropdown-item>
+            <el-dropdown-item command="month">月</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
       <el-row>
         <el-col :span="8">
-          <div class="p-num" style="color:#d49efe">28</div>
-          <div class="p-text">新客人</div>
+          <div class="p-num" style="color:#d49efe">{{guestList[0].val}}</div>
+          <div class="p-text">{{guestList[0].name}}</div>
         </el-col>
         <el-col :span="8">
-          <div class="p-num" style="color:#9ca1fc">28</div>
-          <div class="p-text">新会员</div>
+          <div class="p-num" style="color:#9ca1fc">{{guestList[1].val}}</div>
+          <div class="p-text">{{guestList[1].name}}</div>
         </el-col>
         <el-col :span="8">
-          <div class="p-num" style="color:#7ede84">28</div>
-          <div class="p-text">消费人次</div>
+          <div class="p-num" style="color:#7ede84">{{guestList[2].val}}</div>
+          <div class="p-text">{{guestList[2].name}}</div>
         </el-col>
       </el-row>
     </el-card>
@@ -137,19 +141,123 @@ export default {
     return {
       shopId: "",
       shopList: [],
+      appoint: {},
+      orderNum: {},
+      turnover: {},
+      limitAppoint: "",
+      limitOrderNum: "",
+      limitGuest: "",
+      limitTurnover: "",
+      guestList: [{}, {}, {}],
       dataList: []
     };
   },
   mounted() {
     this.getData();
+    this.getAppoint({});
+    this.getOrderNum({});
+    this.getTurnover({});
+    this.getGuest({});
+  },
+  filters: {
+    limit(val) {
+      if (val === "week") {
+        return "周";
+      } else if (val === "month") {
+        return "月";
+      } else if (val === "day") {
+        return "天";
+      } else {
+        return "全部";
+      }
+    }
+  },
+  watch: {
+    shopId() {
+      this.reloadWithParams();
+    }
   },
   methods: {
+    reloadWithParams() {
+      const params = {};
+      if (this.shopId) {
+        params.officeId = this.shopId;
+      }
+      if (this.limitAppoint) {
+        params.type = this.limitAppoint;
+        this.getAppoint(params);
+      } else {
+        this.getAppoint(params);
+      }
+      if (this.limitOrderNum) {
+        params.type = this.limitOrderNum;
+        this.getOrderNum(params);
+      } else {
+        this.getOrderNum(params);
+      }
+      if (this.limitTurnover) {
+        params.type = this.limitTurnover;
+        this.getTurnover(params);
+      } else {
+        this.getTurnover(params);
+      }
+      if (this.limitGuest) {
+        params.type = this.limitGuest;
+        this.getGuest(params);
+      } else {
+        this.getGuest(params);
+      }
+    },
     getData() {
       API.common.getOfficeList().then(({ data }) => {
         if (data && data.code === 0) {
           this.shopList = data.list;
         }
       });
+    },
+    getAppoint(params) {
+      API.home.getAppoint(params).then(({ data }) => {
+        if (data && data.code === 0) {
+          this.appoint = data.list;
+        }
+      });
+    },
+    getOrderNum(params) {
+      API.home.getOrderNum(params).then(({ data }) => {
+        if (data && data.code === 0) {
+          this.orderNum = data.list;
+        }
+      });
+    },
+    getTurnover(params) {
+      API.home.getTurnover(params).then(({ data }) => {
+        if (data && data.code === 0) {
+          this.turnover = data.list;
+        }
+      });
+    },
+    getGuest(params) {
+      API.home.getGuest(params).then(({ data }) => {
+        if (data && data.code === 0) {
+          this.guestList = data.list;
+        }
+      });
+    },
+    handleCommandAppoint(command) {
+      this.limitAppoint = command;
+      this.reloadWithParams();
+    },
+    handleCommandOrderNum(command) {
+      this.limitOrderNum = command;
+      this.reloadWithParams();
+    },
+    handleCommandTurnover(command) {
+      this.limitTurnover = command;
+      this.reloadWithParams();
+    },
+    handleCommandGuest(command) {
+      this.limitGuest = command;
+      this.reloadWithParams();
     }
   }
 };

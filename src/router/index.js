@@ -15,6 +15,12 @@ export default new Router({
     { path: "/404", component: _import("error/404"), name: "404", desc: "404未找到" },
     { path: "/login", component: _import("login/index"), name: "login", desc: "登录" },
     {
+      path: "/register",
+      component: _import("register/index"),
+      name: "register",
+      desc: "注册"
+    },
+    {
       path: "/",
       component: _import("layout/index"),
       name: "layout",
@@ -77,6 +83,13 @@ export default new Router({
           meta: { isTab: false }
         },
         {
+          path: "/appointmentTip",
+          component: _import("appointment/tip"),
+          name: "appointmentTip",
+          desc: "预约提醒",
+          meta: { isTab: false }
+        },
+        {
           path: "/createorder",
           component: _import("createorder/index"),
           name: "createorder",
@@ -95,6 +108,34 @@ export default new Router({
           component: _import("miorder/main"),
           name: "miorder",
           desc: "订单",
+          meta: { isTab: false }
+        },
+        {
+          path: "/ordervisit",
+          component: _import("ordervisit/index"),
+          name: "ordervisit",
+          desc: "回访提醒",
+          meta: { isTab: false }
+        },
+        {
+          path: "/knowledge",
+          component: _import("knowledge/index"),
+          name: "knowledge",
+          desc: "知识库管理",
+          meta: { isTab: false }
+        },
+        {
+          path: "/knowledgegrid",
+          component: _import("knowledge/grid"),
+          name: "knowledgegrid",
+          desc: "知识库",
+          meta: { isTab: false }
+        },
+        {
+          path: "/sysmerchant",
+          component: _import("sysmerchant/index"),
+          name: "sysmerchant",
+          desc: "商户管理",
           meta: { isTab: false }
         }
       ],

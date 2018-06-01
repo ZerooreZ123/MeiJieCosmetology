@@ -26,9 +26,9 @@
           <div>会员信息：</div>
           <div class="user-info">
             <div class="user-info-ctn">
-              <div class="username">{{item.member.name}}</div>
-              <div class="userphone">{{item.member.mobile}}</div>
-              <div class="userno">会员号：{{item.member.memberno}}</div>
+              <div class="username">{{item.member ? item.member.name : '无'}}</div>
+              <div class="userphone">{{item.member ? item.member.mobile : '无'}}</div>
+              <div class="userno">会员号：{{item.member ? item.member.memberno : '无'}}</div>
             </div>
             <img class="user-img" :src="item.member.headimage" alt="">
           </div>
@@ -50,11 +50,12 @@
       <div class="bot-bar">
         &nbsp;
         <span class="right-btns">
-          <el-button type="info">收银</el-button>
+          <el-button v-if="item.status == 1 || item.status == 3" type="info" @click="goOrderCreatePage(item.id)">收银</el-button>
           <el-button type="primary">打印小票</el-button>
           <el-button type="success" @click="showDetail(item.id)">详情</el-button>
           <!-- <el-button type="warning">修改</el-button> -->
-          <el-button type="danger" @click="changeOrderStatus(item.id, 4)">取消订单</el-button>
+          <el-button v-if="item.status == 1" type="danger" @click="changeOrderStatus(item.id, 4)">取消订单</el-button>
+          <el-button v-if="item.status == 2 || item.status == 3" type="danger" @click="changeOrderStatus(item.id, 5)">退单</el-button>
         </span>
       </div>
     </el-card>
@@ -115,11 +116,13 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import API from "@/api";
 import detail from "./detail";
 export default {
   data() {
     return {
+      active: false,
       dataForm: {
         key: ""
       },
@@ -138,8 +141,21 @@ export default {
   },
   mounted() {
     this.getDataList();
+    this.active = true;
+  },
+  activated() {
+    if (this.active) {
+      this.getDataList();
+    }
   },
   methods: {
+    ...mapMutations(["UPDATE_MENU_NAV_ACTIVE_NAME"]),
+    goOrderCreatePage(orderId) {
+      this.$router.push({
+        path: "/createorder/" + orderId
+      });
+      this.UPDATE_MENU_NAV_ACTIVE_NAME({ name: "159" });
+    },
     // 获取数据列表
     getDataList() {
       this.dataListLoading = true;
