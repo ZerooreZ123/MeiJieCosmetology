@@ -12,11 +12,11 @@ export function list(params) {
   });
 }
 // 获取筛选列表
-export function queryMemberList(params) {
+export function queryMemberList() {
   return request({
-    url: requestUrl("/member/member/queryCustomerlist"),
+    url: requestUrl("/member/member/queryMemberList"),
     method: "get",
-    params: requestParam(params, "get")
+    params: requestParam({}, "get")
   });
 }
 // 获取会员渠道
@@ -27,7 +27,7 @@ export function getGuestSource(params) {
     params: requestParam(params, "get")
   });
 }
-//获取会员详情
+// 获取会员详情
 export function getMemberDetail(params) {
   return request({
     url: requestUrl("/member/member/getMemberDetail"),
@@ -68,5 +68,12 @@ export function del(params) {
     url: requestUrl("/member/member/delete"),
     method: "post",
     data: requestParam(params, "post", false)
+  });
+}
+export function queryCustomerlist(params) {
+  return request({
+    url: requestUrl("/member/member/queryCustomerlist"),
+    method: "get",
+    params: requestParam(params, "get")
   });
 }

@@ -2,7 +2,7 @@
   <nav class="site-navbar" :class="navbarClasses">
     <div class="site-navbar__header">
       <h1 class="site-navbar__brand" @click="$router.push({ name: 'home' })">
-        <a class="site-navbar__brand-lg" href="javascript:;"><img src="~@/assets/img/logo2.png" /></a>
+        <a class="site-navbar__brand-lg" href="javascript:;"><img src="~@/assets/img/logo2.png" height="40"/></a>
         <a class="site-navbar__brand-mini" href="javascript:;">logo</a>
       </h1>
     </div>

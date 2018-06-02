@@ -1,7 +1,13 @@
 <template>
   <div class="mod-home">
     <div>
-      <el-select v-model="shopId" placeholder="请选择" style="float:right;">
+      <el-breadcrumb separator="/" style="float:left;">
+        <el-breadcrumb-item>
+          <img src="~@/assets/img/main/tj.png" alt="">
+          <span class="breadcrumb-title">首页</span>
+        </el-breadcrumb-item>
+      </el-breadcrumb>
+      <el-select v-model="shopId" placeholder="请选择门店" style="float:right;">
         <el-option v-for="item in shopList" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
@@ -110,8 +116,12 @@
           <div class="i-title">
             <img src="../../assets/img/main/yy.png" /> 预约信息
           </div>
-          <el-table :data="dataList" border style="width: 100%;margin-top:10px;">
-            <el-table-column header-align="center" align="center">
+          <el-table :data="appointmentList" border style="width: 100%;margin-top:10px;">
+            <el-table-column prop="name" header-align="center" align="center" label="客户">
+            </el-table-column>
+            <el-table-column prop="appointDate" header-align="center" align="center" label="预约时间">
+            </el-table-column>
+            <el-table-column prop="mobile" header-align="center" align="center" label="电话">
             </el-table-column>
           </el-table>
         </el-col>
@@ -139,6 +149,7 @@ export default {
   components: { mRow, mCol },
   data() {
     return {
+      active: false,
       shopId: "",
       shopList: [],
       appoint: {},
@@ -149,7 +160,7 @@ export default {
       limitGuest: "",
       limitTurnover: "",
       guestList: [{}, {}, {}],
-      dataList: []
+      appointmentList: []
     };
   },
   mounted() {
@@ -158,6 +169,18 @@ export default {
     this.getOrderNum({});
     this.getTurnover({});
     this.getGuest({});
+    this.getAppointmentList();
+    this.active = true;
+  },
+  activated() {
+    if (this.active) {
+      this.getData();
+      this.getAppoint({});
+      this.getOrderNum({});
+      this.getTurnover({});
+      this.getGuest({});
+      this.getAppointmentList();
+    }
   },
   filters: {
     limit(val) {
@@ -240,6 +263,13 @@ export default {
       API.home.getGuest(params).then(({ data }) => {
         if (data && data.code === 0) {
           this.guestList = data.list;
+        }
+      });
+    },
+    getAppointmentList() {
+      API.home.getAppointmentList({ day: 5 }).then(({ data }) => {
+        if (data && data.code === 0) {
+          this.appointmentList = data.list;
         }
       });
     },

@@ -1,14 +1,19 @@
 <template>
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-      <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('order:ordervisit:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('order:ordervisit:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
-      </el-form-item>
+      <div class="btns">
+        <div class="input-left">
+          <el-form-item>
+            <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
+          </el-form-item>
+          <el-button @click="getDataList()">查询</el-button>
+        </div>
+        <div class="btns-right">
+          <el-button v-if="isAuth('order:ordervisit:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+          <el-button v-if="isAuth('order:ordervisit:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+          <div class="clear"></div>
+        </div>
+      </div>
     </el-form>
     <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;">
       <el-table-column type="selection" header-align="center" align="center" width="50">

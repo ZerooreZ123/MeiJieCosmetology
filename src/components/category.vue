@@ -2,9 +2,9 @@
   <div class="list-line">
     <div class="title">
       <span v-html="listname"></span>
-      <span class="show-all" @click="handleClick(null)">全部</span>
     </div>
     <div class="list-line-items" v-if="list.length > 0">
+      <span class="item show-all" @click="handleClick(null)">全部</span>
       <span class="item" :class="{active: activeIndex == index}" v-for="(item, index) in list" :key="item.id" @click="handleClick(item, index)">{{item.name}}</span>
     </div>
     <div class="list-line-items" v-else>
@@ -49,16 +49,16 @@ export default {
   .title {
     position: absolute;
     left: 0;
+  }
+
+  &-items {
+    margin-left: 70px;
     .show-all {
       color: #c99f63;
       cursor: pointer;
     }
-  }
-
-  &-items {
-    margin-left: 150px;
     .item {
-      padding: 0 20px;
+      padding: 0 10px;
       cursor: pointer;
       display: inline-block;
     }

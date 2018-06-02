@@ -121,7 +121,6 @@ export default {
         }
       });
       API.sysdict.getlist(params).then(({ data }) => {
-
         if (data && data.code === 0) {
           this.sourceList = data.list;
         } else {

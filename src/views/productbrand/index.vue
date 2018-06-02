@@ -34,7 +34,6 @@
 </template>
 
 <script>
-import "@/assets/scss/btns-right.scss";
 import API from "@/api";
 import AddOrUpdate from "./add-or-update";
 export default {

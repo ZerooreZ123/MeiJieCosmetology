@@ -227,7 +227,8 @@ export default {
   overflow: hidden;
   div {
     float: left;
-    font-size: 16px;
+    font-size: 18px;
+    line-height: 40px;
     width: 100px;
     text-align: center;
     padding: 5px 0;

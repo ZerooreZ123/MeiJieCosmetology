@@ -1,7 +1,7 @@
 <template>
   <div class="mod-config">
     <div class="member-title">
-      <div>会员列表</div>
+      <div><img src="../../assets/img/hy.png" class="imgHeader">会员列表</div>
       <div class="addButton">
         <el-select placeholder="请选择" v-if='isShow' v-model="shopId">
           <el-option v-for="item in shopList" :key="item.id" :label="item.name" :value="item.id">
@@ -536,7 +536,7 @@ export default {
           name: Math.floor(this.selectionCondition.notSpending / 7) + "周未消费"
         });
       }
-      API.member.queryMemberList(params).then(({ data }) => {
+      API.member.queryCustomerlist(params).then(({ data }) => {
         if (data && data.code === 0) {
           this.dataResult = data.page.list;
           this.customers = data.page.list.length;
@@ -664,6 +664,12 @@ export default {
   position: absolute;
   top: 102px;
   right: 68px;
+}
+.imgHeader {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  margin: 0 6px;
 }
 </style>
 

@@ -22,7 +22,8 @@
               <el-input v-model="dataForm.address" placeholder="商户所在地"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-button class="login-btn-submit" type="primary" @click="dataFormSubmit()">登录</el-button>
+              <div><el-button class="login-btn-submit" type="primary" @click="dataFormSubmit()">登录</el-button></div>
+              <div><el-button style="width: 100%;margin-top:20px;" @click="goLogin()">返回</el-button></div>
             </el-form-item>
           </el-form>
         </div>
@@ -58,10 +59,11 @@ export default {
       }
     };
   },
-  created() {
-    this.getCaptcha();
-  },
+  created() {},
   methods: {
+    goLogin() {
+      window.location.hash = "/login";
+    },
     // 提交表单
     dataFormSubmit() {
       this.$refs["dataForm"].validate(valid => {

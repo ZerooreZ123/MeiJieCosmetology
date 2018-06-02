@@ -14,7 +14,7 @@
       <div class="grid-item" v-for="know in dataList" :key="know.id">
         <div class="resource">
           <img v-if="know.resourceType === '1'" src="~@/assets/img/know.png" width="300" @click="openPreview(know.id)" />
-          <img v-if="know.resourceType === '2'" :src="resourceServer+know.imagePath" width="300" @click="openPreviewImage(know.imagePath)" />
+          <img v-if="know.resourceType === '2'" :src="resourceServer+know.imagePath.split(',')[0]" width="300" @click="openPreviewImage(know.imagePath)" />
           <video v-if="know.resourceType === '3'" :src="resourceServer+know.videoPath" controls width="300"></video>
         </div>
         <div class="info">

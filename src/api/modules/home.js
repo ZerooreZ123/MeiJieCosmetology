@@ -49,3 +49,15 @@ export function getGuest(params) {
     data: requestParam(params)
   });
 }
+
+/**
+ * 预约信息
+ * @param {*} day
+ */
+export function getAppointmentList(params) {
+  return request({
+    url: requestUrl("/appoint/appointment/getList"),
+    method: "post",
+    data: requestParam(params)
+  });
+}

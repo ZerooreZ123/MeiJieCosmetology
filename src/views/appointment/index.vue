@@ -1,14 +1,19 @@
 <template>
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-      <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('appoint:appointment:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('appoint:appointment:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
-      </el-form-item>
+      <div class="btns">
+        <div class="input-left">
+          <el-form-item>
+            <el-input v-model="dataForm.key" placeholder="查询" clearable></el-input>
+          </el-form-item>
+          <el-button @click="getDataList()">查询</el-button>
+        </div>
+        <div class="btns-right">
+          <el-button v-if="isAuth('appoint:appointment:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+          <el-button v-if="isAuth('appoint:appointment:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+          <div class="clear"></div>
+        </div>
+      </div>
     </el-form>
     <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;">
       <el-table-column type="selection" header-align="center" align="center" width="50">
@@ -39,7 +44,10 @@
           <el-tag v-else size="small">是</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="roomId" header-align="center" align="center" label="选择房间">
+      <el-table-column header-align="center" align="center" label="选择房间">
+        <template slot-scope="scope">
+          <el-tag>{{getRoomNameById(scope.row.roomId)}}</el-tag>
+        </template>
       </el-table-column>
       <!-- <el-table-column prop="serialno" header-align="center" align="center" label="流水单号">
       </el-table-column> -->
@@ -83,6 +91,7 @@ export default {
         key: ""
       },
       dataList: [],
+      roomList: [],
       pageIndex: 1,
       pageSize: 10,
       totalPage: 0,
@@ -95,9 +104,28 @@ export default {
     AddOrUpdate
   },
   activated() {
-    this.getDataList();
+    this.queryRoomList().then(() => {
+      this.getDataList();
+    });
   },
   methods: {
+    getRoomNameById(id) {
+      for (let i = 0; i < this.roomList.length; i++) {
+        if (this.roomList[i].id === id) {
+          return this.roomList[i].name;
+        }
+      }
+      return "";
+    },
+    queryRoomList() {
+      return API.room.queryRoomList().then(({ data }) => {
+        if (data && data.code === 0) {
+          this.roomList = data.list;
+        } else {
+          this.roomList = [];
+        }
+      });
+    },
     // 获取数据列表
     getDataList() {
       this.dataListLoading = true;

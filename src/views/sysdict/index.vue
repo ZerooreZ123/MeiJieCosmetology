@@ -1,26 +1,22 @@
 <template>
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-      <el-form-item>
-        <el-input v-model="dataForm.type" placeholder="请输入类型" clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('sys:sysdict:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('sys:sysdict:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
-      </el-form-item>
+      <div class="btns">
+        <div class="input-left">
+          <el-form-item>
+            <el-input v-model="dataForm.type" placeholder="请输入类型" clearable></el-input>
+          </el-form-item>
+          <el-button @click="getDataList()">查询</el-button>
+        </div>
+        <div class="btns-right">
+          <el-button v-if="isAuth('sys:sysdict:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+          <el-button v-if="isAuth('sys:sysdict:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+          <div class="clear"></div>
+        </div>
+      </div>
     </el-form>
-    <el-table
-      :data="dataList"
-      border
-      v-loading="dataListLoading"
-      @selection-change="selectionChangeHandle"
-      style="width: 100%;">
-      <el-table-column
-        type="selection"
-        header-align="center"
-        align="center"
-        width="50">
+    <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;">
+      <el-table-column type="selection" header-align="center" align="center" width="50">
       </el-table-column>
       <!-- <el-table-column
         prop="id"
@@ -28,62 +24,26 @@
         align="center"
         label="编号">
       </el-table-column> -->
-      <el-table-column
-        prop="value"
-        header-align="center"
-        align="center"
-        label="数据值">
+      <el-table-column prop="value" header-align="center" align="center" label="数据值">
       </el-table-column>
-      <el-table-column
-        prop="label"
-        header-align="center"
-        align="center"
-        label="标签名">
+      <el-table-column prop="label" header-align="center" align="center" label="标签名">
       </el-table-column>
-      <el-table-column
-        prop="type"
-        header-align="center"
-        align="center"
-        label="类型">
+      <el-table-column prop="type" header-align="center" align="center" label="类型">
       </el-table-column>
-      <el-table-column
-        prop="description"
-        header-align="center"
-        align="center"
-        label="描述">
+      <el-table-column prop="description" header-align="center" align="center" label="描述">
       </el-table-column>
-      <el-table-column
-        prop="sort"
-        header-align="center"
-        align="center"
-        label="排序（升序）">
+      <el-table-column prop="sort" header-align="center" align="center" label="排序（升序）">
       </el-table-column>
-      <el-table-column
-        prop="createDate"
-        header-align="center"
-        align="center"
-        label="创建时间">
+      <el-table-column prop="createDate" header-align="center" align="center" label="创建时间">
       </el-table-column>
-      <el-table-column
-        fixed="right"
-        header-align="center"
-        align="center"
-        width="150"
-        label="操作">
+      <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
           <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-      @size-change="sizeChangeHandle"
-      @current-change="currentChangeHandle"
-      :current-page="pageIndex"
-      :page-sizes="[10, 20, 50, 100]"
-      :page-size="pageSize"
-      :total="totalPage"
-      layout="total, sizes, prev, pager, next, jumper">
+    <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>

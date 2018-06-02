@@ -8,7 +8,7 @@
       <el-option v-for="item in filter.roomList" :key="item.id" :label="item.name" :value="item.id">
       </el-option>
     </el-select>
-    <el-select v-model="dataForm.memberId" placeholder="请选择会员">
+    <el-select v-model="dataForm.memberId" placeholder="请选择或搜索会员" filterable style="width:300px;">
       <el-option v-for="item in filter.memberList" :key="item.id" :label="item.name" :value="item.id">
       </el-option>
     </el-select>

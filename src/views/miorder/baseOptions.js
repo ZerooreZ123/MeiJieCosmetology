@@ -1,4 +1,5 @@
 const optionBar = {
+  color: ["#66a7f9"],
   title: {
     text: "收入金额明细（元）",
     x: "center"
@@ -18,6 +19,7 @@ const optionBar = {
   ]
 };
 const optionPie = {
+  color: ["#f19242", "#8b42c7", "#3497da", "#1dc4aa", "#3ea248", "#c5c00c"],
   title: {
     text: "收入来源统计",
     x: "center"
@@ -67,6 +69,7 @@ const optionPie = {
   ]
 };
 const optionLineArea = {
+  color: ["#cfae7b"],
   title: {
     text: "客次客数统计",
     x: "center"
@@ -88,6 +91,7 @@ const optionLineArea = {
   ]
 };
 const optionLine = {
+  color: ["#329c40", "#4c47fc"],
   title: {
     text: "历史订单数",
     x: "center"
