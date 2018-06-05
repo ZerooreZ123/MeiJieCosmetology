@@ -38,9 +38,9 @@ export default {
   },
   methods: {
     getData() {
-      console.log("orderId", this.$route.params.orderId);
-      if (this.$route.params.orderId) {
-        API.miorder.info(+this.$route.params.orderId).then(({ data }) => {
+      console.log("id", this.$route.params.id);
+      if (this.$route.params.type === "order") {
+        API.miorder.info(+this.$route.params.id).then(({ data }) => {
           if (data && data.code === 0) {
             console.log(data);
             this.dataForm.serialNo = data.miOrder.serialNo;
@@ -50,6 +50,21 @@ export default {
             this.dataForm.roomId = data.miOrder.roomId.toString();
             this.dataForm.memberNums = data.miOrder.memberNums;
             this.dataList = data.miOrder.detailList;
+          } else {
+            this.dataList = [];
+          }
+        });
+      } else if (this.$route.params.type === "appointment") {
+        API.appointment.info(+this.$route.params.id).then(({ data }) => {
+          if (data && data.code === 0) {
+            console.log(data);
+            this.dataForm.serialNo = data.appointment.serialno;
+            this.dataForm.memberId = data.appointment.memberId;
+            this.dataForm.officeId = data.appointment.officeId;
+            this.dataForm.roomName = data.appointment.roomName;
+            this.dataForm.roomId = data.appointment.roomId.toString();
+            this.dataForm.memberNums = data.appointment.nums;
+            this.dataList = data.appointment.appointDeatailLsit;
           } else {
             this.dataList = [];
           }
@@ -201,9 +216,9 @@ export default {
 
       data.detailList = this.dataList;
       data.roomName = this.getRoomNameById(data.roomId);
-      if (this.$route.params.orderId) {
-        // 再次修改
-        data.id = +this.$route.params.orderId;
+      if (this.$route.params.type === "order" && this.$route.params.id) {
+        // 订单再次修改
+        data.id = +this.$route.params.id;
         console.log(JSON.stringify(data));
         API.miorder.receivables(data).then(({ data }) => {
           if (data && data.code === 0) {

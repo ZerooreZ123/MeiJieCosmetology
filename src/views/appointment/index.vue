@@ -4,9 +4,9 @@
       <div class="btns">
         <div class="input-left">
           <el-form-item>
-            <el-input v-model="dataForm.key" placeholder="查询" clearable></el-input>
+            <el-input v-model="dataForm.key" placeholder="查询" clearable @clear="getDataListPage1"></el-input>
           </el-form-item>
-          <el-button @click="getDataList()">查询</el-button>
+          <el-button @click="getDataListPage1()">查询</el-button>
         </div>
         <div class="btns-right">
           <el-button v-if="isAuth('appoint:appointment:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
@@ -67,8 +67,9 @@
         align="center"
         label="删除标记">
       </el-table-column> -->
-      <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
+      <el-table-column fixed="right" header-align="center" align="center" width="200" label="操作">
         <template slot-scope="scope">
+          <el-button type="text" size="small" @click="goOrderCreatePage(scope.row.id)">开单收银</el-button>
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
           <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
@@ -109,6 +110,9 @@ export default {
     });
   },
   methods: {
+    goOrderCreatePage(id) {
+      window.location.hash = "/createorder/appointment/" + id;
+    },
     getRoomNameById(id) {
       for (let i = 0; i < this.roomList.length; i++) {
         if (this.roomList[i].id === id) {
@@ -127,6 +131,10 @@ export default {
       });
     },
     // 获取数据列表
+    getDataListPage1() {
+      this.pageIndex = 1;
+      this.getDataList();
+    },
     getDataList() {
       this.dataListLoading = true;
       var params = {

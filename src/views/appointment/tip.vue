@@ -61,6 +61,7 @@
       </el-table-column> -->
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
+          <el-button type="text" size="small" @click="goOrderCreatePage(scope.row.id)">开单收银</el-button>
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">查看</el-button>
         </template>
       </el-table-column>
@@ -97,6 +98,9 @@ export default {
     this.getDataList();
   },
   methods: {
+    goOrderCreatePage(id) {
+      window.location.hash = "/createorder/appointment/" + id;
+    },
     // 获取数据列表
     getDataList() {
       this.dataListLoading = true;

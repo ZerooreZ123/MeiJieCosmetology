@@ -5,12 +5,12 @@
         <div class="btns-right">
           <div class="input-left">
             <el-form-item>
-              <el-select v-model="dataForm.officeId" placeholder="请选择所属门店">
+              <el-select v-model="dataForm.officeId" placeholder="请选择所属门店" @change="getDataListPage1()">
                 <el-option v-for="office in officeList" :key="office.id" :label="office.name" :value="office.id">
                 </el-option>
               </el-select>
             </el-form-item>
-            <el-button @click="getDataList()">查询</el-button>
+            <el-button @click="getDataListPage1()">查询</el-button>
           </div>
           <el-button v-if="isAuth('room:device:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
           <el-button v-if="isAuth('room:device:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
@@ -78,6 +78,10 @@ export default {
       API.common.getOfficeList().then(result => {
         this.officeList = result.data.list;
       });
+    },
+    getDataListPage1() {
+      this.pageIndex = 1;
+      this.getDataList();
     },
     // 获取数据列表
     getDataList() {

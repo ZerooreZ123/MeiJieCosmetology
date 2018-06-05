@@ -13,6 +13,9 @@
       <div slot="支付方式">
         <syspaymode></syspaymode>
       </div>
+      <div slot="角色权限设置">
+        <role></role>
+      </div>
 
     </tab-nav>
   </div>
@@ -23,6 +26,7 @@ import productbrand from "@/views/productbrand/index";
 import productAndType from "./product_and_type";
 import sysidentity from "@/views/sysidentity/index";
 import syspaymode from "@/views/syspaymode/index";
+import role from "@/views/role/index";
 import tabNav from "@/components/tabNav";
 export default {
   components: {
@@ -30,11 +34,12 @@ export default {
     tabNav,
     productAndType,
     sysidentity,
-    syspaymode
+    syspaymode,
+    role
   },
   data() {
     return {
-      itemList: ["项目/产品/类别", "产品品牌管理", "员工身份设置", "支付方式", "权限设置", "开关设置"]
+      itemList: ["项目/产品/类别", "产品品牌管理", "员工身份设置", "支付方式", "角色权限设置", "开关设置"]
     };
   }
 };

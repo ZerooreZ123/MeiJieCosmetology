@@ -33,7 +33,7 @@
       </el-table-column>
       <el-table-column prop="imagePath" header-align="center" align="center" label="图片地址">
         <template slot-scope="scope">
-          <img v-if="scope.row.imagePath !='' && scope.row.imagePath !=null" :src="resourceServer+scope.row.imagePath" width="100" />
+          <img v-if="scope.row.imagePath !='' && scope.row.imagePath !=null" :src="resourceServer+scope.row.imagePath.split(',')[0]" width="100" />
         </template>
       </el-table-column>
       <el-table-column prop="videoPath" header-align="center" align="center" label="视频地址">

@@ -98,10 +98,10 @@ export default new Router({
           meta: { isTab: false }
         },
         {
-          path: "/createorder/:orderId",
+          path: "/createorder/:type/:id",
           component: _import("createorder/index"),
           name: "createorder",
-          desc: "开单",
+          desc: "开单-带参数",
           meta: { isTab: false }
         },
         {

@@ -5,9 +5,9 @@
         <div class="btns-right">
           <div class="input-left">
             <el-form-item>
-              <el-input v-model="dataForm.key" placeholder="门店名" clearable></el-input>
+              <el-input v-model="dataForm.key" placeholder="门店名" clearable @clear="getDataListPage1()"></el-input>
             </el-form-item>
-            <el-button @click="getDataList()">查询</el-button>
+            <el-button @click="getDataListPage1()">查询</el-button>
           </div>
           <el-button v-if="isAuth('sys:sysoffice:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
           <el-button v-if="isAuth('sys:sysoffice:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
@@ -245,6 +245,10 @@ export default {
     this.getDataList();
   },
   methods: {
+    getDataListPage1() {
+      this.pageIndex = 1;
+      this.getDataList();
+    },
     // 获取数据列表
     getDataList() {
       this.dataListLoading = true;

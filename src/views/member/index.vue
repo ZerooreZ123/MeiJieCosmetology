@@ -57,6 +57,7 @@
           </el-table-column> -->
           <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
             <template slot-scope="scope">
+              <el-button type="text" size="small" @click="lookDetail(scope.row.id)">查看</el-button>
               <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
               <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
             </template>
@@ -163,12 +164,14 @@
     </div>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <!-- <member-detail v-if="memberDetailVisible"></member-detail> -->
   </div>
 </template>
 
 <script>
 import API from "@/api";
 import AddOrUpdate from "./add-or-update";
+// import memberDetail from "./memberDetail";
 import category from "@/components/category";
 import tabNav from "@/components/tabNav";
 import myEcharts from "@/components/myEcharts";
@@ -208,6 +211,7 @@ export default {
       dataListLoading: false,
       dataListSelections: [],
       addOrUpdateVisible: false,
+      memberDetailVisible: false,
       isShow: false,
       isSeach: false,
       options: [],
@@ -309,18 +313,25 @@ export default {
           optionPie.legend.data = xData;
           optionPie.series[0].data = yData;
           this.optionPie = optionPie;
-          this.$refs["会员渠道分析"].reload();
+          if (this.$refs["会员渠道分析"] !== undefined) {
+            this.$refs["会员渠道分析"].reload();
+          }
         }
       });
       API.member.getMemberDetail({ officeId }).then(({ data }) => {
         if (data && data.code === 0) {
           const Data = data.list.map(obj => ({
             name: obj.people,
-            value: obj.total
+            value: obj.total,
+            itemStyle: {
+              color: obj.color
+            }
           }));
           optionHuan.series[0].data = Data;
           this.optionHuan = optionHuan;
-          this.$refs["会员详情"].reload();
+          if (this.$refs["会员详情"] !== undefined) {
+            this.$refs["会员详情"].reload();
+          }
         }
       });
     },
@@ -570,6 +581,11 @@ export default {
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(id);
       });
+    },
+    lookDetail(id) {
+      // this.memberDetailVisible = true;
+      window.memberId = id;
+      this.$router.push({ path: "/member/member_detail" });
     },
     // 删除
     deleteHandle(id) {
