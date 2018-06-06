@@ -1,12 +1,12 @@
 <template>
   <div class="mod-config">
-    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataListPage1()">
       <div class="btns">
         <div class="input-left">
           <el-form-item>
-            <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
+            <el-input v-model="dataForm.merchantFullname" placeholder="根据商户全称搜索" clearable @clear="getDataListPage1()"></el-input>
           </el-form-item>
-          <el-button @click="getDataList()">查询</el-button>
+          <el-button @click="getDataListPage1()">查询</el-button>
         </div>
         <div class="btns-right">
           <el-button v-if="isAuth('sys:sysmerchant:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
@@ -117,7 +117,7 @@ export default {
   data() {
     return {
       dataForm: {
-        key: ""
+        merchantFullname: ""
       },
       dataList: [],
       pageIndex: 1,
@@ -135,13 +135,17 @@ export default {
     this.getDataList();
   },
   methods: {
+    getDataListPage1() {
+      this.pageIndex = 1;
+      this.getDataList();
+    },
     // 获取数据列表
     getDataList() {
       this.dataListLoading = true;
       var params = {
         page: this.pageIndex,
         limit: this.pageSize,
-        key: this.dataForm.key
+        merchantFullname: this.dataForm.merchantFullname
       };
       API.sysmerchant.list(params).then(({ data }) => {
         if (data && data.code === 0) {

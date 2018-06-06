@@ -34,7 +34,10 @@
       </el-table-column>
       <el-table-column prop="productno" header-align="center" align="center" label="产品编号">
       </el-table-column>
-      <el-table-column prop="officeId" header-align="center" align="center" label="所属门店">
+      <el-table-column header-align="center" align="center" label="所属门店">
+        <template slot-scope="scope">
+          {{scope.row.officeId | shopName(shopList)}}
+        </template>
       </el-table-column>
       <el-table-column prop="salePrice" header-align="center" align="center" label="产品售价">
       </el-table-column>
@@ -45,7 +48,7 @@
           {{scope.row.type}}
         </template>
       </el-table-column>
-      <el-table-column prop="productNit" header-align="center" align="center" label="产品单位">
+      <el-table-column prop="productUnit" header-align="center" align="center" label="产品单位">
       </el-table-column>
       <el-table-column header-align="center" align="center" label="状态">
         <template slot-scope="scope">
@@ -53,13 +56,16 @@
           <el-tag v-else size="small">在售</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="brandId" header-align="center" align="center" label="产品品牌">
+      <el-table-column header-align="center" align="center" label="产品品牌">
+        <template slot-scope="scope">
+          {{scope.row.brandId | productBrandName(productBrandList)}}
+        </template>
       </el-table-column>
-      <el-table-column prop="catFirst" header-align="center" align="center" label="一级分类">
+      <!-- <el-table-column prop="catFirst" header-align="center" align="center" label="一级分类">
       </el-table-column>
       <el-table-column prop="catSecond" header-align="center" align="center" label="二级分类">
-      </el-table-column>
-      <el-table-column prop="productForm" header-align="center" align="center" label="产品形态">
+      </el-table-column> -->
+      <!-- <el-table-column prop="productForm" header-align="center" align="center" label="产品形态">
       </el-table-column>
       <el-table-column prop="capacity" header-align="center" align="center" label="产品容量">
       </el-table-column>
@@ -68,7 +74,7 @@
       <el-table-column prop="qualityPeriod" header-align="center" align="center" label="保质期">
       </el-table-column>
       <el-table-column prop="images" header-align="center" align="center" label="产品配图">
-      </el-table-column>
+      </el-table-column> -->
       <!-- <el-table-column prop="content" header-align="center" align="center" label="产品简介">
       </el-table-column> -->
       <!-- <el-table-column prop="createBy" header-align="center" align="center" label="创建者">
@@ -76,11 +82,11 @@
       <el-table-column prop="createDate" header-align="center" align="center" label="创建时间">
       </el-table-column>
       <el-table-column prop="updateBy" header-align="center" align="center" label="更新者">
-      </el-table-column> -->
+      </el-table-column>
       <el-table-column prop="updateDate" header-align="center" align="center" label="更新时间">
       </el-table-column>
       <el-table-column prop="remarks" header-align="center" align="center" label="备注信息">
-      </el-table-column>
+      </el-table-column> -->
       <!-- <el-table-column prop="delFlag" header-align="center" align="center" label="删除标记">
       </el-table-column> -->
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
@@ -111,6 +117,7 @@ export default {
       shopList: [],
       productList: [],
       productList2: [],
+      productBrandList: [],
       pageIndex: 1,
       pageSize: 10,
       totalPage: 0,
@@ -135,16 +142,34 @@ export default {
           return shopList[i].name;
         }
       }
+      return "未知";
+    },
+    productBrandName(id, productBrandList) {
+      for (let i = 0; i < productBrandList.length; i++) {
+        if (productBrandList[i].id === +id) {
+          return productBrandList[i].name;
+        }
+      }
+      return "未知";
     }
   },
   methods: {
     getCategory() {
       API.common.getCategoryList().then(({ data }) => {
-        this.productList = data.list["products"];
-        console.log(data.list["products"]);
+        if (data && data.code === 0) {
+          this.productList = data.list["products"];
+          console.log(data.list["products"]);
+        }
       });
       API.common.getOfficeList().then(({ data }) => {
-        this.shopList = data.list;
+        if (data && data.code === 0) {
+          this.shopList = data.list;
+        }
+      });
+      API.productbrand.queryProductBrandList().then(({ data }) => {
+        if (data && data.code === 0) {
+          this.productBrandList = data.list;
+        }
       });
     },
     onProductClick(item) {

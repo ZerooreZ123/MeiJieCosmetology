@@ -4,6 +4,7 @@ import paymod from "@/components/paymod";
 export default {
   data() {
     return {
+      readonly: false,
       filter: {
         userList: [],
         memberList: [],
@@ -39,10 +40,14 @@ export default {
   methods: {
     getData() {
       console.log("id", this.$route.params.id);
-      if (this.$route.params.type === "order") {
+      if (this.$route.params.type === "repayment") {
+        this.readonly = true;
+      } else {
+        this.readonly = false;
+      }
+      if (this.$route.params.type === "order" || this.$route.params.type === "repayment") {
         API.miorder.info(+this.$route.params.id).then(({ data }) => {
           if (data && data.code === 0) {
-            console.log(data);
             this.dataForm.serialNo = data.miOrder.serialNo;
             this.dataForm.memberId = data.miOrder.memberId;
             this.dataForm.officeId = data.miOrder.officeId;
@@ -64,7 +69,20 @@ export default {
             this.dataForm.roomName = data.appointment.roomName;
             this.dataForm.roomId = data.appointment.roomId.toString();
             this.dataForm.memberNums = data.appointment.nums;
-            this.dataList = data.appointment.appointDeatailLsit;
+            this.dataList = data.appointment.appointDeatailLsit.map(obj => {
+              return {
+                serviceTechnician: obj.serviceTechnician,
+                serviceName: obj.serviceName,
+                serviceId: obj.serviceId,
+                servicePrice: obj.servicePrice || 1,
+                nums: obj.nums || 1,
+                serviceNeedPay: obj.serviceNeedPay || 0,
+                subtotal: obj.subtotal || 0,
+                serviceType: obj.serviceType,
+                t: new Date().getTime(),
+                payList: []
+              };
+            });
           } else {
             this.dataList = [];
           }

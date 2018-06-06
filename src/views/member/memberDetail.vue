@@ -70,7 +70,7 @@
           </div>
           <div class="inforItem">
             <img src="../../assets/img/member/tag.png" alt="">
-            <span>客户标签: </span>
+            <span>会员标签: </span>
             <span class="valueItem"></span>
           </div>
           <div class="inforItem">
@@ -114,6 +114,7 @@
               <el-table-column prop="roomName" header-align="center" align="center" label="预约房间">
               </el-table-column>
               <el-table-column prop="remarks" header-align="center" align="center" label="预约内容">
+
               </el-table-column>
               <el-table-column prop="status" header-align="center" align="center" label="状态">
               </el-table-column>
@@ -141,7 +142,13 @@
               </el-table-column>
               <el-table-column prop="orderNo" header-align="center" align="center" label="订单编号">
               </el-table-column>
-              <el-table-column prop="appointDate" header-align="center" align="center" label="消费内容">
+              <el-table-column prop="orderNo" header-align="center" align="center" label="消费内容">
+                <!-- <template slot-scope="scope">
+                  <div>
+                    <div>
+                    </div>
+                  </div>
+                </template> -->
               </el-table-column>
               <el-table-column prop="totalPrice" header-align="center" align="center" label="订单金额">
               </el-table-column>
@@ -283,7 +290,7 @@ export default {
         key: this.dataForm.key,
         memberId: this.idMember,
         startTime: this.beginTime,
-        overTime: this.finishTime
+        endTime: this.finishTime
       };
       API.miorder.list(params).then(({ data }) => {
         if (data && data.code === 0) {
@@ -345,7 +352,7 @@ export default {
       margin: 20px 0;
       .btnItem {
         font-size: 14px;
-        width: 66px;
+        width: 23%;
         height: 30px;
         border-radius: 4px;
       }

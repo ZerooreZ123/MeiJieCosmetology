@@ -7,6 +7,12 @@
       <el-form-item label="姓名" prop="name">
         <el-input v-model="dataForm.name" placeholder="姓名"></el-input>
       </el-form-item>
+      <el-form-item label="所属门店" prop="officeId">
+        <el-select v-model="dataForm.officeId" placeholder="请选择所属门店">
+          <el-option v-for="office in officeList" :key="office.id" :label="office.name" :value="office.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="性别">
         <el-radio-group v-model="dataForm.sex">
           <el-radio label="男">男</el-radio>
@@ -99,6 +105,7 @@ export default {
     return {
       visible: false,
       roleList: [],
+      officeList: [],
       identityList: [],
       dataForm: {
         id: 0,
@@ -112,7 +119,8 @@ export default {
         email: "",
         mobile: "",
         roleIdList: [],
-        status: 1
+        status: 1,
+        entryTime: ""
       },
       dataRule: {
         username: [{ required: true, message: "用户名不能为空", trigger: "blur" }],
@@ -127,6 +135,9 @@ export default {
   methods: {
     init(id) {
       this.dataForm.userId = id || 0;
+      API.common.getOfficeList().then(result => {
+        this.officeList = result.data.list;
+      });
       this.getIdentityList().then(() => {
         API.role
           .select()
@@ -144,6 +155,8 @@ export default {
               API.user.info(this.dataForm.userId).then(({ data }) => {
                 if (data && data.code === 0) {
                   this.dataForm = data.user;
+                  // 修改时置空页面显示密码
+                  this.dataForm.password = "";
                 }
               });
             }

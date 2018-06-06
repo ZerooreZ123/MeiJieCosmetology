@@ -8,16 +8,22 @@
         <el-input v-model="dataForm.productno" placeholder="产品编号"></el-input>
       </el-form-item>
       <el-form-item label="所属门店" prop="officeId">
-        <el-input v-model="dataForm.officeId" placeholder="所属门店"></el-input>
+        <el-select v-model="dataForm.officeId" placeholder="请选择">
+          <el-option v-for="item in shopList" :key="item.id" :label="item.name" :value="item.id">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="产品售价" prop="salePrice">
         <el-input v-model="dataForm.salePrice" placeholder="产品售价"></el-input>
       </el-form-item>
       <el-form-item label="产品类型" prop="type">
-        <el-input v-model="dataForm.type" placeholder="产品类型"></el-input>
+        <el-select v-model="dataForm.type" placeholder="请选择">
+          <el-option v-for="item in productTypeList" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="产品单位" prop="productNit">
-        <el-input v-model="dataForm.productNit" placeholder="产品单位"></el-input>
+      <el-form-item label="产品单位" prop="productUnit">
+        <el-input v-model="dataForm.productUnit" placeholder="产品单位"></el-input>
       </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-radio-group v-model="dataForm.status">
@@ -26,22 +32,37 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="产品品牌" prop="brandId">
-        <el-input v-model="dataForm.brandId" placeholder="产品品牌"></el-input>
+        <el-select v-model="dataForm.brandId" placeholder="请选择" @change="onCatFirstChange">
+          <el-option v-for="item in productBrandList" :key="item.id" :label="item.name" :value="item.id">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="一级分类" prop="catFirst">
-        <el-input v-model="dataForm.catFirst" placeholder="一级分类"></el-input>
+        <el-select v-model="dataForm.catFirst" placeholder="请选择" @change="onCatFirstChange">
+          <el-option v-for="item in productList" :key="item.id" :label="item.name" :value="item.id">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="二级分类" prop="catSecond">
-        <el-input v-model="dataForm.catSecond" placeholder="二级分类"></el-input>
+        <el-select v-model="dataForm.catSecond" placeholder="请选择">
+          <el-option v-for="item in productList2" :key="item.id" :label="item.name" :value="item.id">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="产品形态" prop="productForm">
-        <el-input v-model="dataForm.productForm" placeholder="产品形态"></el-input>
+        <el-select v-model="dataForm.productForm" placeholder="请选择">
+          <el-option v-for="item in productFormList" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="产品容量" prop="capacity">
         <el-input v-model="dataForm.capacity" placeholder="产品容量"></el-input>
       </el-form-item>
       <el-form-item label="容量单位" prop="capacityUnit">
-        <el-input v-model="dataForm.capacityUnit" placeholder="容量单位"></el-input>
+        <el-select v-model="dataForm.capacityUnit" placeholder="请选择">
+          <el-option v-for="item in productCapacityList" :key="item.value" :label="item.label" :value="item.value">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="保质期" prop="qualityPeriod">
         <el-input v-model="dataForm.qualityPeriod" placeholder="保质期"></el-input>
@@ -82,12 +103,22 @@
 
 <script>
 import API from "@/api";
+import imgUpload from "@/components/imgUpload";
 import editorOption from "@/utils/editorOption";
+import _ from "lodash";
 export default {
+  components: { imgUpload },
   data() {
     return {
       editorOption: editorOption,
       visible: false,
+      productList: [],
+      productList2: [],
+      shopList: [],
+      productTypeList: [],
+      productCapacityList: [],
+      productFormList: [],
+      productBrandList: [],
       dataForm: {
         id: 0,
         name: "",
@@ -95,7 +126,7 @@ export default {
         officeId: "",
         salePrice: "",
         type: "",
-        productNit: "",
+        productUnit: "",
         status: "",
         brandId: "",
         catFirst: "",
@@ -119,7 +150,7 @@ export default {
         officeId: [{ required: true, message: "所属门店不能为空", trigger: "blur" }],
         salePrice: [{ required: true, message: "产品售价不能为空", trigger: "blur" }],
         type: [{ required: true, message: "产品类型不能为空", trigger: "blur" }],
-        productNit: [{ required: true, message: "产品单位不能为空", trigger: "blur" }],
+        productUnit: [{ required: true, message: "产品单位不能为空", trigger: "blur" }],
         status: [{ required: true, message: "状态:0、停售 1、在售不能为空", trigger: "blur" }],
         brandId: [{ required: true, message: "产品品牌不能为空", trigger: "blur" }],
         catFirst: [{ required: true, message: "一级分类不能为空", trigger: "blur" }],
@@ -140,12 +171,55 @@ export default {
     };
   },
   methods: {
+    getCategory() {
+      API.common.getCategoryList().then(({ data }) => {
+        if (data && data.code === 0) {
+          this.productList = data.list["products"];
+        }
+      });
+      API.common.getOfficeList().then(({ data }) => {
+        if (data && data.code === 0) {
+          this.shopList = data.list;
+        }
+      });
+      API.sysdict.getlist().then(({ data }) => {
+        if (data && data.code === 0) {
+          const group = _.groupBy(data.list, obj => obj.type);
+          this.productTypeList = group["productType"];
+          this.productCapacityList = group["productCapacity"];
+          this.productFormList = group["productForm"];
+        }
+      });
+      API.productbrand.queryProductBrandList().then(({ data }) => {
+        if (data && data.code === 0) {
+          this.productBrandList = data.list;
+        }
+      });
+    },
+    getShopName(officeId) {
+      const shopList = this.shopList;
+      for (let i = 0; i < shopList.length; i++) {
+        if (shopList[i].id === +officeId) {
+          return shopList[i].name;
+        }
+      }
+      return "";
+    },
     onImagesUploadSuccess(path) {
       this.dataForm.images = path;
+    },
+    onCatFirstChange(id) {
+      for (let i = 0; i < this.productList.length; i++) {
+        if (this.productList[i].id === id) {
+          this.productList2 = this.productList[i].categoryList;
+          break;
+        }
+      }
     },
     init(id) {
       this.dataForm.id = id || 0;
       this.visible = true;
+      this.getCategory();
       this.$nextTick(() => {
         this.$refs["dataForm"].resetFields();
         if (this.dataForm.id) {
@@ -153,10 +227,10 @@ export default {
             if (data && data.code === 0) {
               this.dataForm.name = data.serviceProduct.name;
               this.dataForm.productno = data.serviceProduct.productno;
-              this.dataForm.officeId = data.serviceProduct.officeId;
+              this.dataForm.officeId = +data.serviceProduct.officeId;
               this.dataForm.salePrice = data.serviceProduct.salePrice;
               this.dataForm.type = data.serviceProduct.type;
-              this.dataForm.productNit = data.serviceProduct.productNit;
+              this.dataForm.productUnit = data.serviceProduct.productUnit;
               this.dataForm.status = data.serviceProduct.status;
               this.dataForm.brandId = data.serviceProduct.brandId;
               this.dataForm.catFirst = data.serviceProduct.catFirst;
@@ -189,7 +263,7 @@ export default {
             officeId: this.dataForm.officeId,
             salePrice: this.dataForm.salePrice,
             type: this.dataForm.type,
-            productNit: this.dataForm.productNit,
+            productUnit: this.dataForm.productUnit,
             status: this.dataForm.status,
             brandId: this.dataForm.brandId,
             catFirst: this.dataForm.catFirst,

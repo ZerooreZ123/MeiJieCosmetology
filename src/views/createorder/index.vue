@@ -1,14 +1,14 @@
 <template>
   <div class="mod-config">
-    <el-select v-model="dataForm.officeId" placeholder="请选择门店">
+    <el-select v-model="dataForm.officeId" placeholder="请选择门店" :disabled="readonly == true">
       <el-option v-for="item in filter.officeList" :key="item.id" :label="item.name" :value="item.id">
       </el-option>
     </el-select>
-    <el-select v-model="dataForm.roomId" placeholder="请选择房间">
+    <el-select v-model="dataForm.roomId" placeholder="请选择房间" :disabled="readonly == true">
       <el-option v-for="item in filter.roomList" :key="item.id" :label="item.name" :value="item.id">
       </el-option>
     </el-select>
-    <el-select v-model="dataForm.memberId" placeholder="请选择或搜索会员" filterable style="width:300px;">
+    <el-select v-model="dataForm.memberId" placeholder="请选择或搜索会员" filterable style="width:300px;" :disabled="readonly == true">
       <el-option v-for="item in filter.memberList" :key="item.id" :label="item.name" :value="item.id">
       </el-option>
     </el-select>
@@ -24,7 +24,7 @@
             {{item.serviceName}}</el-col>
           <el-col :span="11" style="text-align:right;">单价：￥{{item.servicePrice}}</el-col>
           <el-col :span="4" style="text-align:right;">
-            <el-input-number v-model="item.nums" :min="1" @change="num => handleNumChange(index, num)" label="数量"></el-input-number>
+            <el-input-number v-model="item.nums" :min="1" @change="num => handleNumChange(index, num)" label="数量" :disabled="readonly == true"></el-input-number>
           </el-col>
           <el-col :span="1">
           </el-col>
@@ -47,14 +47,14 @@
         </el-row>
         <div>
           <span>服务人员：</span>
-          <el-select placeholder="请选择服务人员：" v-model="item.serviceTechnician">
+          <el-select placeholder="请选择服务人员：" v-model="item.serviceTechnician" :disabled="readonly == true">
             <el-option v-for="item in filter.userList" :key="item.userId" :label="item.name" :value="item.name">
             </el-option>
           </el-select>
         </div>
       </el-card>
 
-      <el-row>
+      <el-row v-if="!readonly">
         <el-col :span="12">
           <span @click="addNewItem()" class="pointer">
             <el-card class="box-card">
@@ -75,9 +75,9 @@
         <div class="other">其它订单信息：</div>
         <div>
           流水单号：
-          <el-input v-model="dataForm.serialNo" placeholder="流水单号" style="width: 200px;"></el-input>
+          <el-input v-model="dataForm.serialNo" placeholder="流水单号" style="width: 200px;" :disabled="readonly == true"></el-input>
           到店会员：
-          <el-input-number v-model="dataForm.memberNums" :min="1" label="到店会员"></el-input-number>
+          <el-input-number v-model="dataForm.memberNums" :min="1" label="到店会员" :disabled="readonly == true"></el-input-number>
         </div>
       </el-card>
 

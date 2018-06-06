@@ -1,8 +1,5 @@
 <template>
-  <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
-    :close-on-click-modal="false"
-    :visible.sync="visible">
+  <el-dialog :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
       <el-form-item label="订单ID" prop="orderId">
         <el-input v-model="dataForm.orderId" placeholder="订单ID"></el-input>
@@ -15,14 +12,14 @@
         <el-date-picker value-format="yyyy-MM-dd HH:mm:ss" v-model="dataForm.visitTime" type="datetime" placeholder="回访时间">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="状态" prop="status">        
+      <el-form-item label="状态" prop="status">
         <el-select v-model="dataForm.status">
           <el-option value="1" label="待回访">待回访</el-option>
           <el-option value="2" label="已回访">已回访</el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="回访结果" prop="visitResult">
-        <el-input v-model="dataForm.visitResult" placeholder="回访结果"></el-input>
+        <el-input type="textarea" :rows="5" v-model="dataForm.visitResult" placeholder="回访结果"></el-input>
       </el-form-item>
       <!-- <el-form-item label="创建者" prop="createBy">
         <el-input v-model="dataForm.createBy" placeholder="创建者"></el-input>

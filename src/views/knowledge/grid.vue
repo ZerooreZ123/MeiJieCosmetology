@@ -32,7 +32,7 @@
       </div>
 
     </div>
-    <div v-show="isshow" class="showBanner">
+    <div v-if="isshow" class="showBanner" @click="() => isshow = false">
       <carousel-item :path="path"></carousel-item>
     </div>
     <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper">
@@ -46,6 +46,7 @@ import carouselItem from "@/components/carousel-item";
 export default {
   data() {
     return {
+      active: false,
       dataForm: {
         name: ""
       },
@@ -62,7 +63,13 @@ export default {
   },
   components: { carouselItem },
   activated() {
+    if (this.active) {
+      this.getDataList();
+    }
+  },
+  mounted() {
     this.getDataList();
+    this.active = true;
   },
   methods: {
     openPreview(id) {
@@ -138,9 +145,9 @@ export default {
   }
 }
 .showBanner {
+  background-color: rgba(0,0,0,0.7);
+  z-index: 1;
   position: absolute;
-  /* width: 600px; */
-  margin-top: 100px;
   top: 0;
   bottom: 0;
   left: 0;

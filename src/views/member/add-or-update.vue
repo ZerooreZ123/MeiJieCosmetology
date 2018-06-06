@@ -3,7 +3,7 @@
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="120px">
       <div class="necessaryWrite">必填信息</div>
       <el-form-item label="姓名" prop="name">
-        <el-input v-model="dataForm.name" placeholder="请填写客户姓名"></el-input>
+        <el-input v-model="dataForm.name" placeholder="请填写会员姓名"></el-input>
       </el-form-item>
       <el-form-item label="性别" prop="sex">
         <el-radio-group v-model="dataForm.sex">
@@ -28,9 +28,9 @@
         </el-select>
       </el-form-item>
       <div class="selectWrite">选填信息</div>
-      <el-form-item label="客户生日" prop="birthday">
+      <el-form-item label="会员生日" prop="birthday">
         <!-- <el-input v-model="dataForm.appointDate" placeholder="预约日期"></el-input> -->
-        <el-date-picker value-format="yyyy-MM-dd" v-model="dataForm.birthday" type="date" placeholder="客户生日">
+        <el-date-picker value-format="yyyy-MM-dd" v-model="dataForm.birthday" type="date" placeholder="会员生日">
         </el-date-picker>
       </el-form-item>
       <el-form-item label="会员号" prop="memberno">
@@ -96,7 +96,8 @@ export default {
         memberno: "",
         joinTime: "",
         echnician: "",
-        signPhoto: ""
+        signPhoto: "",
+        recommendPeople: ""
       },
       dataRule: {
         officeId: [{ required: true, message: "所属门店不能为空", trigger: "blur" }],
@@ -136,7 +137,7 @@ export default {
       });
       API.member.queryMemberList().then(({ data }) => {
         if (data && data.code === 0) {
-          this.memberList = data.page.list;
+          this.memberList = data.list;
         } else {
           this.memberList = [];
         }
@@ -173,7 +174,7 @@ export default {
               this.dataForm.sex = data.member.sex;
               this.dataForm.mobile = data.member.mobile;
               this.dataForm.umtSource = data.member.umtSource;
-              this.dataForm.officeId = data.member.officeId;
+              this.dataForm.officeId = parseInt(data.member.officeId, 10);
               this.dataForm.birthday = data.member.birthday;
               this.dataForm.memberno = data.member.memberno;
               this.dataForm.joinTime = data.member.joinTime;

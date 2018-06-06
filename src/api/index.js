@@ -29,6 +29,7 @@ import * as appointment from "./modules/appointment";
 import * as sysmerchant from "./modules/sysmerchant";
 import * as ordervisit from "./modules/ordervisit";
 import * as knowledge from "./modules/knowledge";
+import * as membermarks from "./modules/membermarks";
 
 export default {
   common, // 公共
@@ -61,5 +62,6 @@ export default {
   appointment,
   sysmerchant,
   ordervisit,
-  knowledge
+  knowledge,
+  membermarks
 };

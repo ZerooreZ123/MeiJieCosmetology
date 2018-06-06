@@ -50,8 +50,9 @@
       <div class="bot-bar">
         &nbsp;
         <span class="right-btns">
-          <el-button v-if="item.status == 1 || item.status == 3" type="info" @click="goOrderCreatePage(item.id)">收银</el-button>
-          <el-button type="primary">打印小票</el-button>
+          <el-button v-if="item.status == 1" type="info" @click="goOrderCreatePage(item.id, 'order')">收银</el-button>
+          <el-button v-if="item.status == 3" type="info" @click="goOrderCreatePage(item.id, 'repayment')">还款</el-button>
+          <el-button type="primary" @click="print(item)">打印小票</el-button>
           <el-button type="success" @click="showDetail(item.id)">详情</el-button>
           <!-- <el-button type="warning">修改</el-button> -->
           <el-button v-if="item.status == 1" type="danger" @click="changeOrderStatus(item.id, 4)">取消订单</el-button>
@@ -116,7 +117,7 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapMutations } from "vuex";
 import API from "@/api";
 import detail from "./detail";
 export default {
@@ -150,9 +151,15 @@ export default {
   },
   methods: {
     ...mapMutations(["UPDATE_MENU_NAV_ACTIVE_NAME"]),
-    goOrderCreatePage(orderId) {
+    print(item) {
+      console.log(JSON.stringify(item));
+      window.LODOP.PRINT_INITA(1, 1, 770, 660, "测试预览功能");
+      window.LODOP.ADD_PRINT_TEXT(10, 60, 300, 200, "这是测试的纯文本，下面是超文本:");
+      window.LODOP.PREVIEW(); // 最后一个打印(或预览、维护、设计)语句
+    },
+    goOrderCreatePage(orderId, type) {
       this.$router.push({
-        path: "/createorder/order/" + orderId
+        path: "/createorder/" + type + "/" + orderId
       });
       this.UPDATE_MENU_NAV_ACTIVE_NAME({ name: "159" });
     },

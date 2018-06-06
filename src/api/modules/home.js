@@ -3,14 +3,27 @@ import requestUrl from "../requestUrl";
 import requestParam from "../requestParam";
 
 /**
+ * 正在服务的员工
+ * @param {*} params
+ * officeId
+ */
+export function getStaff(params) {
+  return request({
+    url: requestUrl("/order/miorder/getStaff"),
+    method: "get",
+    params: requestParam(params, "get")
+  });
+}
+
+/**
  * 预约数量
  * @param {*} params
  */
 export function getAppoint(params) {
   return request({
     url: requestUrl("/appoint/appointment/getAppoint"),
-    method: "post",
-    data: requestParam(params)
+    method: "get",
+    params: requestParam(params, "get")
   });
 }
 
@@ -21,8 +34,8 @@ export function getAppoint(params) {
 export function getOrderNum(params) {
   return request({
     url: requestUrl("/order/miorder/getOrderNum"),
-    method: "post",
-    data: requestParam(params)
+    method: "get",
+    params: requestParam(params, "get")
   });
 }
 
@@ -33,8 +46,8 @@ export function getOrderNum(params) {
 export function getTurnover(params) {
   return request({
     url: requestUrl("/order/miorder/getTurnover"),
-    method: "post",
-    data: requestParam(params)
+    method: "get",
+    params: requestParam(params, "get")
   });
 }
 
@@ -45,8 +58,8 @@ export function getTurnover(params) {
 export function getGuest(params) {
   return request({
     url: requestUrl("/member/member/getGuest"),
-    method: "post",
-    data: requestParam(params)
+    method: "get",
+    params: requestParam(params, "get")
   });
 }
 

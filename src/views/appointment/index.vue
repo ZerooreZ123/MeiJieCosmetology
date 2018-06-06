@@ -4,7 +4,7 @@
       <div class="btns">
         <div class="input-left">
           <el-form-item>
-            <el-input v-model="dataForm.key" placeholder="查询" clearable @clear="getDataListPage1"></el-input>
+            <el-input v-model="dataForm.key" placeholder="搜索姓名/技师" clearable @clear="getDataListPage1"></el-input>
           </el-form-item>
           <el-button @click="getDataListPage1()">查询</el-button>
         </div>

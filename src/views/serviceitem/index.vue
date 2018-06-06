@@ -20,13 +20,16 @@
     <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;">
       <el-table-column type="selection" header-align="center" align="center" width="50">
       </el-table-column>
-      <el-table-column prop="id" header-align="center" align="center" label="">
+      <el-table-column prop="id" header-align="center" align="center" label="ID" width="50">
       </el-table-column>
       <el-table-column prop="name" header-align="center" align="center" label="项目名称">
       </el-table-column>
       <el-table-column prop="itemno" header-align="center" align="center" label="项目编号">
       </el-table-column>
       <el-table-column prop="officeId" header-align="center" align="center" label="所属门店">
+        <template slot-scope="scope">
+          {{scope.row.officeId | shopName(shopList)}}
+        </template>
       </el-table-column>
       <el-table-column prop="salePrice" header-align="center" align="center" label="售价">
       </el-table-column>
@@ -111,6 +114,16 @@ export default {
   mounted() {
     this.getDataList();
     this.getCategory();
+  },
+  filters: {
+    shopName(officeId, shopList) {
+      for (let i = 0; i < shopList.length; i++) {
+        if (shopList[i].id === +officeId) {
+          return shopList[i].name;
+        }
+      }
+      return "未知";
+    }
   },
   methods: {
     getCategory() {

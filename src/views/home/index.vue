@@ -8,6 +8,7 @@
         </el-breadcrumb-item>
       </el-breadcrumb>
       <el-select v-model="shopId" placeholder="请选择门店" style="float:right;">
+        <el-option label="全部" value=""></el-option>
         <el-option v-for="item in shopList" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
@@ -128,12 +129,18 @@
         <el-col :span="8">
           <div class="i-title">
             <img src="../../assets/img/main/yg.png" /> 正在服务的员工
-          </div>
-          <div style="padding:10px;">
             <div class="search">
-              <el-input placeholder="参数名"></el-input>
+              <el-input placeholder="参数名" v-model="filterServiceTechnician"></el-input>
               <img src="../../assets/img/main/ss.png" />
             </div>
+          </div>
+          <div>
+            <el-table :data="staffList" border style="width: 100%;margin-top:10px;">
+              <el-table-column prop="orderNo" header-align="center" align="center" label="订单号">
+              </el-table-column>
+              <el-table-column prop="serviceTechnician" header-align="center" align="center" label="计时">
+              </el-table-column>
+            </el-table>
           </div>
         </el-col>
       </el-row>
@@ -160,7 +167,9 @@ export default {
       limitGuest: "",
       limitTurnover: "",
       guestList: [{}, {}, {}],
-      appointmentList: []
+      appointmentList: [],
+      filterServiceTechnician: "",
+      staffList: []
     };
   },
   mounted() {
@@ -170,6 +179,7 @@ export default {
     this.getTurnover({});
     this.getGuest({});
     this.getAppointmentList();
+    this.getStaff({});
     this.active = true;
   },
   activated() {
@@ -180,6 +190,7 @@ export default {
       this.getTurnover({});
       this.getGuest({});
       this.getAppointmentList();
+      this.getStaff({});
     }
   },
   filters: {
@@ -198,6 +209,14 @@ export default {
   watch: {
     shopId() {
       this.reloadWithParams();
+    },
+    filterServiceTechnician() {
+      const params = {};
+      if (this.shopId) {
+        params.officeId = this.shopId;
+      }
+      params.serviceTechnician = this.filterServiceTechnician;
+      this.getStaff(params);
     }
   },
   methods: {
@@ -206,28 +225,33 @@ export default {
       if (this.shopId) {
         params.officeId = this.shopId;
       }
+      this.getStaff(params);
       if (this.limitAppoint) {
         params.type = this.limitAppoint;
         this.getAppoint(params);
       } else {
+        delete params.type;
         this.getAppoint(params);
       }
       if (this.limitOrderNum) {
         params.type = this.limitOrderNum;
         this.getOrderNum(params);
       } else {
+        delete params.type;
         this.getOrderNum(params);
       }
       if (this.limitTurnover) {
         params.type = this.limitTurnover;
         this.getTurnover(params);
       } else {
+        delete params.type;
         this.getTurnover(params);
       }
       if (this.limitGuest) {
         params.type = this.limitGuest;
         this.getGuest(params);
       } else {
+        delete params.type;
         this.getGuest(params);
       }
     },
@@ -235,6 +259,14 @@ export default {
       API.common.getOfficeList().then(({ data }) => {
         if (data && data.code === 0) {
           this.shopList = data.list;
+        }
+      });
+    },
+    getStaff(params) {
+      API.home.getStaff(params).then(({ data }) => {
+        console.log(data);
+        if (data && data.code === 0) {
+          this.staffList = data.list;
         }
       });
     },
@@ -275,19 +307,35 @@ export default {
     },
     handleCommandAppoint(command) {
       this.limitAppoint = command;
-      this.reloadWithParams();
+      const params = { type: command };
+      if (this.shopId) {
+        params.officeId = this.shopId;
+      }
+      this.getAppoint(params);
     },
     handleCommandOrderNum(command) {
       this.limitOrderNum = command;
-      this.reloadWithParams();
+      const params = { type: command };
+      if (this.shopId) {
+        params.officeId = this.shopId;
+      }
+      this.getOrderNum(params);
     },
     handleCommandTurnover(command) {
       this.limitTurnover = command;
-      this.reloadWithParams();
+      const params = { type: command };
+      if (this.shopId) {
+        params.officeId = this.shopId;
+      }
+      this.getTurnover(params);
     },
     handleCommandGuest(command) {
       this.limitGuest = command;
-      this.reloadWithParams();
+      const params = { type: command };
+      if (this.shopId) {
+        params.officeId = this.shopId;
+      }
+      this.getGuest(params);
     }
   }
 };
@@ -322,7 +370,10 @@ export default {
   text-align: center;
 }
 .search {
-  position: relative;
+  position: absolute;
+  top: -5px;
+  right: 0;
+  width: 200px;
 }
 .search > img {
   position: absolute;

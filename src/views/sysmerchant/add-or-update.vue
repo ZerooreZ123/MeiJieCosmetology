@@ -12,6 +12,7 @@
       </el-form-item>
       <el-form-item label="商户logo" prop="merchantLogo">
         <el-input v-model="dataForm.merchantLogo" placeholder="商户logo"></el-input>
+        <img-upload :path="dataForm.merchantLogo" @success="merchantLogoUploadSuccess"></img-upload>
       </el-form-item>
       <el-form-item label="商户简称" prop="merchantShortname">
         <el-input v-model="dataForm.merchantShortname" placeholder="商户简称"></el-input>
@@ -33,15 +34,18 @@
       </el-form-item>
       <el-form-item label="法人身份证正面" prop="identityPositive">
         <el-input v-model="dataForm.identityPositive" placeholder="法人身份证正面"></el-input>
+        <img-upload :path="dataForm.identityPositive" @success="identityPositiveUploadSuccess"></img-upload>
       </el-form-item>
       <el-form-item label="法人身份证反面" prop="identityOpposite">
         <el-input v-model="dataForm.identityOpposite" placeholder="法人身份证反面"></el-input>
+        <img-upload :path="dataForm.identityOpposite" @success="identityOppositeUploadSuccess"></img-upload>
       </el-form-item>
       <el-form-item label="营业执照编号" prop="businessNo">
         <el-input v-model="dataForm.businessNo" placeholder="营业执照编号"></el-input>
       </el-form-item>
       <el-form-item label="营业执照图片" prop="businessImage">
         <el-input v-model="dataForm.businessImage" placeholder="营业执照图片"></el-input>
+        <img-upload :path="dataForm.businessImage" @success="businessImageUploadSuccess"></img-upload>
       </el-form-item>
       <!-- <el-form-item label="创建者" prop="createBy">
         <el-input v-model="dataForm.createBy" placeholder="创建者"></el-input>
@@ -71,7 +75,9 @@
 
 <script>
 import API from "@/api";
+import imgUpload from "@/components/imgUpload";
 export default {
+  components: { imgUpload },
   data() {
     return {
       visible: false,
@@ -123,6 +129,18 @@ export default {
     };
   },
   methods: {
+    merchantLogoUploadSuccess(path) {
+      this.dataForm.merchantLogo = path;
+    },
+    identityPositiveUploadSuccess(path) {
+      this.dataForm.identityPositive = path;
+    },
+    identityOppositeUploadSuccess(path) {
+      this.dataForm.identityOpposite = path;
+    },
+    businessImageUploadSuccess(path) {
+      this.dataForm.businessImage = path;
+    },
     init(id) {
       this.dataForm.id = id || 0;
       this.visible = true;

@@ -47,7 +47,7 @@ export function del(params) {
     data: requestParam(params, "post", false)
   });
 }
-// 获取用户来源
+
 export function getlist(params) {
   return request({
     url: requestUrl("/sys/sysdict/getList"),

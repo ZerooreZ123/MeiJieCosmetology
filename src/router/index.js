@@ -41,6 +41,7 @@ export default new Router({
         { path: "/more_settings", component: _import("more_settings/index"), name: "more_settings", desc: "更多设置", meta: { isTab: false } },
         { path: "/more_settings/shop_list", component: _import("more_settings/shop_list"), name: "shop_list", desc: "门店列表", meta: { isTab: false } },
         { path: "/member/member_detail", component: _import("member/memberDetail"), name: "member_detail", desc: "会员详情", meta: { isTab: false } },
+        { path: "/membermarks", component: _import("membermarks/index"), name: "membermarks", desc: "会员备注", meta: { isTab: false } },
         {
           path: "/more_settings/individuation",
           component: _import("more_settings/individuation/index"),

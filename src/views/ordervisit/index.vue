@@ -1,12 +1,14 @@
 <template>
   <div class="mod-config">
-    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataListPage1()">
       <div class="btns">
         <div class="input-left">
           <el-form-item>
-            <el-input v-model="dataForm.key" placeholder="参数名" clearable></el-input>
+            消费时间:
+            <el-date-picker type="date" value-format="yyyy-MM-dd" v-model="dataForm.startDay" placeholder="开始日期"></el-date-picker>~
+            <el-date-picker type="date" value-format="yyyy-MM-dd" v-model="dataForm.endDay" placeholder="结束日期"></el-date-picker>
           </el-form-item>
-          <el-button @click="getDataList()">查询</el-button>
+          <el-button @click="getDataListPage1()">查询</el-button>
         </div>
         <div class="btns-right">
           <el-button v-if="isAuth('order:ordervisit:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
@@ -20,7 +22,16 @@
       </el-table-column>
       <el-table-column prop="id" header-align="center" align="center" label="编号">
       </el-table-column>
-      <el-table-column prop="orderId" header-align="center" align="center" label="订单ID">
+      <el-table-column prop="orderId" header-align="center" align="center" label="订单编号">
+
+        <template slot-scope="scope">
+          <div>
+            <a href="javascript:();" @click="showDetail(scope.row.orderInfo.id)">
+              <i class="el-icon-view"></i>
+              <strong>{{scope.row.orderInfo.orderNo}}</strong>
+            </a>
+          </div>
+        </template>
       </el-table-column>
       <el-table-column prop="consumeTime" header-align="center" align="center" label="消费时间">
       </el-table-column>
@@ -68,7 +79,7 @@
       </el-table-column> -->
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">回访处理</el-button>
           <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
@@ -77,17 +88,20 @@
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <detail v-if="detailVisible" ref="detail" @refreshDataList="getDataList"></detail>
   </div>
 </template>
 
 <script>
 import API from "@/api";
 import AddOrUpdate from "./add-or-update";
+import detail from "../miorder/detail";
 export default {
   data() {
     return {
       dataForm: {
-        key: ""
+        startDay: "",
+        endDay: ""
       },
       dataList: [],
       pageIndex: 1,
@@ -95,23 +109,36 @@ export default {
       totalPage: 0,
       dataListLoading: false,
       dataListSelections: [],
-      addOrUpdateVisible: false
+      addOrUpdateVisible: false,
+      detailVisible: true
     };
   },
   components: {
-    AddOrUpdate
+    AddOrUpdate,
+    detail
   },
   activated() {
     this.getDataList();
   },
   methods: {
+    getDataListPage1() {
+      this.pageIndex = 1;
+      this.getDataList();
+    },
+    showDetail(id) {
+      this.detailVisible = true;
+      this.$nextTick(() => {
+        this.$refs.detail.init(id);
+      });
+    },
     // 获取数据列表
     getDataList() {
       this.dataListLoading = true;
       var params = {
         page: this.pageIndex,
         limit: this.pageSize,
-        key: this.dataForm.key
+        startDay: this.dataForm.startDay,
+        endDay: this.dataForm.endDay
       };
       API.ordervisit.list(params).then(({ data }) => {
         if (data && data.code === 0) {

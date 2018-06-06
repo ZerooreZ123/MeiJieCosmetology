@@ -19,7 +19,7 @@
           </category>
           <category listname="近期分类" :list="recentList" @onItemClick="onRecentClick"></category>
           <category listname="到店频次" :list="frequencyList" @onItemClick="onFrequencyClick"></category>
-          <category listname="客户来源" :list="sourceList" @onItemClick="onSourceClick"></category>
+          <category listname="会员来源" :list="sourceList" @onItemClick="onSourceClick"></category>
           <category listname="所属门店" :list="storeList" @onItemClick="onStoreClick"></category>
         </div>
         <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;">
@@ -66,7 +66,7 @@
         <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper">
         </el-pagination>
       </div>
-      <div slot="客户筛选">
+      <div slot="会员筛选">
         <div class="selectionCondition">选择条件</div>
         <el-form ref="dataForm" :model="selectionCondition" label-width="100px">
           <el-form-item label="性别" prop="sex">
@@ -126,9 +126,9 @@
         </div>
         <div class="result">
           <div class="filterResult">筛选结果:共找到
-            <span>{{customers}}</span>位客户</div>
+            <span>{{customers}}</span>位会员</div>
           <el-table :data="dataResult" border @selection-change="selectionChangeHandle" style="width: 100%;">
-            <el-table-column prop="name" header-align="center" align="center" label="客户">
+            <el-table-column prop="name" header-align="center" align="center" label="会员">
             </el-table-column>
             <el-table-column prop="memberno" header-align="center" align="center" label="会员号">
             </el-table-column>
@@ -138,7 +138,7 @@
             </el-table-column>
             <el-table-column prop="createDate" header-align="center" align="center" label="建档日期">
             </el-table-column>
-            <el-table-column prop="sex" header-align="center" align="center" label="客户性别">
+            <el-table-column prop="sex" header-align="center" align="center" label="会员性别">
             </el-table-column>
           </el-table>
           <el-pagination @size-change="sizeChangeHandle1" @current-change="currentChangeHandle1" :current-page="pageIndex1" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize1" :total="totalPage1" layout="total, sizes, prev, pager, next, jumper">
@@ -215,7 +215,7 @@ export default {
       isShow: false,
       isSeach: false,
       options: [],
-      itemList: ["会员信息", "客户筛选", "会员概括总览"],
+      itemList: ["会员信息", "会员筛选", "会员概括总览"],
       tags: [],
       tagTemp: "",
       shopId: "",
@@ -308,7 +308,10 @@ export default {
           const xData = data.list.map(obj => obj.label);
           const yData = data.list.map(obj => ({
             name: obj.label,
-            value: obj.val
+            value: obj.val,
+            itemStyle: {
+              color: obj.color
+            }
           }));
           optionPie.legend.data = xData;
           optionPie.series[0].data = yData;
@@ -517,27 +520,13 @@ export default {
         }
         this.tags.push({
           id: 1,
-          name:
-            "消费频率" +
-            this.selectionCondition.startDay +
-            "至" +
-            this.selectionCondition.endDay +
-            "到店" +
-            this.tagTemp +
-            this.selectionCondition.frequency +
-            "次"
+          name: `消费频率${this.selectionCondition.startDay}至${this.selectionCondition.endDay}到店${this.tagTemp}${this.selectionCondition.frequency}次`
         });
       }
       if (this.selectionCondition.addUpConsume !== "" && this.selectionCondition.minMoney >= 0 && this.selectionCondition.maxMoney >= 0) {
         this.tags.push({
           id: 2,
-          name:
-            Math.floor(this.selectionCondition.addUpConsume / 7) +
-            "周累计消费" +
-            this.selectionCondition.minMoney +
-            "~" +
-            this.selectionCondition.maxMoney +
-            "元"
+          name: `${Math.floor(this.selectionCondition.addUpConsume / 7)}周累计消费${this.selectionCondition.minMoney}~${this.selectionCondition.maxMoney}元`
         });
       }
       if (this.selectionCondition.notSpending !== "") {
