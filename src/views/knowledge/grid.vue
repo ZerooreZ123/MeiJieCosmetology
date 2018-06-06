@@ -13,7 +13,7 @@
 
       <div class="grid-item" v-for="know in dataList" :key="know.id">
         <div class="resource">
-          <img v-if="know.resourceType === '1'" src="~@/assets/img/know.png" width="300" @click="openPreview(know.id)" />
+          <img v-if="know.resourceType === '1'" src="~@/assets/img/know.png" width="300" @click="openPreview(know.name,know.content)" />
           <img v-if="know.resourceType === '2'" :src="resourceServer+know.imagePath.split(',')[0]" width="300" @click="openPreviewImage(know.imagePath)" />
           <video v-if="know.resourceType === '3'" :src="resourceServer+know.videoPath" controls width="300"></video>
         </div>
@@ -37,11 +37,14 @@
     </div>
     <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
+
+    <knowdetail @refreshDataList="getDataList" :innerContent="content" ref="knowdetail"></knowdetail>
   </div>
 </template>
 
 <script>
 import API from "@/api";
+import knowdetail from "./knowdetail";
 import carouselItem from "@/components/carousel-item";
 export default {
   data() {
@@ -58,10 +61,11 @@ export default {
       pageSize: 10,
       totalPage: 0,
       dataListLoading: false,
-      dataListSelections: []
+      dataListSelections: [],
+      content: ""
     };
   },
-  components: { carouselItem },
+  components: { carouselItem, knowdetail },
   activated() {
     if (this.active) {
       this.getDataList();
@@ -72,14 +76,9 @@ export default {
     this.active = true;
   },
   methods: {
-    openPreview(id) {
-      API.knowledge.info(id).then(({ data }) => {
-        if (data && data.code === 0) {
-          this.$alert(data.knowledge.content, data.knowledge.name, {
-            dangerouslyUseHTMLString: true
-          });
-        }
-      });
+    openPreview(name, content) {
+      this.content = content;
+      this.$refs.knowdetail.init();
     },
     openPreviewImage(path) {
       this.path = path;
@@ -145,7 +144,7 @@ export default {
   }
 }
 .showBanner {
-  background-color: rgba(0,0,0,0.7);
+  background-color: rgba(0, 0, 0, 0.7);
   z-index: 1;
   position: absolute;
   top: 0;

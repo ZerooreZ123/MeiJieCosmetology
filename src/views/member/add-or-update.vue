@@ -7,8 +7,8 @@
       </el-form-item>
       <el-form-item label="性别" prop="sex">
         <el-radio-group v-model="dataForm.sex">
-          <el-radio label="0">男</el-radio>
-          <el-radio label="1">女</el-radio>
+          <el-radio label="1">男</el-radio>
+          <el-radio label="0">女</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="手机号" prop="mobile">
@@ -16,7 +16,7 @@
       </el-form-item>
       <el-form-item label="渠道来源" prop="umtSource">
         <el-select v-model="dataForm.umtSource" placeholder="请选择">
-          <el-option v-for="item in sourceList" :key="item.id" :label="item.label" :value="item.value">
+          <el-option v-for="item in sourceList" :key="item.id" :label="item.label" :value="item.label">
           </el-option>
         </el-select>
       </el-form-item>
@@ -48,8 +48,8 @@
         <el-date-picker value-format="yyyy-MM-dd" v-model="dataForm.joinTime" type="date" placeholder="请选择入会时间">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="上传头像" prop="signPhoto">
-        <img-upload :path="dataForm.signPhoto" @success="onSignPhotoUploadSuccess"></img-upload>
+      <el-form-item label="上传头像" prop="headimage">
+        <img-upload :path="dataForm.headimage" @success="onSignPhotoUploadSuccess"></img-upload>
       </el-form-item>
     </el-form>
 
@@ -144,7 +144,7 @@ export default {
       });
     },
     onSignPhotoUploadSuccess(path) {
-      this.dataForm.signPhoto = path;
+      this.dataForm.headimage = path;
     },
     openPanel() {
       this.showPanel = true;
@@ -199,7 +199,7 @@ export default {
             memberno: this.dataForm.memberno,
             joinTime: this.dataForm.joinTime,
             recommendPeople: this.dataForm.recommendPeople,
-            signPhoto: this.dataForm.signPhoto
+            headimage: this.dataForm.headimage
             //  memberId: this.dataForm.memberId,
             // nums: this.dataForm.nums,
             // appointDate: this.dataForm.appointDate,

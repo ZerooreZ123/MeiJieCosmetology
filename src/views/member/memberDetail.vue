@@ -3,7 +3,7 @@
     <div class="contentWrap">
       <div class="sideWrap">
         <div class="sideHeader">
-          <img src="../../assets/img/avatar.png" alt="">
+          <img :src="resourceServer+this.dataInfo.headimage" alt="">
           <div class="name">{{this.dataInfo.name}}</div>
           <el-row type="flex" class="row-bg" justify="space-around">
             <el-col :span="8">
@@ -109,7 +109,7 @@
             <el-table border style="width: 100%;" :data="tabInfo">
               <el-table-column prop="appointDate" header-align="center" align="center" label="预约时间" width="120">
               </el-table-column>
-              <el-table-column prop="name" header-align="center" align="center" label="美疗师">
+              <el-table-column prop="technician" header-align="center" align="center" label="美疗师">
               </el-table-column>
               <el-table-column prop="roomName" header-align="center" align="center" label="预约房间">
               </el-table-column>
@@ -119,7 +119,7 @@
               <el-table-column prop="status" header-align="center" align="center" label="状态">
               </el-table-column>
             </el-table>
-            <el-pagination :current-page="pageIndex" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper"></el-pagination>
+            <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper"></el-pagination>
           </div>
           <div slot="消费记录">
             <div class="selectTime">
@@ -136,19 +136,19 @@
               </el-form>
             </div>
             <el-table :data="dataList" border style="width: 100%;">
-              <el-table-column prop="payTime" header-align="center" align="center" label="消费时间" width="140">
+              <el-table-column prop="createDate" header-align="center" align="center" label="消费时间" width="140">
               </el-table-column>
-              <el-table-column prop="appointDate" header-align="center" align="center" label="美疗师">
+              <el-table-column prop="detailList" header-align="center" align="center" label="美疗师">
+                <template slot-scope="scope">
+                  <div v-for="item in scope.row.detailList" :key="item.serviceId" v-text="item.serviceTechnician"></div>
+                </template>
               </el-table-column>
               <el-table-column prop="orderNo" header-align="center" align="center" label="订单编号">
               </el-table-column>
-              <el-table-column prop="orderNo" header-align="center" align="center" label="消费内容">
-                <!-- <template slot-scope="scope">
-                  <div>
-                    <div>
-                    </div>
-                  </div>
-                </template> -->
+              <el-table-column prop="detailList" header-align="center" align="center" label="消费内容">
+                <template slot-scope="scope">
+                  <div v-for="item in scope.row.detailList" :key="item.serviceId" v-text="item.serviceName"></div>
+                </template>
               </el-table-column>
               <el-table-column prop="totalPrice" header-align="center" align="center" label="订单金额">
               </el-table-column>
@@ -158,7 +158,7 @@
                 </template>
               </el-table-column>
             </el-table>
-            <el-pagination :current-page="pageIndex1" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize1" :total="totalPage1" layout="total, sizes, prev, pager, next, jumper"></el-pagination>
+            <el-pagination @size-change="sizeChangeHandle1" @current-change="currentChangeHandle1" :current-page="pageIndex1" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize1" :total="totalPage1" layout="total, sizes, prev, pager, next, jumper"></el-pagination>
           </div>
           <!-- <div slot="获赠记录">
           </div>
@@ -190,15 +190,20 @@ export default {
       pageIndex1: 1,
       pageSize1: 10,
       totalPage1: 0,
+      // imagePath: {
+      //   background: ""
+      // },
+      resourceServer: window.SITE_CONFIG["resourceServer"],
       dataForm: {
         key: ""
       },
       itemList: ["预约记录", "消费记录"],
       dataInfo: {
-        name: "",
+        technician: "",
         mobile: "",
         officeName: "",
-        memberno: ""
+        memberno: "",
+        headimage: ""
       },
       tabInfo: [],
       dataList: []
@@ -215,16 +220,40 @@ export default {
       this.$nextTick(() => {
         API.member.info(window.memberId).then(({ data }) => {
           if (data && data.code === 0) {
-            this.dataInfo.name = data.member.name;
+            this.dataInfo.technician = data.member.technician;
             this.dataInfo.mobile = data.member.mobile;
             this.dataInfo.officeName = data.member.officeName;
             this.dataInfo.memberno = data.member.memberno;
+            this.dataInfo.headimage = data.member.headimage;
             this.idMember = data.member.id;
+            // this.imagePath.background = `url(${this.resourceServer}${this.dataInfo.headimage}) no-repeat center center`;
             this.appointmentList(data.member.id);
             this.getDataList(data.member.id);
           }
         });
       });
+    },
+    // 每页数
+    sizeChangeHandle(val) {
+      this.pageSize = val;
+      this.pageIndex = 1;
+      this.appointmentList();
+    },
+    // 当前页
+    currentChangeHandle(val) {
+      this.pageIndex = val;
+      this.appointmentList();
+    },
+    // 每页数1
+    sizeChangeHandle1(val) {
+      this.pageSize = val;
+      this.pageIndex = 1;
+      this.getDataList();
+    },
+    // 当前页1
+    currentChangeHandle1(val) {
+      this.pageIndex = val;
+      this.getDataList();
     },
     appointmentList(memId) {
       var params = {
@@ -237,7 +266,6 @@ export default {
         if (data && data.code === 0) {
           this.tabInfo = data.page.list;
           this.totalPage = data.page.totalCount;
-          console.log(data.page.list);
         } else {
           this.tabInfo = [];
           this.totalPage = 0;
@@ -324,7 +352,7 @@ export default {
       align-items: center;
       width: 100%;
       height: 260px;
-      background: #ddd3ca;
+      background: #fde3be;
       img {
         display: inline-block;
         width: 80px;

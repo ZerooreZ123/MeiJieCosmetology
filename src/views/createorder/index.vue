@@ -15,7 +15,7 @@
 
     <div>
       <el-card class="box-card" v-for="(item, index) in dataList" :key="item.t">
-        <i class="el-icon-delete remove-card" @click="deleteHandle(index)"></i>
+        <i v-if="!readonly" class="el-icon-delete remove-card" @click="deleteHandle(index)"></i>
         <el-row style="line-height: 40px;">
           <el-col :span="8">
             <template v-if="item.serviceType == 1">项目：</template>
@@ -34,8 +34,9 @@
             <div>小计：￥{{item.subtotal}}</div>
             <div v-for="(paymode, paymodeIndex) in item.payList" :key="paymode.t">
               已支付（{{paymode.payMethod}}）：￥
-              <input type="text" class="paymode-value" v-model="paymode.payPrice" @input="handlePaymodeInput(index)">
-              <i class="el-icon-delete remove-paymode" @click="removePaymode(index, paymodeIndex)"></i>
+              <input :disabled="!!paymode.readonly" type="text" class="paymode-value" v-model="paymode.payPrice" @input="handlePaymodeInput(index)">
+              <i v-if="!!paymode.readonly" class="el-icon-delete remove-paymode"></i>
+              <i v-else class="el-icon-delete remove-paymode" @click="removePaymode(index, paymodeIndex)"></i>
             </div>
             <div>待支付：￥{{item.serviceNeedPay}}</div>
           </el-col>

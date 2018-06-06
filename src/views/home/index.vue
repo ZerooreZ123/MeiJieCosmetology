@@ -3,7 +3,7 @@
     <div>
       <el-breadcrumb separator="/" style="float:left;">
         <el-breadcrumb-item>
-          <img src="~@/assets/img/main/tj.png" alt="">
+          <img src="~@/assets/img/main/01.png" alt="">
           <span class="breadcrumb-title">首页</span>
         </el-breadcrumb-item>
       </el-breadcrumb>

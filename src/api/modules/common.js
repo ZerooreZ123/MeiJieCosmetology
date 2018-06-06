@@ -43,6 +43,15 @@ export function getOfficeList() {
   });
 }
 
+// 获取员工身份
+export function getIdentityList() {
+  return request({
+    url: requestUrl("/sys/sysidentity/getList"),
+    method: "get",
+    data: requestParam({}, "get")
+  });
+}
+
 // 获取分类列表
 export function getCategoryList() {
   return request({

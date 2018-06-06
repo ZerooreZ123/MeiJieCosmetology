@@ -71,6 +71,7 @@ export default {
       dataForm: {
         userName: ""
       },
+      active: false,
       roleList: [],
       identityList: [],
       officeList: [],
@@ -88,10 +89,18 @@ export default {
     AddOrUpdate,
     category
   },
+  activated() {
+    if (this.active) {
+      this.getRoleList();
+      this.getOfficeList();
+      this.getIdentityList().then(() => this.getDataList());
+    }
+  },
   mounted() {
     this.getRoleList();
     this.getOfficeList();
     this.getIdentityList().then(() => this.getDataList());
+    this.active = true;
   },
   methods: {
     onIdentityClick(item) {
@@ -125,16 +134,22 @@ export default {
       });
     },
     getIdentityList() {
-      return API.sysidentity.list().then(({ data }) => {
-        const identityList = data && data.code === 0 ? data.page.list : [];
-        this.identityList = identityList;
+      return API.common.getIdentityList().then(({ data }) => {
+        if (data && data.code === 0) {
+          this.identityList = data.list;
+        } else {
+          this.identityList = [];
+        }
       });
     },
     getOfficeList() {
       // 门店
-      return API.sysoffice.list().then(({ data }) => {
-        const officeList = data && data.code === 0 ? data.page.list : [];
-        this.officeList = officeList;
+      return API.common.getOfficeList().then(({ data }) => {
+        if (data && data.code === 0) {
+          this.officeList = data.list;
+        } else {
+          this.officeList = [];
+        }
       });
     },
     getDataListPage1() {

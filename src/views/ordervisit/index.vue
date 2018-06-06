@@ -11,7 +11,7 @@
           <el-button @click="getDataListPage1()">查询</el-button>
         </div>
         <div class="btns-right">
-          <el-button v-if="isAuth('order:ordervisit:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+          <!-- <el-button v-if="isAuth('order:ordervisit:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button> -->
           <el-button v-if="isAuth('order:ordervisit:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
           <div class="clear"></div>
         </div>
@@ -23,14 +23,14 @@
       <el-table-column prop="id" header-align="center" align="center" label="编号">
       </el-table-column>
       <el-table-column prop="orderId" header-align="center" align="center" label="订单编号">
-
         <template slot-scope="scope">
-          <div>
+          <div v-if="scope.row.orderInfo">
             <a href="javascript:();" @click="showDetail(scope.row.orderInfo.id)">
               <i class="el-icon-view"></i>
               <strong>{{scope.row.orderInfo.orderNo}}</strong>
             </a>
           </div>
+          <div v-else>未找到订单信息</div>
         </template>
       </el-table-column>
       <el-table-column prop="consumeTime" header-align="center" align="center" label="消费时间">
@@ -79,7 +79,7 @@
       </el-table-column> -->
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">回访处理</el-button>
+          <el-button v-if="scope.row.status === '1'" type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">回访处理</el-button>
           <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
@@ -110,7 +110,7 @@ export default {
       dataListLoading: false,
       dataListSelections: [],
       addOrUpdateVisible: false,
-      detailVisible: true
+      detailVisible: false
     };
   },
   components: {

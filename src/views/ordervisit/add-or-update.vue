@@ -1,9 +1,9 @@
 <template>
   <el-dialog :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-      <el-form-item label="订单ID" prop="orderId">
+      <!-- <el-form-item label="订单ID" prop="orderId">
         <el-input v-model="dataForm.orderId" placeholder="订单ID"></el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="消费时间" prop="consumeTime">
         <el-date-picker value-format="yyyy-MM-dd HH:mm:ss" v-model="dataForm.consumeTime" type="datetime" placeholder="消费时间">
         </el-date-picker>
@@ -68,17 +68,17 @@ export default {
         delFlag: ""
       },
       dataRule: {
-        orderId: [{ required: true, message: "订单ID不能为空", trigger: "blur" }],
+        // orderId: [{ required: true, message: "订单ID不能为空", trigger: "blur" }],
         consumeTime: [{ required: true, message: "消费时间不能为空", trigger: "blur" }],
         visitTime: [{ required: true, message: "回访时间不能为空", trigger: "blur" }],
-        status: [{ required: true, message: "状态：1、待回访 2、已回访不能为空", trigger: "blur" }],
-        visitResult: [{ required: true, message: "回访结果不能为空", trigger: "blur" }],
-        createBy: [{ required: true, message: "创建者不能为空", trigger: "blur" }],
-        createDate: [{ required: true, message: "创建时间不能为空", trigger: "blur" }],
-        updateBy: [{ required: true, message: "更新者不能为空", trigger: "blur" }],
-        updateDate: [{ required: true, message: "更新时间不能为空", trigger: "blur" }],
-        remarks: [{ required: true, message: "备注信息不能为空", trigger: "blur" }],
-        delFlag: [{ required: true, message: "删除标记不能为空", trigger: "blur" }]
+        status: [{ required: true, message: "状态：1、待回访 2、已回访不能为空", trigger: "blur" }]
+        // visitResult: [{ required: true, message: "回访结果不能为空", trigger: "blur" }]
+        // createBy: [{ required: true, message: "创建者不能为空", trigger: "blur" }],
+        // createDate: [{ required: true, message: "创建时间不能为空", trigger: "blur" }],
+        // updateBy: [{ required: true, message: "更新者不能为空", trigger: "blur" }],
+        // updateDate: [{ required: true, message: "更新时间不能为空", trigger: "blur" }],
+        // remarks: [{ required: true, message: "备注信息不能为空", trigger: "blur" }],
+        // delFlag: [{ required: true, message: "删除标记不能为空", trigger: "blur" }]
       }
     };
   },

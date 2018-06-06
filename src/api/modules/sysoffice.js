@@ -47,12 +47,3 @@ export function del (params) {
     data: requestParam(params, 'post', false)
   })
 }
-
-// 获取城市信息
-export function getCity (params) {
-  return request({
-    url: requestUrl('/sys/sysoffice/getList'),
-    method: 'post',
-    data: requestParam(params, 'post', false)
-  })
-}

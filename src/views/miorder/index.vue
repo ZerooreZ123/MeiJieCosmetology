@@ -2,7 +2,20 @@
   <div class="mod-config">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.key" placeholder="参数名" clearable @clear="getDataListPage1()"></el-input>
+        <el-input v-model="dataForm.orderNo" placeholder="请输入订单号" clearable @clear="getDataListPage1()"></el-input>
+      </el-form-item>
+      <el-select v-model="dataForm.officeId" placeholder="请选择门店">
+        <el-option v-for="item in filter.officeList" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+      <el-select v-model="dataForm.memberId" placeholder="请选择或搜索会员" filterable style="width:300px;">
+        <el-option v-for="item in filter.memberList" :key="item.id" :label="item.name" :value="item.id">
+        </el-option>
+      </el-select>
+      <el-form-item>
+        开单时间:
+        <el-date-picker type="date" value-format="yyyy-MM-dd" v-model="dataForm.startTime" placeholder="开始日期"></el-date-picker>~
+        <el-date-picker type="date" value-format="yyyy-MM-dd" v-model="dataForm.endTime" placeholder="结束日期"></el-date-picker>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataListPage1()">查询</el-button>
@@ -30,7 +43,7 @@
               <div class="userphone">{{item.member ? item.member.mobile : '无'}}</div>
               <div class="userno">会员号：{{item.member ? item.member.memberno : '无'}}</div>
             </div>
-            <img class="user-img" :src="item.member.headimage" alt="">
+            <img class="user-img" :src="resourceServer+item.member.headimage" alt="">
           </div>
         </el-col>
         <el-col :span="6">
@@ -124,8 +137,18 @@ export default {
   data() {
     return {
       active: false,
+      resourceServer: window.SITE_CONFIG["resourceServer"],
+      filter: {
+        userList: [],
+        memberList: [],
+        officeList: []
+      },
       dataForm: {
-        key: ""
+        orderNo: "",
+        officeId: "",
+        memberId: "",
+        startTime: "",
+        endTime: ""
       },
       dataList: [],
       pageIndex: 1,
@@ -141,6 +164,8 @@ export default {
     detail
   },
   mounted() {
+    this.getMemberList();
+    this.getOfficeList();
     this.getDataList();
     this.active = true;
   },
@@ -173,7 +198,11 @@ export default {
       var params = {
         page: this.pageIndex,
         limit: this.pageSize,
-        key: this.dataForm.key
+        orderNo: this.dataForm.orderNo,
+        memberId: this.dataForm.memberId,
+        officeId: this.dataForm.officeId,
+        startTime: this.dataForm.startTime,
+        endTime: this.dataForm.endTime
       };
       if (this.status) {
         params.status = this.status;
@@ -238,6 +267,24 @@ export default {
             this.$message.error(data.msg);
           }
         });
+      });
+    },
+    getMemberList() {
+      API.member.queryMemberList().then(({ data }) => {
+        if (data && data.code === 0) {
+          this.filter.memberList = data.list;
+        } else {
+          this.filter.memberList = [];
+        }
+      });
+    },
+    getOfficeList() {
+      API.common.getOfficeList().then(({ data }) => {
+        if (data && data.code === 0) {
+          this.filter.officeList = data.list;
+        } else {
+          this.filter.officeList = [];
+        }
       });
     }
   }

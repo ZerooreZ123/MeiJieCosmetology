@@ -7,7 +7,7 @@
           <el-option v-for="item in shopList" :key="item.id" :label="item.name" :value="item.id">
           </el-option>
         </el-select>
-        <el-button type="primary" @click="addOrUpdateHandle()">添加客户</el-button>
+        <el-button type="primary" @click="addOrUpdateHandle()">添加会员</el-button>
       </div>
     </div>
     <tab-nav :itemList='itemList' space="8" @addParmas="tabClck($event)">
@@ -30,7 +30,7 @@
           <el-table-column header-align="center" prop="totalConsume" label="会员信息">
             <template slot-scope="scope">
               <div class="tabModule">
-                <img src="#" alt="" class="photo">
+                <img :src="resourceServer+scope.row.headimage" alt="" class="photo">
                 <div class="textModule">
                   <div>{{scope.row.name}}</div>
                   <div>{{scope.row.mobile}}</div>
@@ -101,8 +101,8 @@
               </el-select>
             </el-col>
             <el-col class="line" :span="2" align="center">金额</el-col>
-            <el-col :span="5">
-              <el-input-number controls-position="right" v-model="selectionCondition.minMoney" :min="0"></el-input-number>
+            <el-col :span="4.5">
+              <el-input-number controls-position="right" v-model="selectionCondition.minMoney" :min="0" width="100"></el-input-number>
             </el-col>
             <el-col class="line" :span="1" align="center">~</el-col>
             <el-col :span="5">
@@ -139,6 +139,11 @@
             <el-table-column prop="createDate" header-align="center" align="center" label="建档日期">
             </el-table-column>
             <el-table-column prop="sex" header-align="center" align="center" label="会员性别">
+              <template slot-scope="scope">
+                <div>
+                  <div>{{parseInt(scope.row.sex,10)===1?"男":"女"}}</div>
+                </div>
+              </template>
             </el-table-column>
           </el-table>
           <el-pagination @size-change="sizeChangeHandle1" @current-change="currentChangeHandle1" :current-page="pageIndex1" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize1" :total="totalPage1" layout="total, sizes, prev, pager, next, jumper">
@@ -186,6 +191,7 @@ export default {
       },
       storeNews: "全部门店",
       clientList: [{ name: "持卡" }, { name: "未持卡" }],
+      resourceServer: window.SITE_CONFIG["resourceServer"],
       timeList: [
         { name: "超过一月未到店", num: 30 },
         { name: "超过两月未到店", num: 60 },

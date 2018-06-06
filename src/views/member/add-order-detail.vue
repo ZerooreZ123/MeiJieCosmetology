@@ -4,7 +4,7 @@
       <div class="contentWrap">
         <div class="sideWrap">
           <div class="sideHeader">
-            <img src="../../assets/img/avatar.png" alt="">
+            <img :src="resourceServer+this.headimage" alt="">
             <div class="memberPerson">
               <div class="name">{{this.name}}</div>
               <div class="mobile">{{this.mobile}}</div>
@@ -18,7 +18,7 @@
             </div>
             <div class="inforItem">
               <span>流水单号: </span>
-              <span class="valueItem">{{this.orderNo}}</span>
+              <span class="valueItem">{{this.serialNo}}</span>
             </div>
             <div class="inforItem">
               <span>所属门店: </span>
@@ -34,11 +34,11 @@
             </div>
             <div class="inforItem">
               <span>收银人员: </span>
-              <span class="valueItem">某某莉 001</span>
+              <span class="valueItem">{{this.createBy}}</span>
             </div>
             <div class="inforItem">
               <span>订单备注: </span>
-              <span class="valueItem">无</span>
+              <span class="valueItem">{{this.remarks}}</span>
             </div>
           </div>
         </div>
@@ -75,6 +75,11 @@
                   </template>
                 </el-table-column>
                 <el-table-column header-align="center" align="center" label="支付">
+                  <template slot-scope="scope">
+                    <div>
+                      <div v-for="item in scope.row.payList" :key="item.id">{{scope.row.payList.length>0 ? item.payMethod:""}}</div>
+                    </div>
+                  </template>
                 </el-table-column>
                 <el-table-column header-align="center" align="center" label="服务人员">
                   <template slot-scope="scope">
@@ -86,16 +91,20 @@
                 <el-table-column header-align="center" align="center" label="业绩/卡耗/提成">
                 </el-table-column>
               </el-table>
+              <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper"></el-pagination>
               <div class="payInfor">
-                <div>支付统计: 微信支付
-                  <span>￥{{this.totalPrice}}</span>
+                <div class="payCount">支付统计:</div>
+                <div class="payMethod">
+                  <div v-for="item in this.payCount" :key="item.id">
+                    {{item.hasOwnProperty('payMethod')?item.payMethod:''}}￥{{item.hasOwnProperty('payPrice')?item.payPrice:''}}
+                  </div>
                 </div>
-                <div>支付时间{{this.payTime}}</div>
-                <div>当前欠款
-                  <span>￥{{this.debt}}</span>
+                <div class="payMoney">支付时间{{this.payTime}}</div>
+                <div class="payMoney">当前欠款
+                  <span>￥{{debt}}</span>
                 </div>
               </div>
-              <div class="pay">还款</div>
+              <div class="pay" v-if="debt>0">还款</div>
             </div>
             <div slot="操作记录">
             </div>
@@ -118,18 +127,40 @@ export default {
       debt: "",
       payTime: "",
       orderNo: "",
+      serialNo: "",
       createTime: "",
       totalPrice: "",
       officeName: "",
       mobile: "",
       name: "",
+      payCount: [],
+      headimage: "",
+      createBy: "",
+      remarks: "",
+      resourceServer: window.SITE_CONFIG["resourceServer"],
       itemList: ["订单内容", "操作纪录"],
-      orderDetail: []
+      orderDetail: [],
+      pageIndex: 1,
+      pageSize: 10,
+      totalPage: 0,
+      idMerber: ""
     };
   },
   methods: {
+    sizeChangeHandle(val) {
+      this.pageSize = val;
+      this.pageIndex = 1;
+      this.init(this.idMerber);
+    },
+    // 当前页
+    currentChangeHandle(val) {
+      this.pageIndex = val;
+      this.init(this.idMerber);
+    },
     init(id) {
       this.idOrder = id || 0;
+      this.idMerber = id || 0;
+      this.payCount = [];
       this.visible = true;
       this.$nextTick(() => {
         if (this.idOrder) {
@@ -139,11 +170,21 @@ export default {
               this.debt = data.page.list[0].needPay;
               this.payTime = data.page.list[0].payTime;
               this.orderNo = data.page.list[0].orderNo;
+              this.serialNo = data.page.list[0].serialNo;
               this.createTime = data.page.list[0].createDate;
               this.totalPrice = data.page.list[0].totalPrice;
               this.officeName = data.page.list[0].officeName;
               this.name = data.page.list[0].member.name;
               this.mobile = data.page.list[0].member.mobile;
+              this.totalPage = data.page.totalCount;
+              this.headimage = data.page.list[0].member.headimage;
+              this.createBy = data.page.list[0].createBy;
+              this.remarks = data.page.list[0].remarks;
+              data.page.list[0].detailList.forEach(e => {
+                e.payList.forEach(ev => {
+                  this.payCount.push(ev);
+                });
+              });
             }
           });
         }
@@ -155,7 +196,7 @@ export default {
 <style lang="scss" scoped>
 .wrap {
   width: 1000px;
-  height: 400px;
+  min-height: 400px;
   overflow: hidden;
   .contentWrap {
     display: flex;
@@ -200,12 +241,28 @@ export default {
       .payInfor {
         font-size: 14px;
         color: #000;
-        div {
+        .payCount {
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          margin-right: 10px;
+        }
+        .payMethod {
+          display: flex;
+          align-items: flex-end;
+          flex-direction: column;
+          div {
+            margin-right: 10px;
+            color: red;
+          }
+        }
+        .payMoney {
           display: flex;
           justify-content: flex-end;
           align-items: center;
           height: 40px;
           line-height: 40px;
+          margin-right: 10px;
           border-bottom: 1px solid #f6f6f6;
           span {
             color: red;
@@ -219,6 +276,8 @@ export default {
         width: 60px;
         height: 20px;
         margin-top: 10px;
+        margin-right: 10px;
+        color: #fff;
         background: #59adf5;
       }
     }

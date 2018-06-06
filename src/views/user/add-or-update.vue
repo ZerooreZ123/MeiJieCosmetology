@@ -120,7 +120,8 @@ export default {
         mobile: "",
         roleIdList: [],
         status: 1,
-        entryTime: ""
+        entryTime: "",
+        officeId: ""
       },
       dataRule: {
         username: [{ required: true, message: "用户名不能为空", trigger: "blur" }],

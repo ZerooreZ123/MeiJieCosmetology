@@ -3,6 +3,12 @@
     <div>
       <el-row>
         <el-col :span="12">
+          <div>会员名称：{{dataForm.member.name}}</div>
+          <div>会员手机号：{{dataForm.member.mobile || "无"}}</div>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="12">
           <div>订单编号：{{dataForm.orderNo}}</div>
           <div>所属门店：{{dataForm.officeName || "无"}}</div>
           <div>订单备注：{{dataForm.remarks}}</div>

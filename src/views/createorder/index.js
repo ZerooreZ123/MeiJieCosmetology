@@ -54,6 +54,13 @@ export default {
             this.dataForm.roomName = data.miOrder.roomName;
             this.dataForm.roomId = data.miOrder.roomId.toString();
             this.dataForm.memberNums = data.miOrder.memberNums;
+            if (this.$route.params.type === "repayment") {
+              data.miOrder.detailList.forEach(detail => {
+                detail.payList.forEach(obj => {
+                  obj.readonly = true;
+                });
+              });
+            }
             this.dataList = data.miOrder.detailList;
           } else {
             this.dataList = [];
@@ -76,8 +83,8 @@ export default {
                 serviceId: obj.serviceId,
                 servicePrice: obj.servicePrice || 1,
                 nums: obj.nums || 1,
-                serviceNeedPay: obj.serviceNeedPay || 0,
-                subtotal: obj.subtotal || 0,
+                serviceNeedPay: obj.servicePrice * obj.nums,
+                subtotal: obj.servicePrice * obj.nums,
                 serviceType: obj.serviceType,
                 t: new Date().getTime(),
                 payList: []
@@ -234,7 +241,7 @@ export default {
 
       data.detailList = this.dataList;
       data.roomName = this.getRoomNameById(data.roomId);
-      if (this.$route.params.type === "order" && this.$route.params.id) {
+      if ((this.$route.params.type === "order" || this.$route.params.type === "repayment") && this.$route.params.id) {
         // 订单再次修改
         data.id = +this.$route.params.id;
         console.log(JSON.stringify(data));
