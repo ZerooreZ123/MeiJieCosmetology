@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :visible.sync="visible" :close-on-click-modal="false" width="76%">
+  <el-dialog :visible.sync="visible" :close-on-click-modal="false" width="55%">
     <div class="wrap">
       <div class="contentWrap">
         <div class="sideWrap">
@@ -34,7 +34,7 @@
             </div>
             <div class="inforItem">
               <span>收银人员: </span>
-              <span class="valueItem">{{this.createBy}}</span>
+              <span class="valueItem">{{this.creater}}</span>
             </div>
             <div class="inforItem">
               <span>订单备注: </span>
@@ -88,8 +88,8 @@
                     </div>
                   </template>
                 </el-table-column>
-                <el-table-column header-align="center" align="center" label="业绩/卡耗/提成">
-                </el-table-column>
+                <!-- <el-table-column header-align="center" align="center" label="业绩/卡耗/提成">
+                </el-table-column> -->
               </el-table>
               <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper"></el-pagination>
               <div class="payInfor">
@@ -104,9 +104,21 @@
                   <span>￥{{debt}}</span>
                 </div>
               </div>
-              <div class="pay" v-if="debt>0">还款</div>
+              <div class="pay" @click="pay" v-if="debt>0">还款</div>
             </div>
             <div slot="操作记录">
+              <el-table :data="logList" border>
+                <el-table-column prop="orderId" header-align="center" align="center" label="订单ID" width="80">
+                </el-table-column>
+                <el-table-column prop="logType" header-align="center" align="center" label="类别">
+                </el-table-column>
+                <el-table-column prop="logContent" header-align="center" align="center" label="内容">
+                </el-table-column>
+                <el-table-column prop="logUserName" header-align="center" align="center" label="操作人">
+                </el-table-column>
+                <el-table-column prop="logTime" header-align="center" align="center" label="时间">
+                </el-table-column>
+              </el-table>
             </div>
           </tab-nav>
         </div>
@@ -115,6 +127,7 @@
   </el-dialog>
 </template>
 <script>
+import { mapMutations } from "vuex";
 import tabNav from "@/components/tabNav";
 import API from "@/api";
 export default {
@@ -138,8 +151,9 @@ export default {
       createBy: "",
       remarks: "",
       resourceServer: window.SITE_CONFIG["resourceServer"],
-      itemList: ["订单内容", "操作纪录"],
+      itemList: ["订单内容", "操作记录"],
       orderDetail: [],
+      logList: [],
       pageIndex: 1,
       pageSize: 10,
       totalPage: 0,
@@ -147,6 +161,12 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(["UPDATE_MENU_NAV_ACTIVE_NAME"]),
+    pay() {
+      this.visible = false;
+      this.$router.push({ path: "/miorder" });
+      this.UPDATE_MENU_NAV_ACTIVE_NAME({ name: "129" });
+    },
     sizeChangeHandle(val) {
       this.pageSize = val;
       this.pageIndex = 1;
@@ -167,6 +187,7 @@ export default {
           API.miorder.list({ id: this.idOrder }).then(({ data }) => {
             if (data && data.code === 0) {
               this.orderDetail = data.page.list[0].detailList;
+              this.logList = data.page.list[0].logList;
               this.debt = data.page.list[0].needPay;
               this.payTime = data.page.list[0].payTime;
               this.orderNo = data.page.list[0].orderNo;
@@ -195,7 +216,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .wrap {
-  width: 1000px;
   min-height: 400px;
   overflow: hidden;
   .contentWrap {
@@ -279,6 +299,7 @@ export default {
         margin-right: 10px;
         color: #fff;
         background: #59adf5;
+        cursor: pointer;
       }
     }
   }

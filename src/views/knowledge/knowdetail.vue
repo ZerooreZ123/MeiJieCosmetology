@@ -1,5 +1,5 @@
 <template>
-  <el-dialog class="dialogContent" title="知识预览" :close-on-click-modal="false" :visible="show" width="90%">
+  <el-dialog class="dialogContent" title="知识预览" :close-on-click-modal="true" :visible.sync="show" width="90%">
     <div v-html="innerContent">
     </div>
     <span slot="footer" class="dialog-footer">

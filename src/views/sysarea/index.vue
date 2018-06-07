@@ -6,7 +6,7 @@
           <span class="custom-tree-node" slot-scope="{ node, data }">
             <span>{{ node.label }}</span>
             <span class="tree-opt">
-              <el-button type="text" size="mini" @click="append(data,true)">
+              <el-button type="text" size="mini" @click="append(data, true)">
                 增加
               </el-button>
               <el-button type="text" size="mini" @click="append(data, false)">
@@ -95,11 +95,10 @@ export default {
         delete this.nodeTempData.id;
       }
       this.$nextTick(() => {
+        this.nodeTempData = data;
         this.$refs.addOrUpdate.init();
       });
-      this.nodeTempData = data;
     },
-
     remove(node, data) {
       this.$confirm(`确定删除?`, "提示", {
         confirmButtonText: "确定",

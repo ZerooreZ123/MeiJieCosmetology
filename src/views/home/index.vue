@@ -126,11 +126,11 @@
             </el-table-column>
           </el-table>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="8" style="padding-left:10px;">
           <div class="i-title">
             <img src="../../assets/img/main/yg.png" /> 正在服务的员工
             <div class="search">
-              <el-input placeholder="参数名" v-model="filterServiceTechnician"></el-input>
+              <el-input placeholder="技师名" v-model="filterServiceTechnician"></el-input>
               <img src="../../assets/img/main/ss.png" />
             </div>
           </div>
@@ -138,7 +138,7 @@
             <el-table :data="staffList" border style="width: 100%;margin-top:10px;">
               <el-table-column prop="orderNo" header-align="center" align="center" label="订单号">
               </el-table-column>
-              <el-table-column prop="serviceTechnician" header-align="center" align="center" label="计时">
+              <el-table-column prop="serviceTechnician" header-align="center" align="center" label="技师">
               </el-table-column>
             </el-table>
           </div>

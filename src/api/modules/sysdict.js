@@ -12,6 +12,14 @@ export function list(params) {
   });
 }
 
+// 修改
+export function updateValue(params) {
+  return request({
+    url: requestUrl("/sys/sysdict/updateValue"),
+    method: "post",
+    data: requestParam(params)
+  });
+}
 // 获取信息
 export function info(id) {
   return request({

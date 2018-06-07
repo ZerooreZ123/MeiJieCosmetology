@@ -5,17 +5,11 @@
         <div class="sideHeader">
           <img :src="resourceServer+this.dataInfo.headimage" alt="">
           <div class="name">{{this.dataInfo.name}}</div>
-          <el-row type="flex" class="row-bg" justify="space-around">
-            <el-col :span="8">
-              <div class="btn flex_center">快速预约</div>
-            </el-col>
-            <el-col :span="8">
-              <div class="btn flex_center">会员等级</div>
-            </el-col>
-            <el-col :span="8">
-              <div class="btn flex_center">编辑信息</div>
-            </el-col>
-          </el-row>
+          <div class="btnBox">
+            <div class="btn flex_center">快速预约</div>
+            <div class="btn flex_center">会员等级</div>
+            <div class="btn flex_center">编辑信息</div>
+          </div>
         </div>
         <div class="btnGroup">
           <div class="btnItem openCardColor flex_center">
@@ -43,13 +37,13 @@
           </div>
           <div class="moduleItem flex_column">
             <span class="number">12000</span>
-            <span class="news">会员钱包</span>
-            <span class="drive">修改余额</span>
+            <span class="news">会员积分</span>
+            <span class="drive">修改积分</span>
           </div>
           <div class="moduleItem flex_column">
             <span class="number">12000</span>
-            <span class="news">会员钱包</span>
-            <span class="drive">修改余额</span>
+            <span class="news">欠款金额</span>
+            <span class="drive">修改金额</span>
           </div>
         </div>
         <div class="memberInfor">
@@ -60,7 +54,7 @@
           </div>
           <div class="inforItem">
             <img src="../../assets/img/member/phone.png" alt="">
-            <span>电话: </span>
+            <span>电 话: </span>
             <span class="valueItem">{{this.dataInfo.mobile}}</span>
           </div>
           <div class="inforItem">
@@ -74,15 +68,22 @@
             <span class="valueItem"></span>
           </div>
           <div class="inforItem">
+            <img class="add" src="../../assets/img/member/add.png" alt="">
+          </div>
+          <div class="inforItem">
             <img src="../../assets/img/member/taboo.png" alt="">
             <span>禁忌症: </span>
             <span class="valueItem"></span>
+          </div>
+          <div class="inforItem">
+            <img class="add" src="../../assets/img/member/add.png" alt="">
           </div>
           <div class="inforItem">
             <img src="../../assets/img/member/write.png" alt="">
             <span>备注: </span>
             <span class="valueItem">{{this.dataInfo.remarks}}</span>
           </div>
+          <div class="inforItem"></div>
         </div>
       </div>
       <div class="mainWrap">
@@ -222,6 +223,7 @@ export default {
           if (data && data.code === 0) {
             this.dataInfo.technician = data.member.technician;
             this.dataInfo.mobile = data.member.mobile;
+            this.dataInfo.name = data.member.name;
             this.dataInfo.officeName = data.member.officeName;
             this.dataInfo.memberno = data.member.memberno;
             this.dataInfo.headimage = data.member.headimage;
@@ -351,12 +353,12 @@ export default {
       flex-direction: column;
       align-items: center;
       width: 100%;
-      height: 260px;
+      height: 336px;
       background: #fde3be;
       img {
         display: inline-block;
-        width: 80px;
-        height: 80px;
+        width: 150px;
+        height: 150px;
         margin-top: 52px;
         border-radius: 50%;
       }
@@ -365,13 +367,19 @@ export default {
         color: #000;
         margin: 18px 0 22px;
       }
-      .btn {
-        width: 88px;
-        height: 34px;
-        color: #c99f63;
-        border-radius: 17px;
-        border: 1px solid #fff;
-        margin: 0 10px;
+      .btnBox {
+        width:83%;
+        display: flex;
+        justify-content: space-around;
+        margin: 0 50px;
+        .btn {
+          width: 28%;
+          height: 34px;
+          color: #c99f63;
+          border-radius: 17px;
+          border: 1px solid #fff;
+          margin: 0 10px;
+        }
       }
     }
     .btnGroup {
@@ -379,9 +387,12 @@ export default {
       justify-content: space-around;
       margin: 20px 0;
       .btnItem {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         font-size: 14px;
         width: 23%;
-        height: 30px;
+        height: 44px;
         border-radius: 4px;
       }
     }
@@ -390,8 +401,8 @@ export default {
       justify-content: space-around;
       margin: 20px 0;
       .moduleItem {
-        width: 88px;
-        height: 88px;
+        width: 25%;
+        height: 116px;
         border: 2px solid #f3f3f3;
         .number {
           font-size: 16px;
@@ -411,8 +422,11 @@ export default {
         display: flex;
         align-items: center;
         width: 100%;
-        height: 30px;
+        height: 40px;
         border-bottom: 1px solid #f6f6f6;
+        .add {
+          margin-left: 25px;
+        }
         .valueItem {
           flex: 1;
           margin-left: 5px;

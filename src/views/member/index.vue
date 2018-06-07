@@ -252,6 +252,8 @@ export default {
     this.getCategoryList();
   },
   mounted() {
+    this.getDataList();
+    this.getCategoryList();
     this.getMember();
   },
   watch: {
@@ -367,25 +369,9 @@ export default {
     },
     onTimeClick1(item, num) {
       // 时间分类
-
       this.getDataList();
     },
     onTimeClick(item, num) {
-      // 时间分类
-      // if (num === 0) {
-      //   if (item) {
-      //     this.filter_times = item.num;
-      //     this.timeDay = "";
-      //   } else {
-      //     this.filter_times = undefined;
-      //   }
-      // } else {
-      //   if (parseInt(item, 10) > 0) {
-      //     this.filter_times = item;
-      //   } else {
-      //     this.filter_times = undefined;
-      //   }
-      // }
       if (item) {
         this.filter_times = item.num;
       } else {
@@ -462,17 +448,6 @@ export default {
         }
         this.dataListLoading = false;
       });
-    },
-    // 每页数
-    sizeChangeHandle1(val) {
-      this.pageSize1 = val;
-      this.pageIndex1 = 1;
-      this.filterCondition();
-    },
-    // 当前页
-    currentChangeHandle1(val) {
-      this.pageIndex1 = val;
-      this.filterCondition();
     },
     filterCondition() {
       this.tags = [];
@@ -565,6 +540,17 @@ export default {
     currentChangeHandle(val) {
       this.pageIndex = val;
       this.getDataList();
+    },
+    // 每页数
+    sizeChangeHandle1(val) {
+      this.pageSize1 = val;
+      this.pageIndex1 = 1;
+      this.filterCondition();
+    },
+    // 当前页
+    currentChangeHandle1(val) {
+      this.pageIndex1 = val;
+      this.filterCondition();
     },
     // 多选
     selectionChangeHandle(val) {

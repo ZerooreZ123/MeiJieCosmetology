@@ -16,7 +16,9 @@
       <div slot="角色权限设置">
         <role></role>
       </div>
-
+      <div slot="开关设置">
+        <switch-setting></switch-setting>
+      </div>
     </tab-nav>
   </div>
 </template>
@@ -24,6 +26,7 @@
 <script>
 import productbrand from "@/views/productbrand/index";
 import productAndType from "./product_and_type";
+import switchSetting from "./switch_setting";
 import sysidentity from "@/views/sysidentity/index";
 import syspaymode from "@/views/syspaymode/index";
 import role from "@/views/role/index";
@@ -35,7 +38,8 @@ export default {
     productAndType,
     sysidentity,
     syspaymode,
-    role
+    role,
+    switchSetting
   },
   data() {
     return {
