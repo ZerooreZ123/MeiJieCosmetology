@@ -1,5 +1,14 @@
 <template>
   <div class="mod-config">
+    <div>
+      <el-breadcrumb separator="/" style="float:left;">
+        <el-breadcrumb-item>
+          <span class="breadcrumb-title icon-content-center">
+          <i class="el-icon-circle-plus iconSet"></i>开单收银</span>
+        </el-breadcrumb-item>
+      </el-breadcrumb>
+      <div style="clear:both;margin-bottom:40px;"></div>
+    </div>
     <el-select v-model="dataForm.officeId" placeholder="请选择门店" :disabled="readonly == true">
       <el-option v-for="item in filter.officeList" :key="item.id" :label="item.name" :value="item.id">
       </el-option>
@@ -95,6 +104,15 @@
 <script src="./index.js"></script>
 
 <style scoped>
+.icon-content-center{
+  
+    display: flex;
+    align-items: center;
+}
+.iconSet{
+  color:#409EFF;
+  font-size:36px;
+}
 .mod-config {
   padding-bottom: 30px;
 }

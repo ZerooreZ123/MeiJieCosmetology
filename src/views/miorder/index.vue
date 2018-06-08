@@ -43,7 +43,7 @@
               <div class="userphone">{{item.member ? item.member.mobile : '无'}}</div>
               <div class="userno">会员号：{{item.member ? item.member.memberno : '无'}}</div>
             </div>
-            <img class="user-img" :src="resourceServer+item.member.headimage" alt="">
+            <img class="user-img" :src="parseUrl(item.member.headimage)" alt="">
           </div>
         </el-col>
         <el-col :span="6">
@@ -132,12 +132,12 @@
 <script>
 import { mapMutations } from "vuex";
 import API from "@/api";
+import parseUrl from "@/utils/parseUrl";
 import detail from "./detail";
 export default {
   data() {
     return {
       active: false,
-      resourceServer: window.SITE_CONFIG["resourceServer"],
       filter: {
         userList: [],
         memberList: [],
@@ -176,6 +176,7 @@ export default {
   },
   methods: {
     ...mapMutations(["UPDATE_MENU_NAV_ACTIVE_NAME"]),
+    parseUrl,
     print(item) {
       console.log(JSON.stringify(item));
       window.LODOP.PRINT_INITA(1, 1, 770, 660, "测试预览功能");

@@ -140,7 +140,7 @@ export default {
     saveoption() {
       const params = {
         isAuto: this.dataList.is,
-        printNums: this.dataList.num
+        printNums: parseInt(this.dataList.num, 10)
       };
       API.sysdict.updateValue(params).then(({ data }) => {
         if (data && data.code === 0) {

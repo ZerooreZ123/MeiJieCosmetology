@@ -3,7 +3,7 @@
     <div class="contentWrap">
       <div class="sideWrap">
         <div class="sideHeader">
-          <img :src="resourceServer+this.dataInfo.headimage" alt="">
+          <img :src="parseUrl(this.dataInfo.headimage)" alt="">
           <div class="name">{{this.dataInfo.name}}</div>
           <div class="btnBox">
             <div class="btn flex_center">快速预约</div>
@@ -175,6 +175,7 @@
 import tabNav from "@/components/tabNav";
 import API from "@/api";
 import addOrderDetail from "./add-order-detail";
+import parseUrl from "@/utils/parseUrl";
 export default {
   components: { tabNav, addOrderDetail },
   data() {
@@ -217,6 +218,7 @@ export default {
     window.memberId = null;
   },
   methods: {
+    parseUrl,
     getMemberInfo() {
       this.$nextTick(() => {
         API.member.info(window.memberId).then(({ data }) => {
@@ -368,7 +370,7 @@ export default {
         margin: 18px 0 22px;
       }
       .btnBox {
-        width:83%;
+        width: 83%;
         display: flex;
         justify-content: space-around;
         margin: 0 50px;

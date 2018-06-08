@@ -12,7 +12,7 @@
     <div class="grid">
 
       <div class="grid-item" v-for="know in dataList" :key="know.id">
-        <div class="resource">
+        <div class="resource" @click="updateclickCountsById(know.id)">
           <img v-if="know.resourceType === '1'" src="~@/assets/img/know.png" width="300" @click="openPreview(know.name,know.content)" />
           <img v-if="know.resourceType === '2'" :src="resourceServer+know.imagePath.split(',')[0]" width="300" @click="openPreviewImage(know.imagePath)" />
           <video v-if="know.resourceType === '3'" :src="resourceServer+know.videoPath" controls width="300"></video>
@@ -83,6 +83,16 @@ export default {
     openPreviewImage(path) {
       this.path = path;
       this.isshow = true;
+    },
+    updateclickCountsById(id) {
+      var params = {
+        id: id
+      };
+      API.knowledge.updateclickCountsById(params).then(({ data }) => {
+        if (data && data.code === 0) {
+          this.getDataList();
+        }
+      });
     },
     // 获取数据列表
     getDataList() {

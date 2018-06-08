@@ -12,7 +12,7 @@
         <el-option v-for="item in shopList" :key="item.id" :label="item.name" :value="item.id">
         </el-option>
       </el-select>
-      <div style="clear:both;margin-bottom:10px;"></div>
+      <div style="clear:both;margin-bottom:40px;"></div>
     </div>
     <m-row>
       <m-col :span="7.5">

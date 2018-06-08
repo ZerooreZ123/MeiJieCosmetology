@@ -113,6 +113,7 @@ export default {
       this.dataForm.id = id || 0;
       this.addmemberId = id;
       this.dataInfo = "";
+      this.dataForm.remarks = "";
       this.visible = true;
       this.$nextTick(() => {
         this.$refs["dataForm"].resetFields();

@@ -4,7 +4,7 @@
       <div class="contentWrap">
         <div class="sideWrap">
           <div class="sideHeader">
-            <img :src="resourceServer+this.headimage" alt="">
+            <img :src="parseUrl(this.headimage)" alt="">
             <div class="memberPerson">
               <div class="name">{{this.name}}</div>
               <div class="mobile">{{this.mobile}}</div>
@@ -129,6 +129,7 @@
 <script>
 import { mapMutations } from "vuex";
 import tabNav from "@/components/tabNav";
+import parseUrl from "@/utils/parseUrl";
 import API from "@/api";
 export default {
   components: { tabNav },
@@ -162,6 +163,7 @@ export default {
   },
   methods: {
     ...mapMutations(["UPDATE_MENU_NAV_ACTIVE_NAME"]),
+    parseUrl,
     pay() {
       this.visible = false;
       this.$router.push({ path: "/miorder" });

@@ -18,7 +18,7 @@
       <el-table-column header-align="center" prop="totalConsume" label="会员信息">
         <template slot-scope="scope">
           <div class="tabModule">
-            <img :src="resourceServer+scope.row.headimage" alt="" class="photo">
+            <img :src="parseUrl(scope.row.headimage)" alt="" class="photo">
             <div class="textModule">
               <div>{{scope.row.name}}</div>
               <div>{{scope.row.mobile}}</div>
@@ -53,6 +53,7 @@
 import API from "@/api";
 import category from "@/components/category";
 import AddOrUpdate from "./add-or-update";
+import parseUrl from "@/utils/parseUrl";
 export default {
   components: {
     AddOrUpdate,
@@ -94,6 +95,7 @@ export default {
     this.getCategoryList();
   },
   methods: {
+    parseUrl,
     onLlientClick() {
       // 顾客分类
     },
