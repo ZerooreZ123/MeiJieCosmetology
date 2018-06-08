@@ -4,6 +4,14 @@
       <div class="btns">
         <div class="input-left">
           <el-form-item>
+            <el-select v-model="officeId" placeholder="请选择门店">
+              <el-option label="全部" value="">
+              </el-option>
+              <el-option v-for="item in shopList" :key="item.id" :label="item.name" :value="item.id">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
             <el-input v-model="dataForm.key" placeholder="搜索姓名/技师" clearable @clear="getDataListPage1"></el-input>
           </el-form-item>
           <el-button @click="getDataListPage1()">查询</el-button>
@@ -91,6 +99,8 @@ export default {
       dataForm: {
         key: ""
       },
+      officeId: "",
+      shopList: [],
       dataList: [],
       roomList: [],
       pageIndex: 1,
@@ -105,13 +115,25 @@ export default {
     AddOrUpdate
   },
   activated() {
-    this.queryRoomList().then(() => {
-      this.getDataList();
-    });
+    this.getShopList().then(() => this.queryRoomList()).then(() => this.getDataList());
+  },
+  watch: {
+    officeId() {
+      this.getDataListPage1();
+    }
   },
   methods: {
     goOrderCreatePage(id) {
       window.location.hash = "/createorder/appointment/" + id;
+    },
+    getShopList() {
+      return API.common.getOfficeList().then(({ data }) => {
+        if (data && data.code === 0) {
+          this.shopList = data.list;
+        } else {
+          this.shopList = [];
+        }
+      });
     },
     getRoomNameById(id) {
       for (let i = 0; i < this.roomList.length; i++) {
@@ -140,7 +162,8 @@ export default {
       var params = {
         page: this.pageIndex,
         limit: this.pageSize,
-        key: this.dataForm.key
+        key: this.dataForm.key,
+        officeId: this.officeId
       };
       API.appointment.list(params).then(({ data }) => {
         if (data && data.code === 0) {

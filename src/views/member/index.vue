@@ -7,64 +7,12 @@
           <el-option v-for="item in shopList" :key="item.id" :label="item.name" :value="item.id">
           </el-option>
         </el-select>
-        <el-button type="primary" @click="addOrUpdateHandle()">添加会员</el-button>
+        <el-button type="primary" @click="addMember()" v-if="isMember">添加会员</el-button>
       </div>
     </div>
     <tab-nav :itemList='itemList' space="8" @addParmas="tabClck($event)">
       <div slot="会员信息">
-        <div class="list-nav">
-          <category listname="顾客分类" :list="clientList" @onItemClick="onLlientClick"></category>
-          <category listname="时间分类" :list="timeList" @onItemClick="onTimeClick">
-            <!-- <input v-model="timeDay" class="userDefined" type="text" placeholder="自定义天数" @change="onTimeClick(timeDay,1)"> -->
-          </category>
-          <category listname="近期分类" :list="recentList" @onItemClick="onRecentClick"></category>
-          <category listname="到店频次" :list="frequencyList" @onItemClick="onFrequencyClick"></category>
-          <category listname="会员来源" :list="sourceList" @onItemClick="onSourceClick"></category>
-          <category listname="所属门店" :list="storeList" @onItemClick="onStoreClick"></category>
-        </div>
-        <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;">
-          <el-table-column type="selection" header-align="center" align="center" width="50">
-          </el-table-column>
-          <el-table-column prop="id" header-align="center" align="center" label="ID" width="80">
-          </el-table-column>
-          <el-table-column header-align="center" prop="totalConsume" label="会员信息">
-            <template slot-scope="scope">
-              <div class="tabModule">
-                <img :src="resourceServer+scope.row.headimage" alt="" class="photo">
-                <div class="textModule">
-                  <div>{{scope.row.name}}</div>
-                  <div>{{scope.row.mobile}}</div>
-                  <div>{{`会员号: ${scope.row.memberno}`}}</div>
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-          <!-- <el-table-column prop="name" header-align="center" align="center" label="会员级别">
-          </el-table-column> -->
-          <el-table-column prop="totalConsume" header-align="center" align="center" label="累计消费">
-            <template slot-scope="scope">
-              <div>
-                <div>{{`累计: ￥${scope.row.totalConsume}`}}</div>
-                <div>{{`总计到店: ${scope.row.totalC || 0} 次`}}</div>
-                <div>{{`本月${scope.row.monthCount || 0}次`}}</div>
-              </div>
-            </template>
-          </el-table-column>
-
-          <!-- <el-table-column prop="mobile" header-align="center" align="center" label="上次消费">
-          </el-table-column> -->
-          <!-- <el-table-column prop="umtSource" header-align="center" align="center" label="实收金额">
-          </el-table-column> -->
-          <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
-            <template slot-scope="scope">
-              <el-button type="text" size="small" @click="lookDetail(scope.row.id)">查看</el-button>
-              <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-              <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper">
-        </el-pagination>
+        <member-info ref="memInfo"></member-info>
       </div>
       <div slot="会员筛选">
         <div class="selectionCondition">选择条件</div>
@@ -127,7 +75,7 @@
         <div class="result">
           <div class="filterResult">筛选结果:共找到
             <span>{{customers}}</span>位会员</div>
-          <el-table :data="dataResult" border @selection-change="selectionChangeHandle" style="width: 100%;">
+          <el-table :data="dataResult" border style="width: 100%;">
             <el-table-column prop="name" header-align="center" align="center" label="会员">
             </el-table-column>
             <el-table-column prop="memberno" header-align="center" align="center" label="会员号">
@@ -168,16 +116,13 @@
       </el-input>
     </div>
     <!-- 弹窗, 新增 / 修改 -->
-    <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
     <!-- <member-detail v-if="memberDetailVisible"></member-detail> -->
   </div>
 </template>
 
 <script>
 import API from "@/api";
-import AddOrUpdate from "./add-or-update";
-// import memberDetail from "./memberDetail";
-import category from "@/components/category";
+import memberInfo from "./member-info";
 import tabNav from "@/components/tabNav";
 import myEcharts from "@/components/myEcharts";
 import { optionHuan, optionPie } from "./memberOption.js";
@@ -186,42 +131,21 @@ export default {
     return {
       optionHuan: optionHuan,
       optionPie: optionPie,
-      dataForm: {
-        key: ""
-      },
-      storeNews: "全部门店",
-      clientList: [{ name: "持卡" }, { name: "未持卡" }],
-      resourceServer: window.SITE_CONFIG["resourceServer"],
-      timeList: [
-        { name: "超过一月未到店", num: 30 },
-        { name: "超过两月未到店", num: 60 },
-        { name: "超过三月未到店", num: 90 },
-        { name: "超过半年未到店", num: 180 }
-      ],
-      weekList: [{ name: "一周", id: 0, day: 7 }, { name: "两周", id: 1, day: 14 }, { name: "三周", id: 2, day: 21 }, { name: "半年", id: 3, day: 183 }],
-      notSpending: [{ name: "一周", id: 0, day: 7 }, { name: "两周", id: 1, day: 14 }, { name: "三周", id: 2, day: 21 }, { name: "半年", id: 3, day: 183 }],
-      choiceList: [{ name: "小于", id: 0, type: "lt" }, { name: "等于", id: 1, type: "eq" }, { name: "大于", id: 2, type: "gt" }],
-      recentList: [{ name: "近三天过生日", num: 3 }, { name: "近一周过生日", num: 7 }, { name: "近三周过生日", num: 21 }],
-      frequencyList: [{ name: "1次以内/月", frequency: 1 }, { name: "2次以内/月", frequency: 2 }, { name: "3次以内/月", frequency: 3 }],
-      sourceList: [],
-      storeList: [],
-      dataList: [],
       dataResult: [],
       customers: 0,
-      pageIndex: 1,
-      pageSize: 10,
-      totalPage: 0,
       pageIndex1: 1,
       pageSize1: 10,
       totalPage1: 0,
       dataListLoading: false,
-      dataListSelections: [],
-      addOrUpdateVisible: false,
       memberDetailVisible: false,
       isShow: false,
       isSeach: false,
+      isMember: true,
       options: [],
       itemList: ["会员信息", "会员筛选", "会员概括总览"],
+      choiceList: [{ name: "小于", id: 0, type: "lt" }, { name: "等于", id: 1, type: "eq" }, { name: "大于", id: 2, type: "gt" }],
+      weekList: [{ name: "一周", id: 0, day: 7 }, { name: "两周", id: 1, day: 14 }, { name: "三周", id: 2, day: 21 }, { name: "半年", id: 3, day: 183 }],
+      notSpending: [{ name: "一周", id: 0, day: 7 }, { name: "两周", id: 1, day: 14 }, { name: "三周", id: 2, day: 21 }, { name: "半年", id: 3, day: 183 }],
       tags: [],
       tagTemp: "",
       shopId: "",
@@ -242,18 +166,16 @@ export default {
     };
   },
   components: {
-    AddOrUpdate,
-    category,
     tabNav,
-    myEcharts
+    myEcharts,
+    memberInfo
   },
   activated() {
-    this.getDataList();
-    this.getCategoryList();
+    // this.getCategoryList();
+    this.getMember();
   },
   mounted() {
-    this.getDataList();
-    this.getCategoryList();
+    // this.getCategoryList();
     this.getMember();
   },
   watch: {
@@ -265,13 +187,22 @@ export default {
     tabClck(i) {
       if (i === 2) {
         this.isShow = true;
+        this.isMember = false;
       } else if (i === 0) {
         this.isSeach = false;
         this.isShow = false;
+        this.isMember = true;
       } else {
         this.isShow = false;
         this.isSeach = false;
+        this.isMember = false;
       }
+    },
+    addMember(id) {
+      this.addOrUpdateVisible = true;
+      this.$nextTick(() => {
+        this.$refs.memInfo.addOrUpdateHandle(id);
+      });
     },
     handleClose(tag) {
       this.tags.splice(this.tags.indexOf(tag), 1);
@@ -346,116 +277,12 @@ export default {
         }
       });
     },
-    getCategoryList() {
-      const params = {
-        type: "guestSource"
-      };
-      API.common.getOfficeList().then(({ data }) => {
-        this.storeList = data.list;
-      });
-
-      API.sysdict.getlist(params).then(({ data }) => {
-        const temp = [];
-        data.list.forEach(ev => {
-          temp.push({
-            name: ev.label
-          });
-        });
-        this.sourceList = temp;
-      });
-    },
-    onLlientClick() {
-      // 顾客分类
-    },
-    onTimeClick1(item, num) {
-      // 时间分类
-      this.getDataList();
-    },
-    onTimeClick(item, num) {
-      if (item) {
-        this.filter_times = item.num;
-      } else {
-        this.filter_times = undefined;
-      }
-      this.getDataList();
-    },
-    onRecentClick(item) {
-      // 近期分类
-      if (item) {
-        this.filter_day = item.num;
-      } else {
-        this.filter_day = undefined;
-      }
-      this.getDataList();
-    },
-    onFrequencyClick(item) {
-      // 到店频次
-      if (item) {
-        this.filter_frequency = item.frequency;
-      } else {
-        this.filter_frequency = undefined;
-      }
-      this.getDataList();
-    },
-    onSourceClick(item) {
-      // 客户来源
-      if (item) {
-        this.filter_umtSource = item.name;
-      } else {
-        this.filter_umtSource = undefined;
-      }
-      this.getDataList();
-    },
-    onStoreClick(item) {
-      // 门店选择
-      if (item) {
-        this.filter_officeId = item.id;
-      } else {
-        this.filter_officeId = undefined;
-      }
-      this.getDataList();
-    },
-    // 获取数据列表
-    getDataList() {
-      this.dataListLoading = true;
-      var params = {
-        page: this.pageIndex,
-        limit: this.pageSize,
-        key: this.dataForm.key
-      };
-      if (this.filter_times !== undefined) {
-        params.times = this.filter_times;
-      }
-      if (this.filter_day !== undefined) {
-        params.day = this.filter_day;
-      }
-      if (this.filter_frequency !== undefined) {
-        params.number = this.filter_frequency;
-      }
-      if (this.filter_umtSource !== undefined) {
-        params.umtSource = this.filter_umtSource;
-      }
-      if (this.filter_officeId !== undefined) {
-        params.officeId = this.filter_officeId;
-      }
-      API.member.list(params).then(({ data }) => {
-        if (data && data.code === 0) {
-          this.dataList = data.page.list;
-          this.totalPage = data.page.totalCount;
-        } else {
-          this.dataList = [];
-          this.totalPage = 0;
-        }
-        this.dataListLoading = false;
-      });
-    },
     filterCondition() {
       this.tags = [];
       this.dataListLoading = true;
       var params = {
         page: this.pageIndex,
-        limit: this.pageSize,
-        key: this.dataForm.key
+        limit: this.pageSize
       };
       if (this.selectionCondition.sex !== "") {
         params.sex = this.selectionCondition.sex;
@@ -531,17 +358,6 @@ export default {
       });
     },
     // 每页数
-    sizeChangeHandle(val) {
-      this.pageSize = val;
-      this.pageIndex = 1;
-      this.getDataList();
-    },
-    // 当前页
-    currentChangeHandle(val) {
-      this.pageIndex = val;
-      this.getDataList();
-    },
-    // 每页数
     sizeChangeHandle1(val) {
       this.pageSize1 = val;
       this.pageIndex1 = 1;
@@ -551,50 +367,6 @@ export default {
     currentChangeHandle1(val) {
       this.pageIndex1 = val;
       this.filterCondition();
-    },
-    // 多选
-    selectionChangeHandle(val) {
-      this.dataListSelections = val;
-    },
-    // 新增 / 修改
-    addOrUpdateHandle(id) {
-      this.addOrUpdateVisible = true;
-      this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id);
-      });
-    },
-    lookDetail(id) {
-      // this.memberDetailVisible = true;
-      window.memberId = id;
-      this.$router.push({ path: "/member/member_detail" });
-    },
-    // 删除
-    deleteHandle(id) {
-      var ids = id
-        ? [id]
-        : this.dataListSelections.map(item => {
-            return item.id;
-          });
-      this.$confirm(`确定对[id=${ids.join(",")}]进行[${id ? "删除" : "批量删除"}]操作?`, "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
-      }).then(() => {
-        API.member.del(ids).then(({ data }) => {
-          if (data && data.code === 0) {
-            this.$message({
-              message: "操作成功",
-              type: "success",
-              duration: 1500,
-              onClose: () => {
-                this.getDataList();
-              }
-            });
-          } else {
-            this.$message.error(data.msg);
-          }
-        });
-      });
     }
   }
 };
@@ -639,34 +411,16 @@ export default {
     height: 400px;
   }
 }
-.tabModule {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  .photo {
-    background-color: #eee;
-    display: inline-block;
-    height: 50px;
-    width: 50px;
-    border-radius: 50%;
-    margin: 0 10px;
-  }
-  .textModule {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-  }
-}
-.seachInput {
-  position: absolute;
-  top: 102px;
-  right: 68px;
-}
 .imgHeader {
   display: inline-block;
   width: 28px;
   height: 28px;
   margin: 0 6px;
+}
+.seachInput {
+  position: absolute;
+  top: 102px;
+  right: 68px;
 }
 </style>
 

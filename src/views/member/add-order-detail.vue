@@ -148,7 +148,7 @@ export default {
       name: "",
       payCount: [],
       headimage: "",
-      createBy: "",
+      creater: "",
       remarks: "",
       resourceServer: window.SITE_CONFIG["resourceServer"],
       itemList: ["订单内容", "操作记录"],
@@ -199,7 +199,7 @@ export default {
               this.mobile = data.page.list[0].member.mobile;
               this.totalPage = data.page.totalCount;
               this.headimage = data.page.list[0].member.headimage;
-              this.createBy = data.page.list[0].createBy;
+              this.creater = data.page.list[0].creater;
               this.remarks = data.page.list[0].remarks;
               data.page.list[0].detailList.forEach(e => {
                 e.payList.forEach(ev => {

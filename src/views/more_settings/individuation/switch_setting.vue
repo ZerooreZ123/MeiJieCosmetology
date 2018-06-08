@@ -23,27 +23,28 @@
             </div>
             <div class="item">
               <div class="itemModule flex_between">
-                <span>品项</span>
-                <span>小计</span>
+                <span class="font_weight">品项</span>
+                <span class="font_weight">小计</span>
               </div>
             </div>
             <div class="item">
               <div class="option flex_between">
                 <span>中式全身按摩</span>
+                <span>x1</span>
                 <span>783.00</span>
               </div>
               <div class="option flex_between">
                 <span>服务: No-099颜真卿</span>
               </div>
               <div class=" itemModule flex_between">
-                <span>合计</span>
-                <span>1383.00</span>
+                <span class="font_weight">合计</span>
+                <span class="font_weight">1383.00</span>
               </div>
             </div>
             <div class="item">
               <div class="title flex_between">
-                <span>赠送</span>
-                <span>数量</span>
+                <span class="font_weight">赠送</span>
+                <span class="font_weight">数量</span>
               </div>
               <div class="option flex_between">
                 <span>中式全身按摩</span>
@@ -56,8 +57,8 @@
             </div>
             <div class="item">
               <div class="title flex_between">
-                <span>已付</span>
-                <span>小计</span>
+                <span class="font_weight">已付</span>
+                <span class="font_weight">小计</span>
               </div>
               <div class="option flex_between">
                 <span>疗效卡</span>
@@ -68,20 +69,20 @@
                 <span>1次=783.00</span>
               </div>
               <div class=" itemModule flex_between">
-                <span>合计</span>
-                <span>1383.00</span>
+                <span class="font_weight">合计</span>
+                <span class="font_weight">1383.00</span>
               </div>
             </div>
             <div class="item">
               <div class=" option flex_between">
-                <span>账户余额</span>
+                <span class="font_weight">账户余额</span>
               </div>
               <div class="option flex_between border">
                 <span>会员卡</span>
                 <span>21152.00</span>
               </div>
             </div>
-            <div class="write">签名</div>
+            <div class="write font_weight">签名</div>
             <div class="infoFoot flex_column">
               <div>感谢惠顾!</div>
               <span>技术支持:</span>
@@ -142,10 +143,15 @@ export default {
         printNums: this.dataList.num
       };
       API.sysdict.updateValue(params).then(({ data }) => {
-        console.log(data);
+        if (data && data.code === 0) {
+          this.$message({
+            message: "保存成功",
+            type: "success"
+          });
+        } else {
+          this.$message.error(data.msg);
+        }
       });
-      // alert(this.dataList.is);
-      // alert(this.dataList.num);
     }
   }
 };
@@ -183,6 +189,7 @@ export default {
           }
         }
         .infoFoot {
+          margin-bottom: 20px;
           div {
             font-size: 20px;
             color: #000;
@@ -238,9 +245,14 @@ export default {
         background: #66a7f9;
         color: #fff;
         margin: 50px 20px;
+        cursor: pointer;
       }
     }
   }
+}
+.font_weight {
+  font-size: 14px;
+  font-weight: 700;
 }
 .flex_center {
   display: flex;
