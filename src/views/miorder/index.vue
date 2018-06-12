@@ -25,7 +25,7 @@
     </el-form>
     <el-card class="box-card" v-for="item in dataList" :key="item.id">
       <div class="title-bar">
-        <span>所述门店：{{item.officeName || "无"}}</span>
+        <span>所属门店：{{item.officeName || "无"}}</span>
         <!-- 1、待付款 2、已付款 3、尾款单 4、已取消 5、已退单 -->
         <span class="status" v-if="item.status==1">待付款</span>
         <span class="status" v-else-if="item.status==2">已付款</span>
@@ -126,14 +126,21 @@
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <detail v-if="detailVisible" ref="detail" @refreshDataList="getDataList"></detail>
+    <div style="display:none;" ref="printHtml">
+      <print-info :printitem="item"></print-info>
+    </div>
+
   </div>
 </template>
+
 
 <script>
 import { mapMutations } from "vuex";
 import API from "@/api";
 import parseUrl from "@/utils/parseUrl";
 import detail from "./detail";
+import print from "./print";
+import printInfo from "./printInfo";
 export default {
   data() {
     return {
@@ -156,12 +163,14 @@ export default {
       totalPage: 0,
       dataListLoading: false,
       dataListSelections: [],
-      detailVisible: false
+      detailVisible: false,
+      item: {}
     };
   },
   props: ["status", "history"],
   components: {
-    detail
+    detail,
+    printInfo
   },
   mounted() {
     this.getMemberList();
@@ -177,12 +186,7 @@ export default {
   methods: {
     ...mapMutations(["UPDATE_MENU_NAV_ACTIVE_NAME"]),
     parseUrl,
-    print(item) {
-      console.log(JSON.stringify(item));
-      window.LODOP.PRINT_INITA(1, 1, 770, 660, "测试预览功能");
-      window.LODOP.ADD_PRINT_TEXT(10, 60, 300, 200, "这是测试的纯文本，下面是超文本:");
-      window.LODOP.PREVIEW(); // 最后一个打印(或预览、维护、设计)语句
-    },
+    print,
     goOrderCreatePage(orderId, type) {
       this.$router.push({
         path: "/createorder/" + type + "/" + orderId

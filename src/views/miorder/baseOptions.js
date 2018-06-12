@@ -37,7 +37,8 @@ const optionPie = {
     {
       label: {
         normal: {
-          show: true
+          show: true,
+          formatter: "{b}({d}%)"
         },
         emphasis: {
           show: true

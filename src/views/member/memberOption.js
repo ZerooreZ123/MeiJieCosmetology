@@ -8,7 +8,8 @@ const optionHuan = {
     {
       label: {
         normal: {
-          show: true
+          show: true,
+          formatter: "{b}({d}%)"
         },
         emphasis: {
           show: true
@@ -51,7 +52,9 @@ const optionPie = {
     {
       label: {
         normal: {
-          show: false
+          show: true,
+          formatter: "{b}({d}%)"
+          // formatter: "{b} : {c}\n ({d}%)"
         },
         emphasis: {
           show: true

@@ -19,6 +19,7 @@ export default {
         roomName: "",
         memberId: ""
       },
+      appointmentId: "",
       paymodVisible: false,
       showPanel: false,
       dataList: []
@@ -70,11 +71,15 @@ export default {
         API.appointment.info(+this.$route.params.id).then(({ data }) => {
           if (data && data.code === 0) {
             console.log(data);
+            this.appointmentId = data.appointment.id;
             this.dataForm.serialNo = data.appointment.serialno;
             this.dataForm.memberId = data.appointment.memberId;
             this.dataForm.officeId = data.appointment.officeId;
             this.dataForm.roomName = data.appointment.roomName;
-            this.dataForm.roomId = data.appointment.roomId.toString();
+            if (data.appointment.roomId) {
+              this.dataForm.roomId = data.appointment.roomId.toString();
+            }
+
             this.dataForm.memberNums = data.appointment.nums;
             this.dataList = data.appointment.appointDeatailLsit.map(obj => {
               return {
@@ -269,6 +274,16 @@ export default {
         console.log(JSON.stringify(data));
         API.miorder.save(data).then(({ data }) => {
           if (data && data.code === 0) {
+            if (this.appointmentId) {
+              var params = {
+                id: this.appointmentId,
+                status: 2
+              };
+              API.appointment.updateInfo(params).then(({ data }) => {
+                if (data && data.code === 0) {
+                }
+              });
+            }
             this.$message({
               message: "操作成功",
               type: "success",
