@@ -25,6 +25,23 @@ export default {
       dataList: []
     };
   },
+  computed: {
+    sum() {
+      let sum = 0;
+      this.dataList.forEach(item => {
+        sum += item.subtotal;
+      });
+      console.log(1, sum)
+      return sum;
+    },
+    sumNeed() {
+      let sum = 0;
+      this.dataList.forEach(item => {
+        sum += item.serviceNeedPay;
+      });
+      return sum;
+    }
+  },
   components: {
     productSelector,
     paymod

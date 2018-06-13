@@ -4,7 +4,7 @@
       <el-breadcrumb separator="/" style="float:left;">
         <el-breadcrumb-item>
           <span class="breadcrumb-title icon-content-center">
-          <i class="el-icon-circle-plus iconSet"></i>开单收银</span>
+            <i class="el-icon-circle-plus iconSet"></i>开单收银</span>
         </el-breadcrumb-item>
       </el-breadcrumb>
       <div style="clear:both;margin-bottom:40px;"></div>
@@ -96,6 +96,7 @@
     <product-selector :member-id="dataForm.memberId" v-if="showPanel" @selected="list => handleProductSelected(list)"></product-selector>
     <paymod ref="paymod" @selected="onPaymodSelected"></paymod>
     <div class="submit-bar">
+      <div class="sum">总计{{sum}}元，还需支付{{sumNeed}}元</div>
       <div class="submit-btn" @click="submit()">提交</div>
     </div>
   </div>
@@ -104,14 +105,13 @@
 <script src="./index.js"></script>
 
 <style scoped>
-.icon-content-center{
-  
-    display: flex;
-    align-items: center;
+.icon-content-center {
+  display: flex;
+  align-items: center;
 }
-.iconSet{
-  color:#409EFF;
-  font-size:36px;
+.iconSet {
+  color: #409eff;
+  font-size: 36px;
 }
 .mod-config {
   padding-bottom: 30px;
@@ -151,15 +151,26 @@
   background: #fff;
   z-index: 1;
 }
-.submit-btn {
+.submit-bar .submit-btn {
   position: absolute;
   right: 0;
-  height: 100%;
+  height: 50px;
   width: 100px;
   background-color: #c99f63;
   color: #fff;
   line-height: 50px;
   font-size: 20px;
   text-align: center;
+}
+.submit-bar .sum {
+  position: absolute;
+  right: 100px;
+  height: 50px;
+  background-color: palevioletred;
+  color: #fff;
+  line-height: 50px;
+  font-size: 20px;
+  text-align: center;
+  padding: 0 10px;
 }
 </style>
