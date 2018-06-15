@@ -32,6 +32,13 @@
       <el-table-column prop="endTime" header-align="center" align="center" label="预约结束时间">
       </el-table-column> -->
       <el-table-column prop="technician" header-align="center" align="center" label="技师">
+      <el-table-column header-align="center" align="center" label="状态">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.status == 0" size="small" type="danger">已失效</el-tag>
+          <el-tag v-if="scope.row.status == 1" size="small">生效中</el-tag>
+          <el-tag v-if="scope.row.status == 2" size="small" type="success">已开单</el-tag>
+        </template>
+      </el-table-column>
       </el-table-column>
       <el-table-column header-align="center" align="center" label="是否指定">
         <template slot-scope="scope">
@@ -61,7 +68,8 @@
       </el-table-column> -->
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="goOrderCreatePage(scope.row.id)">开单收银</el-button>
+          <el-button v-if="scope.row.status == 1" type="text" size="small" @click="goOrderCreatePage(scope.row.id)">开单收银</el-button>
+          <el-button v-if="scope.row.status == 1" type="text" size="small" @click="cancle(scope.row.id)">取消</el-button>
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">查看</el-button>
         </template>
       </el-table-column>
@@ -141,6 +149,24 @@ export default {
       this.addOrUpdateVisible = true;
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(id);
+      });
+    },
+    cancle(id) {
+      var params = {
+        id: id,
+        status: 0
+      };
+      API.appointment.updateInfo(params).then(({ data }) => {
+        if (data && data.code === 0) {
+          this.$message({
+            message: "操作成功",
+            type: "success",
+            duration: 1500,
+            onClose: () => {
+              this.getDataList();
+            }
+          });
+        }
       });
     },
     // 删除

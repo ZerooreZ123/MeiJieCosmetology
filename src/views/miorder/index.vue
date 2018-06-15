@@ -43,7 +43,7 @@
               <div class="userphone">{{item.member ? item.member.mobile : '无'}}</div>
               <div class="userno">会员号：{{item.member ? item.member.memberno : '无'}}</div>
             </div>
-            <img class="user-img" :src="parseUrl(item.member.headimage)" alt="">
+            <img v-if="item.member" class="user-img" :src="parseUrl(item.member.headimage)" alt="">
           </div>
         </el-col>
         <el-col :span="6">

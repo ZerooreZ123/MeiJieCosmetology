@@ -96,7 +96,7 @@
     <product-selector :member-id="dataForm.memberId" v-if="showPanel" @selected="list => handleProductSelected(list)"></product-selector>
     <paymod ref="paymod" @selected="onPaymodSelected"></paymod>
     <div class="submit-bar">
-      <div class="sum">总计{{sum}}元，还需支付{{sumNeed}}元</div>
+      <div class="sum">总计<span style="color:red">{{sum}}</span>元，还需支付<span style="color:red">{{sumNeed}}</span>元</div>
       <div class="submit-btn" @click="submit()">提交</div>
     </div>
   </div>
@@ -157,7 +157,7 @@
   height: 50px;
   width: 100px;
   background-color: #c99f63;
-  color: #fff;
+  color: #000;
   line-height: 50px;
   font-size: 20px;
   text-align: center;
@@ -166,8 +166,8 @@
   position: absolute;
   right: 100px;
   height: 50px;
-  background-color: palevioletred;
-  color: #fff;
+  /* background-color: palevioletred; */
+  color: #000;
   line-height: 50px;
   font-size: 20px;
   text-align: center;

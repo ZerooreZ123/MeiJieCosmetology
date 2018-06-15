@@ -126,8 +126,8 @@ export default function print(item) {
   window.LODOP.ADD_PRINT_HTM(0, 0, "100%", "100%", strFormHtml);
   window.LODOP.SET_PRINTER_INDEX("Gprinter", "GP-U80250 series");
   //   window.LODOP.PREVIEW();
-  //   window.LODOP.PRINT();
+    window.LODOP.PRINT();
   //   window.close();
   // window.LODOP.PRINT_SETUP();
-  window.LODOP.PRINT_DESIGN();
+  // window.LODOP.PRINT_DESIGN();
 }

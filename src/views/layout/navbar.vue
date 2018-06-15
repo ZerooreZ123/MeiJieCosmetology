@@ -2,7 +2,7 @@
   <nav class="site-navbar" :class="navbarClasses">
     <div class="site-navbar__header">
       <h1 class="site-navbar__brand" @click="$router.push({ name: 'home' })">
-        <a class="site-navbar__brand-lg" href="javascript:;"><img src="~@/assets/img/logo2.png" height="40" /></a>
+        <a class="site-navbar__brand-lg" href="javascript:;"><img src="~@/assets/img/logo.png" height="40" /></a>
         <a class="site-navbar__brand-mini" href="javascript:;">logo</a>
       </h1>
     </div>
@@ -60,7 +60,9 @@
         <el-menu-item class="site-navbar__avatar" index="3">
           <el-dropdown :show-timeout="0" placement="bottom">
             <span class="el-dropdown-link">
-              <img src="~@/assets/img/avatar.png" :alt="$store.state.user.name"> {{ $store.state.user.name }}
+              <img v-if="$store.state.user.headPortrait" :src="parseUrl($store.state.user.headPortrait)" :alt="$store.state.user.name"> 
+              <img v-else src="~@/assets/img/avatar.png" :alt="$store.state.user.name"> 
+              {{ $store.state.user.name }}
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item @click.native="updatePasswordHandle()">修改密码</el-dropdown-item>
