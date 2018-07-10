@@ -12,7 +12,7 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="dataForm.key" placeholder="搜索姓名/技师" clearable @clear="getDataListPage1"></el-input>
+            <el-input v-model="dataForm.key" placeholder="搜索姓名/操作人员" clearable @clear="getDataListPage1"></el-input>
           </el-form-item>
           <el-button @click="getDataListPage1()">查询</el-button>
         </div>
@@ -44,7 +44,11 @@
       </el-table-column>
       <el-table-column prop="endTime" header-align="center" align="center" label="预约结束时间">
       </el-table-column> -->
-      <el-table-column prop="technician" header-align="center" align="center" label="技师">
+      <el-table-column prop="technician" header-align="center" align="center" label="操作人员">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.technician">{{scope.row.technician}}</el-tag>
+          <el-tag v-else>未指定</el-tag>
+        </template>
       </el-table-column>
       <el-table-column header-align="center" align="center" label="状态">
         <template slot-scope="scope">

@@ -78,9 +78,12 @@
           <el-table :data="dataResult" border style="width: 100%;">
             <el-table-column prop="name" header-align="center" align="center" label="会员">
             </el-table-column>
-            <el-table-column prop="memberno" header-align="center" align="center" label="会员号">
-            </el-table-column>
+            <!-- <el-table-column prop="memberno" header-align="center" align="center" label="会员号">
+            </el-table-column> -->
             <el-table-column prop="mobile" header-align="center" align="center" label="手机号">
+              <template slot-scope="scope">
+                {{scope.row.mobile | hideMobile}}
+              </template>
             </el-table-column>
             <el-table-column prop="officeName" header-align="center" align="center" label="所属门店">
             </el-table-column>
@@ -164,6 +167,21 @@ export default {
         endDay: ""
       }
     };
+  },
+  filters: {
+    hideMobile(str) {
+      const r = [];
+      for (let i = 0; i < str.length; i++) {
+        if (i <= 3) {
+          r.push(str[i])
+        } else if (i > 7) {
+          r.push(str[i])
+        } else {
+          r.push("*")
+        }
+      }
+      return r.join("");
+    }
   },
   components: {
     tabNav,

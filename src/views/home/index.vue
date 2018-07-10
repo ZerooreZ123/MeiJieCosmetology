@@ -117,7 +117,7 @@
           <div class="i-title">
             <img src="../../assets/img/main/yy.png" /> 预约信息
           </div>
-          <el-table :data="appointmentList" border style="width: 100%;margin-top:10px;">
+          <el-table :data="appointmentList" border style="width: 100%;" max-height="500">
             <el-table-column prop="name" header-align="center" align="center" label="客户">
             </el-table-column>
             <el-table-column prop="appointDate" header-align="center" align="center" label="预约时间">
@@ -134,14 +134,12 @@
               <img src="../../assets/img/main/ss.png" />
             </div>
           </div>
-          <div>
-            <el-table :data="staffList" border style="width: 100%;margin-top:10px;">
-              <el-table-column prop="orderNo" header-align="center" align="center" label="订单号">
-              </el-table-column>
-              <el-table-column prop="serviceTechnician" header-align="center" align="center" label="技师">
-              </el-table-column>
-            </el-table>
-          </div>
+          <el-table :data="staffList" border style="width: 100%;" max-height="500">
+            <el-table-column prop="orderNo" header-align="center" align="center" label="订单号">
+            </el-table-column>
+            <el-table-column prop="serviceTechnician" header-align="center" align="center" label="技师">
+            </el-table-column>
+          </el-table>
         </el-col>
       </el-row>
     </el-card>
@@ -182,6 +180,7 @@ export default {
     this.getStaff({});
     this.active = true;
   },
+  updated() {},
   activated() {
     if (this.active) {
       this.getData();
@@ -349,6 +348,7 @@ export default {
   color: #c99f63;
   font-size: 22px;
   position: relative;
+  margin-bottom: 10px;
 }
 .i-title * {
   vertical-align: top;
@@ -379,6 +379,9 @@ export default {
   position: absolute;
   right: 10px;
   top: 4px;
+}
+.el-dropdown {
+  color: #606266;
 }
 </style>
 

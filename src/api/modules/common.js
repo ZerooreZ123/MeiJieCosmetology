@@ -25,12 +25,30 @@ export function logout() {
   });
 }
 
+// 忘记密码-验证码
+export function smsCode(params) {
+  return request({
+    url: requestUrl("/user/smsCode"),
+    method: "post",
+    data: requestParam(params)
+  });
+}
+
+// 忘记密码-重置
+export function resetPassword(params) {
+  return request({
+    url: requestUrl("/user/resetPassword"),
+    method: "post",
+    data: requestParam(params)
+  });
+}
+
 // 获取所有角色
 export function getRoles() {
   return request({
     url: requestUrl("/sys/role/getList"),
     method: "get",
-    data: requestParam({}, "get")
+    params: requestParam({}, "get")
   });
 }
 
@@ -39,7 +57,15 @@ export function getOfficeList() {
   return request({
     url: requestUrl("/sys/sysoffice/getList"),
     method: "get",
-    data: requestParam({}, "get")
+    params: requestParam({}, "get")
+  });
+}
+
+export function getAllOfficeList() {
+  return request({
+    url: requestUrl("/sys/sysoffice/getList"),
+    method: "get",
+    params: requestParam({type: "all"}, "get")
   });
 }
 
@@ -48,7 +74,7 @@ export function getIdentityList() {
   return request({
     url: requestUrl("/sys/sysidentity/getList"),
     method: "get",
-    data: requestParam({}, "get")
+    params: requestParam({}, "get")
   });
 }
 
@@ -57,7 +83,7 @@ export function getCategoryList() {
   return request({
     url: requestUrl("/serviceCategory/servicecategory/getList"),
     method: "get",
-    data: requestParam({}, "get")
+    params: requestParam({}, "get")
   });
 }
 

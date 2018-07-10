@@ -7,7 +7,7 @@
           <span class="custom-tree-node" slot-scope="{ node, data }">
             <span>{{ node.label }}</span>
             <span class="tree-opt">
-              <el-button type="text" size="mini" @click="append(data, true)">
+              <el-button v-if="node.level < 2" type="text" size="mini" @click="append(data, true)">
                 增加
               </el-button>
               <el-button type="text" size="mini" @click="append(data, false)">
@@ -29,7 +29,7 @@
           <span class="custom-tree-node" slot-scope="{ node, data }">
             <span>{{ node.label }}</span>
             <span class="tree-opt">
-              <el-button type="text" size="mini" @click="append(data, true)">
+              <el-button v-if="node.level < 2" type="text" size="mini" @click="append(data, true)">
                 增加
               </el-button>
               <el-button type="text" size="mini" @click="append(data, false)">
@@ -53,7 +53,7 @@
           <span class="custom-tree-node" slot-scope="{ node, data }">
             <span>{{ node.label }}</span>
             <span class="tree-opt">
-              <el-button type="text" size="mini" @click="append(data, true)">
+              <el-button v-if="node.level < 2" type="text" size="mini" @click="append(data, true)">
                 增加
               </el-button>
               <el-button type="text" size="mini" @click="append(data, false)">
@@ -75,7 +75,7 @@
           <span class="custom-tree-node" slot-scope="{ node, data }">
             <span>{{ node.label }}</span>
             <span class="tree-opt">
-              <el-button type="text" size="mini" @click="append(data, true)">
+              <el-button v-if="node.level < 2" type="text" size="mini" @click="append(data, true)">
                 增加
               </el-button>
               <el-button type="text" size="mini" @click="append(data, false)">
@@ -91,7 +91,7 @@
           <el-button @click="append({categoryType: 4, id: 0, level: 1, catsort: 0}, true)">增加</el-button>
         </div>
       </div>
-      <div>
+      <!-- <div>
         <h1>5. 设置券</h1>
         <el-tree v-if="couponList.length > 0" :data="couponList" node-key="id" default-expand-all :expand-on-click-node="false">
           <span class="custom-tree-node" slot-scope="{ node, data }">
@@ -112,7 +112,7 @@
         <div v-else>
           <el-button @click="append({categoryType: 5, id: 0, level: 1, catsort: 0}, true)">增加</el-button>
         </div>
-      </div>
+      </div> -->
     </div>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update :data="nodeTempData" v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
@@ -146,6 +146,7 @@ export default {
         this.items = transform(data.list["items"]);
         this.products = transform(data.list["products"]);
         this.packageList = transform(data.list["packages"]);
+        this.cardList = transform(data.list["cards"]);
       });
     },
     append(data, flag) {

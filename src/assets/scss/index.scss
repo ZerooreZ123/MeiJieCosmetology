@@ -28,11 +28,26 @@
   clear: both;
 }
 
-.el-table th {
-  background-color: mix($--color-white, $--color-primary, 20%);
-  color: #fff;
+.el-table th,
+.el-table thead.is-group th {
+  // background-color: mix($--color-white, $--color-primary, 20%);
+  background-color: mix($--color-white, $--color-primary, 90%);
+  color: $--color-primary;
+  font-weight: bold;
 }
 
 .breadcrumb-title {
   font-size: 18px;
+}
+
+.el-dropdown {
+  color: #fff;
+}
+
+.iScrollVerticalScrollbar {
+  width: 2px !important;
+}
+.iScrollIndicator {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
 }

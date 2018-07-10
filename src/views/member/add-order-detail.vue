@@ -76,9 +76,7 @@
                 </el-table-column>
                 <el-table-column header-align="center" align="center" label="支付">
                   <template slot-scope="scope">
-                    <div>
-                      <div v-for="item in scope.row.payList" :key="item.id">{{scope.row.payList.length>0 ? item.payMethod:""}}</div>
-                    </div>
+                    <div v-for="item in scope.row.payList" :key="item.id">{{item.payMethod ? item.payMethod : "未知支付方式"}}</div>
                   </template>
                 </el-table-column>
                 <el-table-column header-align="center" align="center" label="服务人员">
@@ -96,15 +94,24 @@
                 <div class="payCount">支付统计:</div>
                 <div class="payMethod">
                   <div v-for="item in this.payCount" :key="item.id">
-                    {{item.hasOwnProperty('payMethod')?item.payMethod:''}}￥{{item.hasOwnProperty('payPrice')?item.payPrice:''}}
+                    <template v-if="item.type=='折扣卡'">
+                      折扣卡：{{item.payMethod}}
+                    </template>
+                    <template v-else-if="item.type=='疗程总次卡' || item.type=='疗程分次卡'">
+                      {{item.type}}：{{item.payMethod}}
+                    </template>
+                    <template v-else>
+                      {{item.payMethod}}：￥{{item.payPrice}}
+                    </template>
                   </div>
                 </div>
-                <div class="payMoney">支付时间{{this.payTime}}</div>
-                <div class="payMoney">当前欠款
+                <div class="payMoney">支付时间：{{this.payTime}}</div>
+                <div class="payMoney">当前欠款：
                   <span>￥{{debt}}</span>
                 </div>
               </div>
-              <div class="pay" @click="pay" v-if="debt>0">还款</div>
+              <!-- <div class="pay" @click="pay" v-if="debt>0">还款</div> -->
+              <el-button class="pay" @click="pay" v-if="debt>0">还款</el-button>
             </div>
             <div slot="操作记录">
               <el-table :data="logList" border>
@@ -293,15 +300,8 @@ export default {
       }
       .pay {
         float: right;
-        text-align: center;
-        line-height: 20px;
-        width: 60px;
-        height: 20px;
         margin-top: 10px;
         margin-right: 10px;
-        color: #fff;
-        background: #59adf5;
-        cursor: pointer;
       }
     }
   }

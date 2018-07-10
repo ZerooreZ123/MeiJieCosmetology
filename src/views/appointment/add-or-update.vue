@@ -5,14 +5,13 @@
         <el-input v-model="dataForm.appointNo" placeholder="预约单号"></el-input>
       </el-form-item> -->
       <el-form-item label="所属门店" prop="officeId">
-        <!-- <el-input v-model="dataForm.officeId" placeholder="所属门店"></el-input> -->
         <el-select v-model="dataForm.officeId" placeholder="请选择">
           <el-option v-for="item in shopList" :key="item.id" :label="item.name" :value="item.id">
           </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="预约人姓名" prop="name">
-        <el-select v-model="dataForm.memberId" placeholder="请选择会员">
+        <el-select v-model="dataForm.memberId" placeholder="请选择会员" filterable allow-create style="width:300px;" @change="onSelectMember">
           <el-option v-for="item in memberList" :key="item.id" :label="item.name" :value="item.id">
           </el-option>
         </el-select>
@@ -24,7 +23,7 @@
         <!-- <el-input v-model="dataForm.nums" placeholder="预约人数"></el-input> -->
         <el-input-number v-model="dataForm.nums" :min="1" label="预约人数"></el-input-number>
       </el-form-item>
-      <el-form-item label="添加项目" prop="remarks">
+      <el-form-item label="添加项目">
         <div class="w-list">
           <el-tag @close="handleRemove(index)" closable v-for="(item, index) in dataForm.appointDeatailLsit" :key="item.serviceId">
             {{item.serviceName}}
@@ -43,61 +42,41 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="预约结束时间" prop="endTime">
+      <!-- <el-form-item label="预约结束时间" prop="endTime">
         <el-select v-model="dataForm.endTime" placeholder="到店时间">
           <el-option v-for="item in getTimeList('10:00', '18:00', 15)" :key="item" :label="item" :value="item">
           </el-option>
         </el-select>
-      </el-form-item>
-      <el-form-item label="技师" prop="technician">
-        <!-- <el-input v-model="dataForm.technician" placeholder="技师"></el-input> -->
+      </el-form-item> -->
+      <el-form-item label="操作人员" prop="technician">
         <el-select v-model="dataForm.technician" placeholder="请选择">
           <el-option v-for="item in userList" :key="item.userId" :label="item.name" :value="item.name">
           </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="是否指定" prop="isSpecify">
-        <!-- <el-input v-model="dataForm.isSpecify" placeholder="是否指定"></el-input> -->
         <el-radio-group v-model="dataForm.isSpecify">
           <el-radio label="0">否</el-radio>
           <el-radio label="1">是</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="选择房间" prop="roomId">
-        <!-- <el-input v-model="dataForm.roomId" placeholder="选择房间"></el-input> -->
         <el-select v-model="dataForm.roomId" placeholder="请选择">
           <el-option v-for="item in roomList" :key="item.id" :label="item.name" :value="item.id">
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="流水单号" prop="serialno">
-        <el-input v-model="dataForm.serialno" placeholder="流水单号"></el-input>
-      </el-form-item>
-      <!-- <el-form-item label="创建者" prop="createBy">
-        <el-input v-model="dataForm.createBy" placeholder="创建者"></el-input>
-      </el-form-item>
-      <el-form-item label="创建时间" prop="createDate">
-        <el-input v-model="dataForm.createDate" placeholder="创建时间"></el-input>
-      </el-form-item>
-      <el-form-item label="更新者" prop="updateBy">
-        <el-input v-model="dataForm.updateBy" placeholder="更新者"></el-input>
-      </el-form-item>
-      <el-form-item label="更新时间" prop="updateDate">
-        <el-input v-model="dataForm.updateDate" placeholder="更新时间"></el-input>
-      </el-form-item> -->
       <el-form-item label="备注信息" prop="remarks">
         <el-input type="textarea" :rows="2" v-model="dataForm.remarks" placeholder="备注信息"></el-input>
       </el-form-item>
-      <!-- <el-form-item label="删除标记" prop="delFlag">
-        <el-input v-model="dataForm.delFlag" placeholder="删除标记"></el-input>
-      </el-form-item> -->
     </el-form>
 
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
+      <el-button v-if="btnStatus" type="primary" @click="dataFormSubmit(1)">新增会员并保存</el-button>
+      <el-button v-if="btnStatus2" type="primary" @click="dataFormSubmit(2)">确定</el-button>
     </span>
-    <product-selector :member-id="dataForm.memberId" v-if="showPanel" @selected="list => handleProductSelected(list)"></product-selector>
+    <product-selector :member-id="dataForm.memberId" v-if="showPanel" @selected="list => handleProductSelected(list)" @cancel="showPanel=false"></product-selector>
   </el-dialog>
 </template>
 
@@ -124,6 +103,8 @@ export default {
       userList: [],
       roomList: [],
       memberList: [],
+      btnStatus: true,
+      btnStatus2: true,
       dataForm: {
         id: 0,
         appointDeatailLsit: [],
@@ -150,27 +131,35 @@ export default {
       dataRule: {
         appointNo: [{ required: true, message: "预约单号不能为空", trigger: "blur" }],
         officeId: [{ required: true, message: "所属机构不能为空", trigger: "blur" }],
-        memberId: [{ required: true, message: "预约人姓名不能为空", trigger: "blur" }],
+        // memberId: [{ required: true, message: "预约人姓名不能为空", trigger: "blur" }],
         mobile: [{ required: true, message: "预约人电话不能为空", trigger: "blur" }, { validator: validateMobile, trigger: "blur" }],
         nums: [{ required: true, message: "预约人数不能为空", trigger: "blur" }],
         appointDate: [{ required: true, message: "预约日期不能为空", trigger: "blur" }],
-        reachTime: [{ required: true, message: "到店时间不能为空", trigger: "blur" }],
-        endTime: [{ required: true, message: "预约结束时间不能为空", trigger: "blur" }],
-        technician: [{ required: true, message: "技师不能为空", trigger: "blur" }],
-        isSpecify: [{ required: true, message: "是否指定：0、否 1、是不能为空", trigger: "blur" }],
-        roomId: [{ required: true, message: "选择房间不能为空", trigger: "blur" }],
-        serialno: [{ required: true, message: "流水单号不能为空", trigger: "blur" }],
-        createBy: [{ required: true, message: "创建者不能为空", trigger: "blur" }],
-        createDate: [{ required: true, message: "创建时间不能为空", trigger: "blur" }],
-        updateBy: [{ required: true, message: "更新者不能为空", trigger: "blur" }],
-        updateDate: [{ required: true, message: "更新时间不能为空", trigger: "blur" }],
-        remarks: [{ required: true, message: "备注信息不能为空", trigger: "blur" }],
-        delFlag: [{ required: true, message: "删除标记不能为空", trigger: "blur" }]
+        reachTime: [{ required: true, message: "到店时间不能为空", trigger: "blur" }]
+        // roomId: [{ required: true, message: "房间不能为空", trigger: "blur" }],
+        // name: [{ required: true, message: "预约人姓名不能为空", trigger: "blur" }]
+        // technician: [{ required: true, message: "操作人员不能为空", trigger: "blur" }]
       }
     };
   },
   methods: {
     getTimeList: getTimeList,
+    onSelectMember(id) {
+      this.btnStatus = true;
+      this.btnStatus2 = true;
+      for (let i = 0; i < this.memberList.length; i++) {
+        if (this.memberList[i].id === id) {
+          this.btnStatus = false;
+          this.btnStatus2 = true;
+          break;
+        }
+      }
+      if (this.btnStatus && this.btnStatus2) {
+        this.btnStatus = true;
+        this.btnStatus2 = false;
+      }
+      console.info(this.dataForm.memberId);
+    },
     getCategory() {
       API.common.getOfficeList().then(({ data }) => {
         if (data && data.code === 0) {
@@ -254,7 +243,7 @@ export default {
       });
     },
     // 表单提交
-    dataFormSubmit() {
+    dataFormSubmit(type) {
       this.$refs["dataForm"].validate(valid => {
         if (valid) {
           var params = {
@@ -280,11 +269,21 @@ export default {
             delFlag: this.dataForm.delFlag
           };
 
-          for (let i = 0; i < this.memberList.length; i++) {
-            if (+this.memberList[i].id === +this.dataForm.memberId) {
-              params.name = this.memberList[i].name;
-              break;
+          if (type === 1) {
+            params.name = this.dataForm.memberId;
+            params.memberId = "";
+          }
+          if (type === 2) {
+            for (let i = 0; i < this.memberList.length; i++) {
+              if (+this.memberList[i].id === +this.dataForm.memberId) {
+                params.name = this.memberList[i].name;
+                break;
+              }
             }
+          }
+          if (params.name === "") {
+            this.$alert("预约人姓名不能为空");
+            return;
           }
 
           console.log(JSON.stringify(params));

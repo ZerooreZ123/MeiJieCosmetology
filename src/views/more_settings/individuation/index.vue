@@ -43,8 +43,30 @@ export default {
   },
   data() {
     return {
-      itemList: ["项目/产品/类别", "产品品牌管理", "员工身份设置", "支付方式", "角色权限设置", "开关设置"]
+      itemList: []
     };
+  },
+  mounted() {
+    //  ["项目/产品/类别", "产品品牌管理", "员工身份设置", "支付方式", "角色权限设置", "开关设置"]
+    // alert(this.isAuth('sys:role:save'))
+    if (this.isAuth("serviceCategory:servicecategory:list")) {
+      this.itemList.push("项目/产品/类别");
+    }
+    if (this.isAuth("productBrand:productbrand:list")) {
+      this.itemList.push("产品品牌管理");
+    }
+    if (this.isAuth("sys:sysidentity:list")) {
+      this.itemList.push("员工身份设置");
+    }
+    if (this.isAuth("sys:syspaymode:list")) {
+      this.itemList.push("支付方式");
+    }
+    if (this.isAuth("sys:role:list")) {
+      this.itemList.push("角色权限设置");
+    }
+    if (this.isAuth("sys:sysdict:list")) {
+      this.itemList.push("开关设置");
+    }
   }
 };
 </script>

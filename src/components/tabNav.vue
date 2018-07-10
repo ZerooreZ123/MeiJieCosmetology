@@ -1,10 +1,17 @@
 <template>
   <div>
-    <div class="shopList">
-      <div v-for="(item, index) in itemList" :key="index" @click="setActiveIndex(index)" :class="activeIndex== index ? 'avtiveIndex': ''">
+    <div class="shopList" v-if="!disabled">
+      <div class="item" v-for="(item, index) in itemList" :key="index" @click="setActiveIndex(index)" :class="activeIndex== index ? 'avtiveIndex': ''">
         {{item}}
       </div>
-      <slot>
+      <slot name="right">
+      </slot>
+    </div>
+    <div class="shopList" v-if="disabled">
+      <div class="item" v-for="(item, index) in itemList" :key="index" :class="activeIndex== index ? 'avtiveIndex disabled': 'disabled'">
+        {{item}}
+      </div>
+      <slot name="right">
       </slot>
     </div>
     <div :style="spaceStyle" v-if="index == activeIndex" v-for="(item, index) in itemList" :key="index">
@@ -26,7 +33,7 @@ export default {
       this.$emit("addParmas", index);
     }
   },
-  props: ["itemList", "space"],
+  props: ["itemList", "space", "disabled"],
   computed: {
     spaceStyle() {
       return `padding-top:${this.space || 0}px;`;
@@ -67,7 +74,7 @@ export default {
   top: 25px;
   right: 32px;
 }
-.shopList div {
+.shopList .item {
   display: inline-block;
   list-style: none;
   padding: 0;
@@ -76,14 +83,19 @@ export default {
   width: 172px;
   line-height: 72px;
   text-align: center;
-}
-.shopList div:hover {
-  background-color: #c99f63;
   cursor: pointer;
+  transition: all ease .3s;
+}
+.shopList .item:hover {
+  background-color: #c99f63;
+  color: #fff;
 }
 .avtiveIndex {
   background-color: #c99f63;
   color: #fff;
+}
+.shopList .item.disabled {
+  cursor: not-allowed;
 }
 
 @media screen and (max-width: 1377px) {

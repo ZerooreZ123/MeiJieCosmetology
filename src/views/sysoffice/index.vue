@@ -207,8 +207,9 @@
       <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button v-if="isAuth('sys:sysoffice:save')" type="text" @click="addOrUpdateHandle()">新增</el-button>
-          <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+          <el-button v-if="isAuth('sys:sysoffice:setAddpersons')" type="text" size="small" @click="setAddpersons(scope.row.id)">设置门店员工账号数</el-button>
+          <!-- <el-button v-if="isAuth('sys:sysoffice:save')" type="text" @click="addOrUpdateHandle()">新增</el-button> -->
+          <el-button v-if="isAuth('sys:sysoffice:delete')" type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -216,12 +217,14 @@
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <set-addperson v-if="addOrUpdateVisible" ref="setAddperson" @refreshDataList="getDataList"></set-addperson>
   </div>
 </template>
 
 <script>
 import API from "@/api";
 import AddOrUpdate from "./add-or-update";
+import SetAddperson from "./set-addperson";
 export default {
   data() {
     return {
@@ -238,7 +241,8 @@ export default {
     };
   },
   components: {
-    AddOrUpdate
+    AddOrUpdate,
+    SetAddperson
   },
   filter: {},
   mounted() {
@@ -288,6 +292,12 @@ export default {
       this.addOrUpdateVisible = true;
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(id);
+      });
+    },
+    setAddpersons(id) {
+      this.addOrUpdateVisible = true;
+      this.$nextTick(() => {
+        this.$refs.setAddperson.init(id);
       });
     },
     // 删除

@@ -27,7 +27,7 @@ import {
   Checkbox,
   // CheckboxButton,
   CheckboxGroup,
-  // Switch,
+  Switch,
   Select,
   Option,
   OptionGroup,
@@ -62,8 +62,8 @@ import {
   // Step,
   Carousel,
   CarouselItem,
-  // Collapse,
-  // CollapseItem,
+  Collapse,
+  CollapseItem,
   // Cascader,
   // ColorPicker,
   // Transfer,
@@ -96,7 +96,7 @@ Vue.use(RadioGroup);
 Vue.use(Checkbox);
 // Vue.use(CheckboxButton)
 Vue.use(CheckboxGroup);
-// Vue.use(Switch)
+Vue.use(Switch)
 Vue.use(Select);
 Vue.use(Option);
 Vue.use(OptionGroup);
@@ -131,8 +131,8 @@ Vue.use(Card);
 // Vue.use(Step)
 Vue.use(Carousel);
 Vue.use(CarouselItem);
-// Vue.use(Collapse)
-// Vue.use(CollapseItem)
+Vue.use(Collapse)
+Vue.use(CollapseItem)
 // Vue.use(Cascader)
 // Vue.use(ColorPicker)
 // Vue.use(Transfer)

@@ -73,14 +73,17 @@ export default {
     getUserInfo() {
       API.user.info().then(({ data }) => {
         if (data && data.code === 0) {
+          console.info(data.user);
           this.loading = false;
           this.DELETE_CONTENT_TABS();
           this.UPDATE_USER_ID({ id: data.user.userId });
           this.UPDATE_USER_NAME({ name: data.user.username });
+          this.UPDATE_USER_HEAD({ headPortrait: data.user.headPortrait });
+          sessionStorage.setItem("roleIdList", data.user.roleIdList);
         }
       });
     },
-    ...mapMutations(["UPDATE_DOCUMENT_CLIENT_HEIGHT", "UPDATE_USER_ID", "UPDATE_USER_NAME", "DELETE_CONTENT_TABS"])
+    ...mapMutations(["UPDATE_DOCUMENT_CLIENT_HEIGHT", "UPDATE_USER_ID", "UPDATE_USER_NAME", "UPDATE_USER_HEAD", "DELETE_CONTENT_TABS"])
   }
 };
 </script>

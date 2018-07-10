@@ -120,14 +120,14 @@ export default {
         catFirst: [{ required: true, message: "一级分类不能为空", trigger: "blur" }],
         catSecond: [{ required: true, message: "二级分类不能为空", trigger: "blur" }],
         status: [{ required: true, message: "状态不能为空", trigger: "blur" }],
-        images: [{ required: true, message: "套餐配图不能为空", trigger: "blur" }],
-        content: [{ required: true, message: "套餐描述不能为空", trigger: "blur" }],
-        createBy: [{ required: true, message: "创建者不能为空", trigger: "blur" }],
-        createDate: [{ required: true, message: "创建时间不能为空", trigger: "blur" }],
-        updateBy: [{ required: true, message: "更新者不能为空", trigger: "blur" }],
-        updateDate: [{ required: true, message: "更新时间不能为空", trigger: "blur" }],
-        remarks: [{ required: true, message: "备注信息不能为空", trigger: "blur" }],
-        delFlag: [{ required: true, message: "删除标记不能为空", trigger: "blur" }]
+        // images: [{ required: true, message: "套餐配图不能为空", trigger: "blur" }],
+        content: [{ required: true, message: "套餐描述不能为空", trigger: "blur" }]
+        // createBy: [{ required: true, message: "创建者不能为空", trigger: "blur" }],
+        // createDate: [{ required: true, message: "创建时间不能为空", trigger: "blur" }],
+        // updateBy: [{ required: true, message: "更新者不能为空", trigger: "blur" }],
+        // updateDate: [{ required: true, message: "更新时间不能为空", trigger: "blur" }],
+        // remarks: [{ required: true, message: "备注信息不能为空", trigger: "blur" }],
+        // delFlag: [{ required: true, message: "删除标记不能为空", trigger: "blur" }]
       }
     };
   },

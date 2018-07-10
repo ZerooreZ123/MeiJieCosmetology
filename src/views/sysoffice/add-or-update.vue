@@ -105,9 +105,9 @@
       <el-form-item label="门店地址" prop="address">
         <el-input v-model="dataForm.address" placeholder="门店地址"></el-input>
       </el-form-item>
-      <el-form-item label="签到距离" prop="signDistance">
+      <!-- <el-form-item label="签到距离" prop="signDistance">
         <el-input v-model="dataForm.signDistance" placeholder="签到距离"></el-input>
-      </el-form-item>
+      </el-form-item> -->
       <el-form-item label="门店招牌照片" prop="signPhoto">
         <el-input v-model="dataForm.signPhoto" placeholder="门店招牌照片"></el-input>
         <img-upload :path="dataForm.signPhoto" @success="onSignPhotoUploadSuccess"></img-upload>
@@ -213,18 +213,10 @@ export default {
         appointmentStarttime: [{ required: true, message: "预约开始时间不能为空", trigger: "blur" }],
         appointmentEndtime: [{ required: true, message: "预约结束时间不能为空", trigger: "blur" }],
         isBusiness: [{ required: true, message: "是否营业不能为空", trigger: "blur" }],
-        signDistance: [{ required: true, message: "签到距离不能为空", trigger: "blur" }],
+        // signDistance: [{ required: true, message: "签到距离不能为空", trigger: "blur" }],
         signPhoto: [{ required: true, message: "门店招牌照片不能为空", trigger: "blur" }],
         storePhoto: [{ required: true, message: "店内照片不能为空", trigger: "blur" }],
-        logo: [{ required: true, message: "门店品牌LOGO不能为空", trigger: "blur" }],
-        introduce: [{ required: true, message: "门店介绍不能为空", trigger: "blur" }],
-        characteristic: [{ required: true, message: "门店特色不能为空", trigger: "blur" }],
-        createBy: [{ required: true, message: "创建者不能为空", trigger: "blur" }],
-        createDate: [{ required: true, message: "创建时间不能为空", trigger: "blur" }],
-        updateBy: [{ required: true, message: "更新者不能为空", trigger: "blur" }],
-        updateDate: [{ required: true, message: "更新时间不能为空", trigger: "blur" }],
-        remarks: [{ required: true, message: "备注信息不能为空", trigger: "blur" }],
-        delFlag: [{ required: true, message: "删除标记不能为空", trigger: "blur" }]
+        logo: [{ required: true, message: "门店品牌LOGO不能为空", trigger: "blur" }]
       }
     };
   },

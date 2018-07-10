@@ -39,11 +39,11 @@
         </el-submenu> -->
         <el-submenu index="1">
           <template slot="title">
-            <img src="~@/assets/img/main/xx.png" height="30" />
+            <img src="~@/assets/img/main/xx-w.png" height="30" />
             <span style="color:#fff;">信息提醒</span>
           </template>
-          <el-menu-item index="1-1">
-            <a href="#/appointmentTip" style="color:#fff;"><img src="~@/assets/img/main/xx.png" height="30" />预约提醒</a>
+          <el-menu-item index="1-1" v-if="isAuth('appoint:appointment:list')">
+            <a href="#/appointmentTip" style="color:#fff;"><img src="~@/assets/img/main/xx-w.png" height="30" />预约提醒</a>
           </el-menu-item>
           <!-- <el-menu-item index="1-2">
             <a href="//git.oschina.net/renrenio/renren-fast" style="color:#fff;">信息提示</a>
@@ -52,17 +52,16 @@
             <a href="//git.oschina.net/renrenio/renren-generator" style="color:#fff;">信息提示</a>
           </el-menu-item> -->
         </el-submenu>
-        <el-menu-item index="2">
+        <el-menu-item index="2" style="margin-right:30px;" v-if="isAuth('knowledge:knowledge:list')">
           <el-badge value="hot">
-            <a href="#/knowledgegrid" style="vertical-align:top;"><img src="~@/assets/img/main/zsk.png" height="30" />知识库</a>
+            <a href="#/knowledgegrid" style="vertical-align:top;"><img src="~@/assets/img/main/zsk-w.png" height="30" />知识库</a>
           </el-badge>
         </el-menu-item>
         <el-menu-item class="site-navbar__avatar" index="3">
           <el-dropdown :show-timeout="0" placement="bottom">
             <span class="el-dropdown-link">
-              <img v-if="$store.state.user.headPortrait" :src="parseUrl($store.state.user.headPortrait)" :alt="$store.state.user.name"> 
-              <img v-else src="~@/assets/img/avatar.png" :alt="$store.state.user.name"> 
-              {{ $store.state.user.name }}
+              <img v-if="$store.state.user.headPortrait" :src="parseUrl($store.state.user.headPortrait)" :alt="$store.state.user.name">
+              <img v-else src="~@/assets/img/head.png" :alt="$store.state.user.name"> {{ $store.state.user.name }}
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item @click.native="updatePasswordHandle()">修改密码</el-dropdown-item>
@@ -82,6 +81,7 @@
 import UpdatePassword from "./update-password";
 import API from "@/api";
 import { mapMutations } from "vuex";
+import parseUrl from "@/utils/parseUrl";
 export default {
   data() {
     return {
@@ -98,6 +98,7 @@ export default {
     }
   },
   methods: {
+    parseUrl,
     // 切换侧边栏, 水平折叠收起状态
     switchSidebarCollapseHandle() {
       this.SWITCH_SIDEBAR_COLLAPSE({ collapse: !this.$store.state.sidebarCollapse });

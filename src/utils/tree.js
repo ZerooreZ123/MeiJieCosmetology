@@ -1,31 +1,10 @@
-// const treeList = [
-//   {
-//     id: 1,
-//     categoryType: "1",
-//     name: "文学",
-//     parentId: 0,
-//     level: 1,
-//     catsort: 1,
-//     categoryList: [
-//       { id: 2, categoryType: "1", name: "课外书", parentId: 1, level: 1, catsort: 1, categoryList: [] },
-//       { id: 3, categoryType: "1", name: "童话书", parentId: 1, level: 1, catsort: 1, categoryList: [] },
-//       { id: 4, categoryType: "1", name: "课本", parentId: 1, level: 1, catsort: 1, categoryList: [] }
-//     ]
-//   },
-//   {
-//     id: 1,
-//     categoryType: "1",
-//     name: "文学",
-//     parentId: 0,
-//     level: 1,
-//     catsort: 1,
-//     categoryList: [
-//       { id: 2, categoryType: "1", name: "课外书", parentId: 1, level: 1, catsort: 1, categoryList: [] },
-//       { id: 3, categoryType: "1", name: "童话书", parentId: 1, level: 1, catsort: 1, categoryList: [] },
-//       { id: 4, categoryType: "1", name: "课本", parentId: 1, level: 1, catsort: 1, categoryList: [] }
-//     ]
-//   }
-// ];
+export function guid() {
+  return "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx".replace(/[x]/g, function(c) {
+    var r = (Math.random() * 16) | 0;
+    var v = c === "x" ? r : c;
+    return v.toString(16);
+  });
+}
 
 function hasChildren(node) {
   if (node.categoryList === undefined || node.categoryList.length === 0) {
@@ -38,9 +17,17 @@ function hasChildren(node) {
 function transform(treeList) {
   treeList.forEach(node => {
     node.label = node.name;
-    node.children = node.categoryList;
+    node.guid = guid();
     if (hasChildren(node)) {
+      node.children = node.categoryList;
       transform(node.categoryList);
+    } else if (node.data) {
+      node.data.forEach(d => {
+        d.label = d.name;
+        d.guid = guid();
+        d.serviceType = node.categoryType;
+      });
+      node.children = node.data;
     }
   });
   return treeList;

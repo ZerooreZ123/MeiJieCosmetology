@@ -30,6 +30,19 @@ import * as sysmerchant from "./modules/sysmerchant";
 import * as ordervisit from "./modules/ordervisit";
 import * as knowledge from "./modules/knowledge";
 import * as membermarks from "./modules/membermarks";
+import * as stockpurchase from "./modules/stockpurchase";
+import * as stockconsume from "./modules/stockconsume";
+import * as stockallocation from "./modules/stockallocation";
+import * as stockconsumedetails from "./modules/stockconsumedetails";
+import * as stockrealtime from "./modules/stockrealtime";
+import * as supplier from "./modules/supplier";
+import * as servicecard from "./modules/servicecard";
+import * as messageexamine from "./modules/messageexamine";
+import * as messagenotice from "./modules/messagenotice";
+import * as membercard from "./modules/membercard";
+import * as messageList from "./modules/messageList";
+import * as chart from "./modules/chart";
+import * as branchaccount from "./modules/branchaccount";
 
 export default {
   common, // 公共
@@ -63,5 +76,19 @@ export default {
   sysmerchant,
   ordervisit,
   knowledge,
-  membermarks
+  membermarks,
+  stockpurchase,
+  stockconsume,
+  stockallocation,
+  stockconsumedetails,
+  stockrealtime,
+  supplier,
+  servicecard,
+  messageexamine, // 短信群发
+  messagenotice,
+  membercard,
+  messageList,
+  chart,
+  branchaccount
+
 };

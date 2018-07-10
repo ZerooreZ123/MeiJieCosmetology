@@ -159,14 +159,14 @@ export default {
         capacity: [{ required: true, message: "产品容量不能为空", trigger: "blur" }],
         capacityUnit: [{ required: true, message: "容量单位不能为空", trigger: "blur" }],
         qualityPeriod: [{ required: true, message: "保质期不能为空", trigger: "blur" }],
-        images: [{ required: true, message: "产品配图不能为空", trigger: "blur" }],
-        content: [{ required: true, message: "产品简介不能为空", trigger: "blur" }],
-        createBy: [{ required: true, message: "创建者不能为空", trigger: "blur" }],
-        createDate: [{ required: true, message: "创建时间不能为空", trigger: "blur" }],
-        updateBy: [{ required: true, message: "更新者不能为空", trigger: "blur" }],
-        updateDate: [{ required: true, message: "更新时间不能为空", trigger: "blur" }],
-        remarks: [{ required: true, message: "备注信息不能为空", trigger: "blur" }],
-        delFlag: [{ required: true, message: "删除标记不能为空", trigger: "blur" }]
+        // images: [{ required: true, message: "产品配图不能为空", trigger: "blur" }],
+        content: [{ required: true, message: "产品简介不能为空", trigger: "blur" }]
+        // createBy: [{ required: true, message: "创建者不能为空", trigger: "blur" }],
+        // createDate: [{ required: true, message: "创建时间不能为空", trigger: "blur" }],
+        // updateBy: [{ required: true, message: "更新者不能为空", trigger: "blur" }],
+        // updateDate: [{ required: true, message: "更新时间不能为空", trigger: "blur" }],
+        // remarks: [{ required: true, message: "备注信息不能为空", trigger: "blur" }],
+        // delFlag: [{ required: true, message: "删除标记不能为空", trigger: "blur" }]
       }
     };
   },

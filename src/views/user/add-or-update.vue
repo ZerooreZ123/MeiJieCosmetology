@@ -9,6 +9,8 @@
       </el-form-item>
       <el-form-item label="所属门店" prop="officeId">
         <el-select v-model="dataForm.officeId" placeholder="请选择所属门店">
+          <el-option label="系统" value="0">
+          </el-option>
           <el-option v-for="office in officeList" :key="office.id" :label="office.name" :value="office.id">
           </el-option>
         </el-select>
@@ -19,10 +21,10 @@
           <el-radio label="女">女</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="密码" prop="password" :class="{ 'is-required': !dataForm.id }">
+      <el-form-item label="密码" prop="password" :class="{ 'is-required': !dataForm.userId }">
         <el-input v-model="dataForm.password" type="password" placeholder="密码"></el-input>
       </el-form-item>
-      <el-form-item label="确认密码" prop="comfirmPassword" :class="{ 'is-required': !dataForm.id }">
+      <el-form-item label="确认密码" prop="comfirmPassword" :class="{ 'is-required': !dataForm.userId }">
         <el-input v-model="dataForm.comfirmPassword" type="password" placeholder="确认密码"></el-input>
       </el-form-item>
       <el-form-item label="邮箱" prop="email">
@@ -69,32 +71,37 @@
 
 <script>
 import API from "@/api";
-import { isEmail, isMobile } from "@/utils/validate";
+import {
+  // isEmail,
+  isMobile
+} from "@/utils/validate";
 export default {
   data() {
     var validatePassword = (rule, value, callback) => {
-      if (!this.dataForm.id && !/\S/.test(value)) {
+      if (!this.dataForm.userId && !/\S/.test(value)) {
         callback(new Error("密码不能为空"));
       } else {
         callback();
       }
     };
     var validateComfirmPassword = (rule, value, callback) => {
-      if (!this.dataForm.id && !/\S/.test(value)) {
+      if (!this.dataForm.userId && !/\S/.test(value)) {
         callback(new Error("确认密码不能为空"));
       } else if (this.dataForm.password !== value) {
+        console.log(this.dataForm.password);
+        console.log(value);
         callback(new Error("确认密码与密码输入不一致"));
       } else {
         callback();
       }
     };
-    var validateEmail = (rule, value, callback) => {
-      if (!isEmail(value)) {
-        callback(new Error("邮箱格式错误"));
-      } else {
-        callback();
-      }
-    };
+    // var validateEmail = (rule, value, callback) => {
+    //   if (!isEmail(value)) {
+    //     callback(new Error("邮箱格式错误"));
+    //   } else {
+    //     callback();
+    //   }
+    // };
     var validateMobile = (rule, value, callback) => {
       if (!isMobile(value)) {
         callback(new Error("手机号格式错误"));
@@ -128,7 +135,7 @@ export default {
         name: [{ required: true, message: "姓名不能为空", trigger: "blur" }],
         password: [{ validator: validatePassword, trigger: "blur" }],
         comfirmPassword: [{ validator: validateComfirmPassword, trigger: "blur" }],
-        email: [{ required: true, message: "邮箱不能为空", trigger: "blur" }, { validator: validateEmail, trigger: "blur" }],
+        // email: [{ required: true, message: "邮箱不能为空", trigger: "blur" }, { validator: validateEmail, trigger: "blur" }],
         mobile: [{ required: true, message: "手机号不能为空", trigger: "blur" }, { validator: validateMobile, trigger: "blur" }]
       }
     };
@@ -156,8 +163,10 @@ export default {
               API.user.info(this.dataForm.userId).then(({ data }) => {
                 if (data && data.code === 0) {
                   this.dataForm = data.user;
+                  this.dataForm = data.user;
                   // 修改时置空页面显示密码
                   this.dataForm.password = "";
+                  this.dataForm.comfirmPassword = "";
                 }
               });
             }
@@ -165,8 +174,8 @@ export default {
       });
     },
     getIdentityList() {
-      return API.sysidentity.list().then(({ data }) => {
-        const identityList = data && data.code === 0 ? data.page.list : [];
+      return API.common.getIdentityList().then(({ data }) => {
+        const identityList = data && data.code === 0 ? data.list : [];
         this.identityList = identityList;
       });
     },

@@ -7,6 +7,19 @@ export function isAuth(key) {
 }
 
 /**
+ * 是否是管理员
+ */
+export function isSuper() {
+  var roleIdList = sessionStorage.getItem("roleIdList");
+  var roleIdArray = roleIdList.split(",");
+  for (var i = 0; i < roleIdArray.length; i++) {
+    if (roleIdArray[i] === "1" || roleIdArray[i] === "2" || roleIdArray[i] === "3") {
+      return true;
+    }
+  }
+  return false;
+}
+/**
  * 获取路由名称, 根据url地址
  * @param {*} url
  */
@@ -59,6 +72,36 @@ export function getUUID() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
     return (c === "x" ? (Math.random() * 16) | 0 : "r&0x3" | "0x8").toString(16);
   });
+}
+
+export function formatDate(date, format) {
+  // format: "yyyy年MM月dd日hh小时mm分ss秒"
+  var o = {
+    "M+": date.getMonth() + 1, // month
+    "d+": date.getDate(), // day
+    "h+": date.getHours(), // hour
+    "m+": date.getMinutes(), // minute
+    "s+": date.getSeconds(), // second
+    "q+": Math.floor((date.getMonth() + 3) / 3), // quarter
+    S: date.getMilliseconds() // millisecond
+  };
+
+  if (/(y+)/.test(format)) {
+    format = format.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+  }
+
+  for (var k in o) {
+    if (new RegExp("(" + k + ")").test(format)) {
+      format = format.replace(RegExp.$1, RegExp.$1.length === 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+    }
+  }
+  return format;
+}
+
+export function GetMDay(y, m) {
+  var mday = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  if ((y % 4 === 0 && y % 100 !== 0) || y % 400 === 0) mday[1] = 29;
+  return mday[m - 1];
 }
 
 export function getTimeList(start, end, step) {

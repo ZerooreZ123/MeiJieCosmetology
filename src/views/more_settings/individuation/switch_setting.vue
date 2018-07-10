@@ -6,7 +6,7 @@
         <div class="sideWrap">
           <div class="info">
             <div class="infoHead flex_column">
-              <div>LOGO</div>
+              <!-- <div>LOGO</div> -->
               <span>门店: 中山公园店</span>
               <span>地址: 上海市长宁区通协路</span>
               <span>电话: (021)-54214214</span>
@@ -34,14 +34,14 @@
                 <span>783.00</span>
               </div>
               <div class="option flex_between">
-                <span>服务: No-099颜真卿</span>
+                <span>服务人员: No-099颜真卿</span>
               </div>
               <div class=" itemModule flex_between">
                 <span class="font_weight">合计</span>
                 <span class="font_weight">1383.00</span>
               </div>
             </div>
-            <div class="item">
+            <!-- <div class="item">
               <div class="title flex_between">
                 <span class="font_weight">赠送</span>
                 <span class="font_weight">数量</span>
@@ -81,12 +81,12 @@
                 <span>会员卡</span>
                 <span>21152.00</span>
               </div>
-            </div>
+            </div> -->
             <div class="write font_weight">签名</div>
             <div class="infoFoot flex_column">
-              <div>感谢惠顾!</div>
-              <span>技术支持:</span>
-              <span>www.meil.com (TEL:400-006-2020)</span>
+              <div>谢谢惠顾!</div>
+              <!-- <span>技术支持:</span>
+              <span>www.meil.com (TEL:400-006-2020)</span> -->
             </div>
           </div>
         </div>

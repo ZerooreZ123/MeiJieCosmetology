@@ -27,8 +27,24 @@ import device from "../device/index";
 export default {
   data() {
     return {
-      itemList: ["门店列表", "房间列表", "设备列表", "区域管理"]
+      itemList: []
     };
+  },
+  mounted() {
+    //  ["门店列表", "房间列表", "设备列表", "区域管理"]
+    // alert(this.isAuth('sys:role:save'))
+    if (this.isAuth("sys:sysoffice:list")) {
+      this.itemList.push("门店列表");
+    }
+    if (this.isAuth("room:room:list")) {
+      this.itemList.push("房间列表");
+    }
+    if (this.isAuth("room:device:list")) {
+      this.itemList.push("设备列表");
+    }
+    if (this.isAuth("sys:sysarea:list")) {
+      this.itemList.push("区域管理");
+    }
   },
   components: {
     tabNav,

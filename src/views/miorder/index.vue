@@ -25,7 +25,7 @@
     </el-form>
     <el-card class="box-card" v-for="item in dataList" :key="item.id">
       <div class="title-bar">
-        <span>所属门店：{{item.officeName || "无"}}</span>
+        <span>[{{item.orderType | orderTypeCh}}]&emsp;所属门店：{{item.officeName || "无"}}</span>
         <!-- 1、待付款 2、已付款 3、尾款单 4、已取消 5、已退单 -->
         <span class="status" v-if="item.status==1">待付款</span>
         <span class="status" v-else-if="item.status==2">已付款</span>
@@ -63,8 +63,14 @@
       <div class="bot-bar">
         &nbsp;
         <span class="right-btns">
-          <el-button v-if="item.status == 1" type="info" @click="goOrderCreatePage(item.id, 'order')">收银</el-button>
-          <el-button v-if="item.status == 3" type="info" @click="goOrderCreatePage(item.id, 'repayment')">还款</el-button>
+          <template v-if="item.orderType == 1">
+            <el-button v-if="item.status == 1" type="info" @click="goOrderCreatePage(item.id, 'order')">收银</el-button>
+            <el-button v-if="item.status == 3" type="info" @click="goOrderCreatePage(item.id, 'repayment')">还款</el-button>
+          </template>
+          <template v-if="item.orderType == 2">
+            <el-button v-if="item.status == 1" type="info" @click="goOrderCreatePage(item.id, 'order-card')">收银</el-button>
+            <el-button v-if="item.status == 3" type="info" @click="goOrderCreatePage(item.id, 'repayment-card')">还款</el-button>
+          </template>
           <el-button type="primary" @click="print(item)">打印小票</el-button>
           <el-button type="success" @click="showDetail(item.id)">详情</el-button>
           <!-- <el-button type="warning">修改</el-button> -->
@@ -168,14 +174,29 @@ export default {
     };
   },
   props: ["status", "history"],
+  filters: {
+    orderTypeCh(type) {
+      if (+type === 1) {
+        return "综合消费";
+      } else if (+type === 2) {
+        return "购卡";
+      } else if (+type === 3) {
+        return "卡充值";
+      } else {
+        return "未知";
+      }
+    }
+  },
   components: {
     detail,
     printInfo
   },
   mounted() {
-    this.getMemberList();
-    this.getOfficeList();
-    this.getDataList();
+    if (!this.active) {
+      this.getMemberList();
+      this.getOfficeList();
+      this.getDataList();
+    }
     this.active = true;
   },
   activated() {

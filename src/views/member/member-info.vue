@@ -1,5 +1,20 @@
 <template>
   <div>
+    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+      <div class="btns">
+        <div class="input-left">
+          <el-form-item>
+            <el-input v-model="dataForm.key" placeholder="姓名/手机号" clearable @clear="getDataList"></el-input>
+          </el-form-item>
+          <el-button @click="getDataList()">查询</el-button>
+        </div>
+        <div class="btns-right">
+          <el-button v-if="isAuth('appoint:appointment:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+          <el-button v-if="isAuth('appoint:appointment:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+          <div class="clear"></div>
+        </div>
+      </div>
+    </el-form>
     <div class="list-nav">
       <category listname="顾客分类" :list="clientList" @onItemClick="onLlientClick"></category>
       <category listname="时间分类" :list="timeList" @onItemClick="onTimeClick">
@@ -21,7 +36,7 @@
             <img :src="parseUrl(scope.row.headimage)" alt="" class="photo">
             <div class="textModule">
               <div>{{scope.row.name}}</div>
-              <div>{{scope.row.mobile}}</div>
+              <div>{{scope.row.mobile | hideMobile}}</div>
               <div>{{`会员号: ${scope.row.memberno}`}}</div>
             </div>
           </div>
@@ -93,6 +108,21 @@ export default {
   mounted() {
     this.getDataList();
     this.getCategoryList();
+  },
+  filters: {
+    hideMobile(str) {
+      const r = [];
+      for (let i = 0; i < str.length; i++) {
+        if (i <= 3) {
+          r.push(str[i]);
+        } else if (i > 7) {
+          r.push(str[i]);
+        } else {
+          r.push("*");
+        }
+      }
+      return r.join("");
+    }
   },
   methods: {
     parseUrl,
@@ -222,9 +252,7 @@ export default {
       });
     },
     lookDetail(id) {
-      // this.memberDetailVisible = true;
-      window.memberId = id;
-      this.$router.push({ path: "/member/member_detail" });
+      this.$router.push({ path: "/member/member_detail/" + id });
     },
     // 删除
     deleteHandle(id) {

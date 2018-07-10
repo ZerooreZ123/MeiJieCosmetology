@@ -29,6 +29,7 @@ export default new Router({
       children: [
         // 通过isTab属性, 设定是否通过tab标签页展示内容
         { path: "/home", component: _import("home/index"), name: "home", desc: "首页" },
+        { path: "/message", component: _import("message/index"), name: "message", desc: "短信营销" },
         { path: "/layout-setting", component: _import("layout/setting"), name: "setting", desc: "布局设置" },
         { path: "/user", component: _import("user/index"), name: "user", desc: "管理员管理", meta: { isTab: false } },
         { path: "/role", component: _import("role/index"), name: "role", desc: "角色管理", meta: { isTab: false } },
@@ -40,9 +41,13 @@ export default new Router({
         { path: "/log", component: _import("log/index"), name: "log", desc: "系统日志", meta: { isTab: false } },
         { path: "/more_settings", component: _import("more_settings/index"), name: "more_settings", desc: "更多设置", meta: { isTab: false } },
         { path: "/more_settings/shop_list", component: _import("more_settings/shop_list"), name: "shop_list", desc: "门店列表", meta: { isTab: false } },
-        { path: "/member/member_detail", component: _import("member/memberDetail"), name: "member_detail", desc: "会员详情", meta: { isTab: false } },
+        { path: "/member/member_detail/:id", component: _import("member/memberDetail"), name: "member_detail", desc: "会员详情", meta: { isTab: false } },
         { path: "/membermarks", component: _import("membermarks/index"), name: "membermarks", desc: "会员备注", meta: { isTab: false } },
-        { path: "/inventory", component: _import("inventory/index"), name: "inventory", desc: "库存", meta: { isTab: false } },
+        { path: "/stock", component: _import("stock/index"), name: "stock", desc: "库存", meta: { isTab: false } },
+        { path: "/stock/purchase", component: _import("stock/purchase"), name: "stock-purchase", desc: "采购管理", meta: { isTab: false } },
+        { path: "/stock/consume", component: _import("stock/consume"), name: "stock-consume", desc: "消耗管理", meta: { isTab: false } },
+        { path: "/stock/allocation", component: _import("stock/allocation"), name: "stock-allocation", desc: "调拨管理", meta: { isTab: false } },
+        { path: "/stock/realtime", component: _import("stock/realtime"), name: "stock-realtime", desc: "库存管理", meta: { isTab: false } },
         {
           path: "/more_settings/individuation",
           component: _import("more_settings/individuation/index"),
@@ -139,6 +144,20 @@ export default new Router({
           component: _import("sysmerchant/index"),
           name: "sysmerchant",
           desc: "商户管理",
+          meta: { isTab: false }
+        },
+        {
+          path: "/chart",
+          component: _import("chart/index"),
+          name: "chart",
+          desc: "数据统计",
+          meta: { isTab: false }
+        },
+        {
+          path: "/branchaccount",
+          component: _import("branchaccount/index"),
+          name: "branchaccount",
+          desc: "分账",
           meta: { isTab: false }
         }
       ],

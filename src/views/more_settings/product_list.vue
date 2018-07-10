@@ -10,9 +10,9 @@
       <template slot="产品">
         <serviceproduct/>
       </template>
-      <!-- <template slot="卡">
-
-      </template> -->
+      <template slot="卡">
+        <servicecard></servicecard>
+      </template>
     </tab-nav>
   </div>
 </template>
@@ -22,17 +22,19 @@ import tabNav from "../../components/tabNav";
 import serviceitem from "../serviceitem/index";
 import servicepackage from "../servicepackage/index";
 import serviceproduct from "../serviceproduct/index";
+import servicecard from "../servicecard/index";
 export default {
   data() {
     return {
-      itemList: ["项目", "套餐", "产品"]
+      itemList: ["项目", "套餐", "产品", "卡"]
     };
   },
   components: {
     tabNav,
     serviceitem,
     servicepackage,
-    serviceproduct
+    serviceproduct,
+    servicecard
   },
   methods: {}
 };

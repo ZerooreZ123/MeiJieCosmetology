@@ -12,6 +12,14 @@ export function list (params) {
   })
 }
 
+export function selectCardTree () {
+  return request({
+    url: requestUrl('/serviceCategory/servicecategory/selectCardTree'),
+    method: 'get',
+    params: requestParam({}, 'get')
+  })
+}
+
 export function treeEx () {
   return request({
     url: requestUrl('/serviceCategory/servicecategory/selectTree'),

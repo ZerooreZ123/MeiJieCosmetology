@@ -1,50 +1,52 @@
 <template>
-  <div class="w-container">
-    <div class="w-nav">
-      <div @click="setType(1)" :class="{active: serviceType == 1}">项目</div>
-      <div @click="setType(2)" :class="{active: serviceType == 2}">产品</div>
-      <div @click="setType(3)" :class="{active: serviceType == 3}">套餐</div>
-      <div v-if="this.memberId" @click="setType('H')" :class="{active: serviceType == 'H'}">历史</div>
-    </div>
+  <div class="mask" @click="cancel">
+    <div class="w-container">
+      <div class="w-nav">
+        <div @click="setType(1)" :class="{active: serviceType == 1}">项目</div>
+        <div @click="setType(2)" :class="{active: serviceType == 2}">产品</div>
+        <div @click="setType(3)" :class="{active: serviceType == 3}">套餐</div>
+        <div v-if="this.memberId" @click="setType('H')" :class="{active: serviceType == 'H'}">历史</div>
+      </div>
 
-    <div class="w-list">
-      <el-tag @close="handleRemove(index)" closable v-for="(item, index) in dataListSelected" :key="item.id">{{item.name}}&nbsp;
-        <span class="price">￥{{item.price}}</span>
-      </el-tag>
-    </div>
-
-    <div class="w-cat" v-if="serviceType != 'H'">
-      <el-select v-model="catFirst" placeholder="请选择大类" @change="id => onCat1Change(id)">
-        <el-option v-for="item in categoryList" :key="item.id" :label="item.name" :value="item.id">
-        </el-option>
-      </el-select>
-      <el-select v-model="catSecond" placeholder="请选择小类" @change="onCat2Change()">
-        <el-option v-for="item in categoryList2" :key="item.id" :label="item.name" :value="item.id">
-        </el-option>
-      </el-select>
-    </div>
-
-    <div class="w-list">
-      <span @click="handleClick(item)" v-for="item in dataList" :key="item.id">
-        <el-tag>{{item.name}}&nbsp;
-          <span class="price" v-if="serviceType == 1 || serviceType == 2">￥{{item.salePrice}}</span>
-          <span class="price" v-if="serviceType == 3">￥{{item.packPrice}}</span>
-          <span class="price" v-else>￥{{item.servicePrice}}</span>
+      <div class="w-list">
+        <el-tag @close="handleRemove(index)" closable v-for="(item, index) in dataListSelected" :key="item.id">{{item.name}}&nbsp;
+          <span class="price">￥{{item.price}}</span>
         </el-tag>
-      </span>
+      </div>
+
+      <div class="w-cat" v-if="serviceType != 'H'">
+        <el-select v-model="catFirst" placeholder="请选择大类" @change="id => onCat1Change(id)">
+          <el-option v-for="item in categoryList" :key="item.id" :label="item.name" :value="item.id">
+          </el-option>
+        </el-select>
+        <el-select v-model="catSecond" placeholder="请选择小类" @change="onCat2Change()">
+          <el-option v-for="item in categoryList2" :key="item.id" :label="item.name" :value="item.id">
+          </el-option>
+        </el-select>
+      </div>
+
+      <div class="w-list">
+        <span @click="handleClick(item)" v-for="item in dataList" :key="item.id">
+          <el-tag>{{item.name}}&nbsp;
+            <span class="price" v-if="serviceType == 1 || serviceType == 2">￥{{item.salePrice}}</span>
+            <span class="price" v-if="serviceType == 3">￥{{item.packPrice}}</span>
+            <span class="price" v-else>￥{{item.servicePrice}}</span>
+          </el-tag>
+        </span>
+      </div>
+      <el-row>
+        <el-col :span="6">
+          &nbsp;
+        </el-col>
+        <el-col :span="12">
+          <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" :total="totalPage" layout="total, prev, pager, next">
+          </el-pagination>
+        </el-col>
+        <el-col :span="6" style="text-align:right;padding-right:10px;">
+          <el-button @click="handleOK()">确认</el-button>
+        </el-col>
+      </el-row>
     </div>
-    <el-row>
-      <el-col :span="6">
-        &nbsp;
-      </el-col>
-      <el-col :span="12">
-        <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" :total="totalPage" layout="total, prev, pager, next">
-        </el-pagination>
-      </el-col>
-      <el-col :span="6" style="text-align:right;padding-right:10px;">
-        <el-button @click="handleOK()">确认</el-button>
-      </el-col>
-    </el-row>
   </div>
 </template>
 
@@ -130,6 +132,11 @@ export default {
     handleOK() {
       this.$emit("selected", this.dataListSelected);
     },
+    cancel(ev) {
+      if (ev.target.className === "mask") {
+        this.$emit("cancel");
+      }
+    },
     getDataList() {
       const serviceType = this.serviceType;
       const params = {
@@ -208,6 +215,15 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2015;
+}
 .site-wrapper .el-pagination {
   text-align: center;
 }

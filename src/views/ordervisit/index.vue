@@ -4,9 +4,18 @@
       <div class="btns">
         <div class="input-left">
           <el-form-item>
-            消费时间:
+            回访时间:
             <el-date-picker type="date" value-format="yyyy-MM-dd" v-model="dataForm.startDay" placeholder="开始日期"></el-date-picker>~
             <el-date-picker type="date" value-format="yyyy-MM-dd" v-model="dataForm.endDay" placeholder="结束日期"></el-date-picker>
+          </el-form-item>
+          回访员:
+          <el-form-item>
+            <el-select placeholder="请选择" v-model="dataForm.updateBy">
+              <el-option label="全部" value="">
+              </el-option>
+              <el-option v-for="item in userList" :key="item.userId" :label="item.name" :value="item.userId">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-button @click="getDataListPage1()">查询</el-button>
         </div>
@@ -58,17 +67,13 @@
         label="创建时间">
       </el-table-column>
       <el-table-column
-        prop="updateBy"
-        header-align="center"
-        align="center"
-        label="更新者">
-      </el-table-column>
-      <el-table-column
         prop="updateDate"
         header-align="center"
         align="center"
         label="更新时间">
       </el-table-column> -->
+      <el-table-column prop="updateBy" header-align="center" align="center" label="回访员">
+      </el-table-column>
       <el-table-column prop="remarks" header-align="center" align="center" label="备注信息">
       </el-table-column>
       <!-- <el-table-column
@@ -101,9 +106,11 @@ export default {
     return {
       dataForm: {
         startDay: "",
-        endDay: ""
+        endDay: "",
+        updateBy: ""
       },
       dataList: [],
+      userList: [],
       pageIndex: 1,
       pageSize: 10,
       totalPage: 0,
@@ -119,6 +126,14 @@ export default {
   },
   activated() {
     this.getDataList();
+
+    API.user.getList().then(({ data }) => {
+      if (data && data.code === 0) {
+        this.userList = data.list;
+      } else {
+        this.userList = [];
+      }
+    });
   },
   methods: {
     getDataListPage1() {
@@ -138,7 +153,8 @@ export default {
         page: this.pageIndex,
         limit: this.pageSize,
         startDay: this.dataForm.startDay,
-        endDay: this.dataForm.endDay
+        endDay: this.dataForm.endDay,
+        updateBy: this.dataForm.updateBy
       };
       API.ordervisit.list(params).then(({ data }) => {
         if (data && data.code === 0) {

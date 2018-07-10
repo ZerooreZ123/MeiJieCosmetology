@@ -1,7 +1,7 @@
 import request from "../request";
 import requestUrl from "../requestUrl";
 import requestParam from "../requestParam";
-import isInteger from "lodash/isInteger";
+// import isInteger from "lodash/isInteger";
 
 // 获取列表
 export function list(params) {
@@ -38,7 +38,7 @@ export function getMemberDetail(params) {
 // 获取信息
 export function info(id) {
   return request({
-    url: requestUrl("/member/member/info" + (isInteger(id) ? `/${id}` : "")),
+    url: requestUrl("/member/member/info/" + id),
     method: "get",
     params: requestParam({}, "get")
   });

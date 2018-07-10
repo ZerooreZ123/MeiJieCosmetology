@@ -44,10 +44,12 @@ export default {
 </script>
 <style>
 .el-menu-item {
-  width: 183px;
   background-color: #c99f63;
   padding: 0 1px 0 0px;
   color: #fff !important;
+}
+.el-menu--popup {
+  background-color: #c99f63;
 }
 
 .el-submenu .el-menu-item {
