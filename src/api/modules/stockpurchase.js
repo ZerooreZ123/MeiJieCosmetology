@@ -22,6 +22,14 @@ export function getSupplierList() {
   });
 }
 
+export function getInboundDetail(params) {
+  return request({
+    url: requestUrl("/stock/stockpurchase/getInboundDetail"),
+    method: "post",
+    data: requestParam(params)
+  });
+}
+
 // 获取列表
 export function list(params) {
   return request({

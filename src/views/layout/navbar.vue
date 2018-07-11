@@ -45,6 +45,12 @@
           <el-menu-item index="1-1" v-if="isAuth('appoint:appointment:list')">
             <a href="#/appointmentTip" style="color:#fff;"><img src="~@/assets/img/main/xx-w.png" height="30" />预约提醒</a>
           </el-menu-item>
+          <el-menu-item index="1-1" v-if="isAuth('member:member:list')">
+            <a @click="tipInfo()" style="color:#fff;"><img src="~@/assets/img/main/xx-w.png" height="30" />特殊日期</a>
+          </el-menu-item>
+          <el-menu-item index="1-1" v-if="isAuth('sys:log:list')">
+            <a href="#/sysLogInfo" style="color:#fff;"><img src="~@/assets/img/main/xx-w.png" height="30" />系统信息</a>
+          </el-menu-item>
           <!-- <el-menu-item index="1-2">
             <a href="//git.oschina.net/renrenio/renren-fast" style="color:#fff;">信息提示</a>
           </el-menu-item>
@@ -74,22 +80,26 @@
     </div>
     <!-- 弹窗, 修改密码 -->
     <update-password v-if="updatePassowrdVisible" ref="updatePassowrd"></update-password>
+    <info-tip v-if="tipVisible" ref="infoTip"></info-tip>
   </nav>
 </template>
 
 <script>
 import UpdatePassword from "./update-password";
+import InfoTip from "./info-tip";
 import API from "@/api";
 import { mapMutations } from "vuex";
 import parseUrl from "@/utils/parseUrl";
 export default {
   data() {
     return {
-      updatePassowrdVisible: false
+      updatePassowrdVisible: false,
+      tipVisible: false
     };
   },
   components: {
-    UpdatePassword
+    UpdatePassword,
+    InfoTip
   },
   computed: {
     navbarClasses() {
@@ -108,6 +118,12 @@ export default {
       this.updatePassowrdVisible = true;
       this.$nextTick(() => {
         this.$refs.updatePassowrd.init();
+      });
+    },
+    tipInfo() {
+      this.tipVisible = true;
+      this.$nextTick(() => {
+        this.$refs.infoTip.init();
       });
     },
     // 退出

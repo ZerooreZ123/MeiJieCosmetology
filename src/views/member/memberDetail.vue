@@ -5,31 +5,31 @@
         <div class="sideHeader">
           <img :src="parseUrl(this.dataInfo.headimage)" alt="">
           <div class="name">{{this.dataInfo.name}}</div>
-          <div class="btnBox">
+          <!-- <div class="btnBox">
             <div class="btn flex_center">快速预约</div>
             <div class="btn flex_center">会员等级</div>
             <div class="btn flex_center">编辑信息</div>
-          </div>
+          </div> -->
         </div>
         <div class="btnGroup">
-          <div class="btnItem openCardColor flex_center">
+          <div class="btnItem openCardColor flex_center" @click="goOpenCardPage()">
             <img src="../../assets/img/member/openCard.png" alt="">
             <span>开卡</span>
           </div>
-          <div class="btnItem openOrderColor flex_center">
+          <div class="btnItem openOrderColor flex_center" @click="goOpenOrderPage()">
             <img src="../../assets/img/member/openOrder.png" alt="">
             <span>开单</span>
           </div>
-          <div class="btnItem reissueCardColor flex_center">
+          <!-- <div class="btnItem reissueCardColor flex_center">
             <img src="../../assets/img/member/reissueCard.png" alt="">
             <span>补卡</span>
           </div>
           <div class="btnItem giveColor flex_center">
             <img src="../../assets/img/member/give.png" alt="">
             <span>赠送</span>
-          </div>
+          </div> -->
         </div>
-        <div class="momeyModule">
+        <!-- <div class="momeyModule">
           <div class="moduleItem flex_column">
             <span class="number">12000</span>
             <span class="news">会员钱包</span>
@@ -45,7 +45,7 @@
             <span class="news">欠款金额</span>
             <span class="drive">修改金额</span>
           </div>
-        </div>
+        </div> -->
         <div class="memberInfor">
           <div class="inforItem">
             <img src="../../assets/img/member/store.png" alt="">
@@ -67,17 +67,17 @@
             <span>会员标签: </span>
             <span class="valueItem"></span>
           </div>
-          <div class="inforItem">
+          <!-- <div class="inforItem">
             <img class="add" src="../../assets/img/member/add.png" alt="">
-          </div>
+          </div> -->
           <div class="inforItem">
             <img src="../../assets/img/member/taboo.png" alt="">
             <span>禁忌症: </span>
             <span class="valueItem"></span>
           </div>
-          <div class="inforItem">
+          <!-- <div class="inforItem">
             <img class="add" src="../../assets/img/member/add.png" alt="">
-          </div>
+          </div> -->
           <div class="inforItem">
             <img src="../../assets/img/member/write.png" alt="">
             <span>备注: </span>
@@ -134,6 +134,11 @@ export default {
   activated() {
     this.getMemberInfo();
   },
+  watch: {
+    $route(to, from) {
+      this.getMemberInfo();
+    }
+  },
   methods: {
     parseUrl,
     getMemberInfo() {
@@ -150,6 +155,13 @@ export default {
           // this.$refs.consumption.getDataList();
         }
       });
+    },
+    goOpenOrderPage() {
+      window.location.hash = "/createorder/openOrder/" + this.memberId;
+    },
+
+    goOpenCardPage() {
+      window.location.hash = "/createorder/openCard/" + this.memberId;
     }
   }
 };
@@ -273,9 +285,11 @@ export default {
   }
   .openCardColor {
     background: #b7abff;
+    color: #fff;
   }
   .openOrderColor {
     background: #e6b4bf;
+    color: #fff;
   }
   .reissueCardColor {
     background: #59adf5;

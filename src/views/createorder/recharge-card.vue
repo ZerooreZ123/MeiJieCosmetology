@@ -181,7 +181,7 @@ export default {
         detailList: [
           {
             serviceType: 6, // 1、项目 2、产品 3、套餐 4、附加费 5、开卡购卡 6、充值
-            serviceId: this.card.id,
+            serviceId: this.card.cardId,
             serviceName: this.card.name,
             servicePrice: this.totalPrice,
             nums: 1,

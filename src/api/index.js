@@ -43,6 +43,7 @@ import * as membercard from "./modules/membercard";
 import * as messageList from "./modules/messageList";
 import * as chart from "./modules/chart";
 import * as branchaccount from "./modules/branchaccount";
+import * as mifollowvisit from "./modules/mifollowvisit";
 
 export default {
   common, // 公共
@@ -89,6 +90,6 @@ export default {
   membercard,
   messageList,
   chart,
-  branchaccount
-
+  branchaccount,
+  mifollowvisit
 };

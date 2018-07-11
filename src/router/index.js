@@ -48,6 +48,7 @@ export default new Router({
         { path: "/stock/consume", component: _import("stock/consume"), name: "stock-consume", desc: "消耗管理", meta: { isTab: false } },
         { path: "/stock/allocation", component: _import("stock/allocation"), name: "stock-allocation", desc: "调拨管理", meta: { isTab: false } },
         { path: "/stock/realtime", component: _import("stock/realtime"), name: "stock-realtime", desc: "库存管理", meta: { isTab: false } },
+        { path: "mifollowvisit", component: _import("mifollowvisit/index"), name: "mifollowvisit", desc: "跟踪回访", meta: { isTab: false } },
         {
           path: "/more_settings/individuation",
           component: _import("more_settings/individuation/index"),
@@ -95,6 +96,13 @@ export default new Router({
           component: _import("appointment/tip"),
           name: "appointmentTip",
           desc: "预约提醒",
+          meta: { isTab: false }
+        },
+        {
+          path: "/sysLogInfo",
+          component: _import("log/index"),
+          name: "sysLogInfo",
+          desc: "系统信息",
           meta: { isTab: false }
         },
         {

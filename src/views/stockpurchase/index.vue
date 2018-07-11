@@ -4,11 +4,13 @@
     el-form-item
       el-select(v-model='dataForm.officeId', placeholder='入库部门', @change='reload',style="margin-right:10px;")
         el-option(v-for='item in shopList', :key='item.id', :label='item.name', :value='item.id')
-      el-select(v-model='dataForm.type', placeholder='类型', @change='reload',style="margin-right:10px;")
+      el-select(v-model='dataForm.type', placeholder='类型', @change='resetSupplierId',style="margin-right:10px;")
         el-option(label='采购', value='1')
         el-option(label='调拨', value='3')
-      el-select(v-model='dataForm.supplierId', placeholder='供应商', @change='reload')
+      el-select(v-if="dataForm.type==1",v-model='dataForm.supplierId', placeholder='供应商', @change='reload')
         el-option(v-for='item in supplierList', :key='item.id', :label='item.name', :value='item.id')
+      el-select(v-if="dataForm.type==3",v-model='dataForm.supplierId', placeholder='门店', @change='reload')
+        el-option(v-for='item in allShopList', :key='item.id', :label='item.name', :value='item.id')
   el-table(:data='dataList', border='', v-loading='dataListLoading', @selection-change='selectionChangeHandle', style='width: 100%;')
     el-table-column(prop='id', header-align='center', align='center', label='编号', width='50')
     el-table-column(prop='officeName', header-align='center', align='center', label='入库部门')
@@ -20,7 +22,7 @@
     el-table-column(prop='remarks', header-align='center', align='center', label='备注信息')
     el-table-column(fixed='right', header-align='center', align='center', width='150', label='操作')
       template(slot-scope='scope')
-        el-button(type='text', size='small', @click='showDetail(scope.row.id)') 显示详情
+        el-button(type='text', size='small', @click='showDetail(scope.row.id,scope.row.detailType)') 显示详情
   el-pagination(@size-change='sizeChangeHandle', @current-change='currentChangeHandle', :current-page='pageIndex', :page-sizes='[10, 20, 50, 100]', :page-size='pageSize', :total='totalPage', layout='total, sizes, prev, pager, next, jumper')
   purchase-log-dialog(ref='purchaseLogDialog')
 </template>
@@ -38,6 +40,7 @@ export default {
       },
       dataList: [],
       shopList: [],
+      allShopList: [],
       supplierList: [],
       pageIndex: 1,
       pageSize: 10,
@@ -54,6 +57,7 @@ export default {
     this.getShopList();
     this.getSupplierList();
     this.getDataList();
+    this.getAllShopList();
   },
   filters: {
     formatType(v) {
@@ -69,6 +73,10 @@ export default {
     }
   },
   methods: {
+    resetSupplierId() {
+      this.dataForm.supplierId = "";
+      this.reload();
+    },
     reload() {
       this.pageIndex = 1;
       this.getDataList();
@@ -82,6 +90,15 @@ export default {
         }
       });
     },
+    getAllShopList() {
+      API.common.getAllOfficeList().then(({ data }) => {
+        if (data && data.code === 0) {
+          this.allShopList = data.list;
+        } else {
+          this.allShopList = [];
+        }
+      });
+    },
     getSupplierList() {
       API.stockpurchase.getSupplierList().then(({ data }) => {
         console.log("getSupplierList", data);
@@ -90,8 +107,8 @@ export default {
         }
       });
     },
-    showDetail(id) {
-      this.$refs.purchaseLogDialog.init({ id });
+    showDetail(id, type) {
+      this.$refs.purchaseLogDialog.init({ id, type });
     },
     // 获取数据列表
     getDataList() {

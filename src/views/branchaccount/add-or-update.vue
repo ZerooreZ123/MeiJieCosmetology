@@ -1,14 +1,11 @@
 <template>
   <el-dialog :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="150px">
-      <el-form-item label="订单" prop="orderId">
-        <el-select v-model="dataForm.orderId" placeholder="请选择订单">
-          <el-option v-for="item in shopList" :key="item.id" :label="item.name" :value="item.id">
+      <el-form-item label="订单号" prop="orderId">
+        <el-select v-model="dataForm.orderId" filterable placeholder="请选择订单" @change="handleOrderChange">
+          <el-option v-for="item in branchAccountList" :key="item.id" :label="item.orderNo" :value="item.orderId">
           </el-option>
         </el-select>
-      </el-form-item>
-      <el-form-item label="订单号" prop="orderNo">
-        <el-input disabled v-model="dataForm.orderNo" placeholder="订单号"></el-input>
       </el-form-item>
       <el-form-item label="总金额" prop="totalAmount">
         <el-input disabled v-model="dataForm.totalAmount" placeholder="总金额" @input="calc">
@@ -16,27 +13,26 @@
         </el-input>
       </el-form-item>
       <el-form-item label="出账门店" prop="outAccountOffice">
-        <el-select v-model="dataForm.outAccountOffice" placeholder="请选择出账门店">
-          <el-option v-for="item in shopList" :key="item.id" :label="item.name" :value="item.id">
-          </el-option>
-        </el-select>
+        <el-input disabled="" v-model="dataForm.outAccountOffice" placeholder="出账门店" ></el-input>
       </el-form-item>
       <el-form-item label="入账门店" prop="inAccountOffice">
-        <el-select v-model="dataForm.inAccountOffice" placeholder="请选择入账门店">
-          <el-option v-for="item in shopList" :key="item.id" :label="item.name" :value="item.id">
-          </el-option>
-        </el-select>
+        <el-input disabled="" v-model="dataForm.inAccountOffice" placeholder="入账门店" ></el-input>
       </el-form-item>
-      <el-form-item label="分账比率" prop="ratio">
-        <el-input v-model="dataForm.ratio" placeholder="分账比率" @input="calc">
-          <template slot="append">%</template>
-        </el-input>
+      <el-form-item :label="'分账比率（'+dataForm.ratio+'%）'" prop="ratio">
+        <el-slider v-model="dataForm.ratio" @change="calc"></el-slider>
       </el-form-item>
       <el-form-item label="出账门店所分金额" prop="outDivisionAccount">
-        <el-input disabled="" v-model="dataForm.outDivisionAccount" placeholder="出账门店所分金额"></el-input>
+        <el-input disabled="" v-model="dataForm.outDivisionAccount" placeholder="出账门店所分金额">
+          <template slot="prepend">￥</template>
+        </el-input>
       </el-form-item>
       <el-form-item label="入账门店所分金额" prop="inDivisionAccount">
-        <el-input disabled="" v-model="dataForm.inDivisionAccount" placeholder="入账门店所分金额"></el-input>
+        <el-input disabled="" v-model="dataForm.inDivisionAccount" placeholder="入账门店所分金额">
+          <template slot="prepend">￥</template>
+        </el-input>
+      </el-form-item>
+      <el-form-item label="备注信息" prop="remarks">
+        <el-input v-model="dataForm.remarks" placeholder="备注信息"></el-input>
       </el-form-item>
       <!-- <el-form-item label="状态" prop="status">
         <el-input v-model="dataForm.status" placeholder="状态"></el-input>
@@ -69,6 +65,7 @@
 
 <script>
 import API from "@/api";
+import _ from "lodash";
 export default {
   data() {
     var isNumber = (rule, value, callback) => {
@@ -82,11 +79,13 @@ export default {
     };
     return {
       visible: false,
-      shopList: [],
+      branchAccountList: [],
       dataForm: {
         id: 0,
         outAccountOffice: "",
+        outAccountOfficeName: "",
         inAccountOffice: "",
+        inAccountOfficeName: "",
         totalAmount: "0",
         outDivisionAccount: "",
         inDivisionAccount: "",
@@ -94,12 +93,7 @@ export default {
         orderId: "",
         orderNo: "",
         status: "",
-        createBy: "",
-        createDate: "",
-        updateBy: "",
-        updateDate: "",
-        remarks: "",
-        delFlag: ""
+        remarks: ""
       },
       dataRule: {
         outAccountOffice: [{ required: true, message: "出账门店不能为空", trigger: "blur" }],
@@ -110,18 +104,11 @@ export default {
         ratio: [{ required: true, message: "分账比率不能为空", trigger: "blur" }, { validator: isNumber, trigger: "blur" }],
         orderId: [{ required: true, message: "订单ID不能为空", trigger: "blur" }],
         orderNo: [{ required: true, message: "订单号不能为空", trigger: "blur" }],
-        status: [{ required: true, message: "状态不能为空", trigger: "blur" }],
-        createBy: [{ required: true, message: "创建者不能为空", trigger: "blur" }],
-        createDate: [{ required: true, message: "创建时间不能为空", trigger: "blur" }],
-        updateBy: [{ required: true, message: "更新者不能为空", trigger: "blur" }],
-        updateDate: [{ required: true, message: "更新时间不能为空", trigger: "blur" }],
-        remarks: [{ required: true, message: "备注信息不能为空", trigger: "blur" }],
-        delFlag: [{ required: true, message: "删除标记不能为空", trigger: "blur" }]
+        remarks: [{ required: true, message: "备注信息不能为空", trigger: "blur" }]
       }
     };
   },
   mounted() {
-    this.getOfficeList();
   },
   methods: {
     calc() {
@@ -129,16 +116,26 @@ export default {
       this.dataForm.outDivisionAccount = (totalAmount * (1 - ratio / 100)).toFixed(2);
       this.dataForm.inDivisionAccount = (totalAmount * (ratio / 100)).toFixed(2);
     },
-    getOfficeList() {
-      API.common.getOfficeList().then(({ data }) => {
+    handleOrderChange(orderId) {
+      const order = _.find(this.branchAccountList, o => o.orderId === orderId);
+      this.dataForm.orderNo = order.orderNo;
+      this.dataForm.inAccountOffice = order.inAccountOffice;
+      this.dataForm.outAccountOffice = order.outAccountOffice;
+      this.dataForm.totalAmount = order.payPrice;
+      this.calc();
+    },
+    getBranchAccount() {
+      API.branchaccount.branchAccount().then(({ data }) => {
         if (data && data.code === 0) {
-          this.shopList = data.list;
+          this.branchAccountList = data.list;
         } else {
-          this.shopList = [];
+          this.branchAccountList = [];
+          this.$message.error(data.msg);
         }
       });
     },
     init(id) {
+      this.getBranchAccount();
       this.dataForm.id = id || 0;
       this.visible = true;
       this.$nextTick(() => {
@@ -155,12 +152,7 @@ export default {
               this.dataForm.orderId = data.branchaccount.orderId;
               this.dataForm.orderNo = data.branchaccount.orderNo;
               this.dataForm.status = data.branchaccount.status;
-              this.dataForm.createBy = data.branchaccount.createBy;
-              this.dataForm.createDate = data.branchaccount.createDate;
-              this.dataForm.updateBy = data.branchaccount.updateBy;
-              this.dataForm.updateDate = data.branchaccount.updateDate;
               this.dataForm.remarks = data.branchaccount.remarks;
-              this.dataForm.delFlag = data.branchaccount.delFlag;
             }
           });
         }

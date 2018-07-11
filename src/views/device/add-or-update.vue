@@ -13,7 +13,7 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="是否可用" prop="isUsable">        
+      <el-form-item label="是否可用" prop="isUsable">
         <el-select v-model="dataForm.isUsable">
           <el-option value="1" label="可用">可用</el-option>
           <el-option value="0" label="不可用">不可用</el-option>
@@ -38,11 +38,13 @@ export default {
         id: 0,
         name: "",
         deviceno: "",
-        isUsable: ""
+        isUsable: "",
+        officeId: ""
       },
       dataRule: {
         name: [{ required: true, message: "不能为空", trigger: "blur" }],
         deviceno: [{ required: true, message: "不能为空", trigger: "blur" }],
+        officeId: [{ required: true, message: "所属门店空", trigger: "blur" }],
         isUsable: [{ required: true, message: "是否可用：0、否 1、是不能为空", trigger: "blur" }]
       }
     };

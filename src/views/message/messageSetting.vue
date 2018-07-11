@@ -17,11 +17,11 @@
             inactive-color="#666">
           </el-switch>
         </div>
-        <div class="item-content">
-          <span class="title">{{item.params[0].key}}</span>
-          <el-input v-model="item.params[0].value" placeholder="请输入内容"></el-input>&nbsp;&nbsp;
-          <span>{{item.params[0].unit}}</span>
-          <el-button type="warning" icon="el-icon-check" circle></el-button>
+        <div class="item-content" >
+          <span v-show="item.params[0].value" class="title">{{item.params[0].key}}</span>
+          <el-input v-show="item.params[0].value" v-model="item.params[0].value" placeholder="请输入内容"></el-input>&nbsp;&nbsp;
+          <span v-show="item.params[0].value" >{{item.params[0].unit}}</span>
+          <el-button v-show="item.params[0].value" type="warning" icon="el-icon-check" circle @click="switched(item)"></el-button>
         </div>
         <div class="item-footer">
           <span>
@@ -78,11 +78,13 @@ export default {
         name: message.name,
         content: message.content,
         type: this.selectBar,
-        params: JSON.stringify(message.params)
+        params: JSON.stringify(message.params),
+        value: message.params[0].value
       };
       API.messageList.messageSetting(params).then(({ data }) => {
         if (data && data.code === 0) {
           console.log("success+++++++");
+          this.getMessage(this.selectBar);
         }
       });
     }

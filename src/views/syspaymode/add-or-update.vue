@@ -5,7 +5,11 @@
         <el-input v-model="dataForm.name" placeholder=""></el-input>
       </el-form-item>
       <el-form-item label="状态" prop="status">
-        <el-input v-model="dataForm.status" placeholder="状态"></el-input>
+        <!-- <el-input v-model="dataForm.status" placeholder="状态"></el-input> -->
+        <el-radio-group v-model="dataForm.status">
+          <el-radio label="0">禁用</el-radio>
+          <el-radio label="1">启用</el-radio>
+        </el-radio-group>
       </el-form-item>
       <el-form-item label="排序" prop="sort">
         <el-input v-model="dataForm.sort" placeholder="排序"></el-input>

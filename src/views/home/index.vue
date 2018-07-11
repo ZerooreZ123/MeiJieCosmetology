@@ -143,6 +143,27 @@
         </el-col>
       </el-row>
     </el-card>
+    <el-card style="margin-top:10px;">
+      <el-row>
+        <el-col :span="16">
+          <div class="i-title">
+            <img src="../../assets/img/main/yy.png" /> 跟踪回访
+          </div>
+          <el-table :data="visitList" border style="width: 100%;" max-height="500">
+            <el-table-column prop="remarks" header-align="center" align="center" label="客户">
+            </el-table-column>
+            <el-table-column prop="visitTime" header-align="center" align="center" label="回访时间">
+            </el-table-column>
+            <el-table-column prop="status" header-align="center" align="center" label="状态">
+              <template slot-scope="scope">
+                <el-tag v-if="scope.row.status === '1'" size="small" type="danger">待回访</el-tag>
+                <el-tag v-else-if="scope.row.status === '2'" size="small">已回访</el-tag>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-col>
+      </el-row>
+    </el-card>
   </div>
 </template>
 
@@ -166,6 +187,7 @@ export default {
       limitTurnover: "",
       guestList: [{}, {}, {}],
       appointmentList: [],
+      visitList: [],
       filterServiceTechnician: "",
       staffList: []
     };
@@ -177,6 +199,7 @@ export default {
     this.getTurnover({});
     this.getGuest({});
     this.getAppointmentList();
+    this.getVisitList();
     this.getStaff({});
     this.active = true;
   },
@@ -189,6 +212,7 @@ export default {
       this.getTurnover({});
       this.getGuest({});
       this.getAppointmentList();
+      this.getVisitList();
       this.getStaff({});
     }
   },
@@ -301,6 +325,13 @@ export default {
       API.home.getAppointmentList({ day: 5 }).then(({ data }) => {
         if (data && data.code === 0) {
           this.appointmentList = data.list;
+        }
+      });
+    },
+    getVisitList() {
+      API.mifollowvisit.list({ visitTime: new Date() }).then(({ data }) => {
+        if (data && data.code === 0) {
+          this.visitList = data.page.list;
         }
       });
     },

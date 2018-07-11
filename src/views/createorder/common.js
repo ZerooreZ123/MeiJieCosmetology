@@ -152,7 +152,7 @@ export default {
       const service = this.dataList[item.index];
       const payList = service.payList || [];
       const isExist = _.find(payList, p => !!p.memberCard);
-      if (isExist) {
+      if (isExist && item.payType === "card") {
         this.$message.error("只能使用一张会员卡");
         return;
       }

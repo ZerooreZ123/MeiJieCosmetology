@@ -77,3 +77,11 @@ export function queryCustomerlist(params) {
     params: requestParam(params, "get")
   });
 }
+
+export function birthday(params) {
+  return request({
+    url: requestUrl("/member/member/birthday"),
+    method: "get",
+    params: requestParam(params, "get")
+  });
+}

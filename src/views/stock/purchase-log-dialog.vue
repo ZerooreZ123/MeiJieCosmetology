@@ -1,52 +1,64 @@
 <template lang="pug">
   el-dialog(title="采购入库",:close-on-click-modal="true",:visible.sync="visible")
     div(class="info")
-      span 记录日期：{{stockPurchase.purchaseDate}}
-      span 经办人：{{stockPurchase.transactor}}
-      span 供应商：{{stockPurchase.supplierName}}
-      span 备注：{{stockPurchase.remarks}}
-    el-table(:data="stockPurchase.stockConsumeDetailsList",border,style="width: 100%;")
+      span 记录日期：{{stock.purchaseDate}}
+      span 经办人：{{stock.transactor}}
+      span 供应商：{{stock.shop}}
+      span 备注：{{stock.remarks}}
+    el-table(:data="stock.list",border,style="width: 100%;")
       el-table-column(header-align="center",align="center",label="入库部门")
-        template(slot-scope="scope") {{stockPurchase.officeName}}
+        template(slot-scope="scope") {{scope.row.receiveName}}
       el-table-column(prop="name",header-align="center",align="center",label="商品")
       el-table-column(prop="productCode",header-align="center",align="center",label="编号")
       el-table-column(prop="brand",header-align="center",align="center",label="品牌")
       el-table-column(prop="unit",header-align="center",align="center",label="单位")
       el-table-column(prop="purchasePrice",header-align="center",align="center",label="采购价")
-      el-table-column(prop="warehousNum",header-align="center",align="center",label="入库数量")
+      el-table-column(prop="inboundNum",header-align="center",align="center",label="入库数量")
       el-table-column(header-align="center",align="center",label="小计")
-        template(slot-scope="scope") ￥{{scope.row.purchasePrice * scope.row.warehousNum}}
+        template(slot-scope="scope") ￥{{scope.row.purchasePrice * scope.row.inboundNum}}
 </template>
 
 <script>
 import API from "@/api";
 
 const emptyStruct = {
-  officeName: "",
-  purchaseAmount: "",
+  shop: "",
   purchaseDate: "",
   remarks: "",
   transactor: "",
-  stockConsumeDetailsList: []
+  list: []
 };
 export default {
   data() {
     return {
       visible: false,
-      stockPurchase: emptyStruct
+      stock: emptyStruct
     };
   },
   watch: {},
   methods: {
     init(params) {
       this.visible = true;
-      this.getData(params.id);
+      this.getData(params.id, params.type);
     },
-    getData(id) {
+    getData(id, type) {
       this.stockPurchase = emptyStruct;
-      API.stockpurchase.info(id).then(({ data }) => {
-        if (data && data.code === 0 && data.stockPurchase) {
-          this.stockPurchase = data.stockPurchase;
+      API.stockpurchase.getInboundDetail({ id, type }).then(({ data }) => {
+        if (data && data.code === 0) {
+          if (+type === 1) {
+            this.stock.shop = data.stockPurchase.officeName;
+            this.stock.supplierName = data.stockPurchase.supplierName;
+            this.stock.purchaseDate = data.stockPurchase.purchaseDate;
+            this.stock.remarks = data.stockPurchase.remarks;
+            this.stock.transactor = data.stockPurchase.transactor;
+            this.stock.list = data.stockPurchase.stockConsumeDetailsList;
+          } else if (+type === 3) {
+            this.stock.shop = data.stockAllocation.receiveName;
+            this.stock.purchaseDate = data.stockAllocation.createDate;
+            this.stock.remarks = data.stockAllocation.remarks;
+            this.stock.transactor = data.stockAllocation.transactor;
+            this.stock.list = data.stockAllocation.consumeDetailsList;
+          }
         }
       });
     }

@@ -126,8 +126,14 @@ export default {
   },
   methods: {
     parseUrl,
-    onLlientClick() {
+    onLlientClick(item) {
       // 顾客分类
+      if (item) {
+        this.filter_isHoldCard = item.name;
+      } else {
+        this.filter_isHoldCard = undefined;
+      }
+      this.getDataList();
     },
     onTimeClick1(item, num) {
       // 时间分类
@@ -203,6 +209,9 @@ export default {
         limit: this.pageSize,
         key: this.dataForm.key
       };
+      if (this.filter_isHoldCard !== undefined) {
+        params.isHoldCard = this.filter_isHoldCard;
+      }
       if (this.filter_times !== undefined) {
         params.times = this.filter_times;
       }

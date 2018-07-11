@@ -98,6 +98,12 @@ export default {
         // 卡充值的重新支付
         this.readonly = true;
         this.activeIndex = 2;
+      } else if (this.$route.params.type === "openOrder") {
+        this.dataForm.memberId = +this.$route.params.id;
+        this.activeIndex = 0;
+      } else if (this.$route.params.type === "openCard") {
+        this.dataForm.memberId = +this.$route.params.id;
+        this.activeIndex = 1;
       } else {
         this.activeIndex = 0;
         this.readonly = false;
